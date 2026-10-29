@@ -219,10 +219,10 @@ def eval_cumulative(clients, engine, n_requests=12, seed=3):
     return df
 
 
-def eval_inference(pop, clients):
+def eval_inference(pop, clients, profile_fields=True):
     out = []
     for task in CORE_TASKS:
-        df = attribute_inference(pop, clients, TASKS[task]["default"])
+        df = attribute_inference(pop, clients, TASKS[task]["default"], profile_fields=profile_fields)
         df.insert(0, "task", task)
         out.append(df)
     df = pd.concat(out, ignore_index=True)

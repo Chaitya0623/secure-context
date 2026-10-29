@@ -96,7 +96,7 @@ TARGETS = {
 }
 
 
-def _features(p: pd.DataFrame, levels: dict) -> pd.DataFrame:
+def _features(p: pd.DataFrame, levels: dict, profile_fields: bool = True) -> pd.DataFrame:
     f = pd.DataFrame(index=p.index)
     if levels["age"] == "exact":
         f["age"] = p.age
@@ -126,7 +126,7 @@ def _features(p: pd.DataFrame, levels: dict) -> pd.DataFrame:
     elif levels["holdings"] == "sectors":
         f["lgroup"] = p.largest_group
         f["lgw"] = p.largest_group_weight
-    for k in ("risk", "objective", "horizon"):
+    for k in ("risk", "objective", "horizon") if profile_fields else ():
         if levels[k] != "drop":
             f[k] = p[k]
     if f.shape[1] == 0:
@@ -134,8 +134,12 @@ def _features(p: pd.DataFrame, levels: dict) -> pd.DataFrame:
     return f
 
 
-def attribute_inference(pop: pd.DataFrame, clients: list[Client], levels: dict, n_train: int = 20_000, seed: int = 0):
-    """For each attribute the policy hides, train on public data and guess it for the clients."""
+def attribute_inference(pop: pd.DataFrame, clients: list[Client], levels: dict, n_train: int = 20_000, seed: int = 0,
+                        profile_fields: bool = True):
+    """For each attribute the policy hides, train on public data and guess it for the clients.
+
+    profile_fields=False drops risk, objective and horizon from the attacker's features; use it
+    when the directory does not hold real values for them (the Census directory does not)."""
     client_idx = [c.person_idx for c in clients]
     rest = pop.drop(index=client_idx)
     train = rest.sample(n=min(n_train, len(rest)), random_state=seed)
@@ -144,8 +148,8 @@ def attribute_inference(pop: pd.DataFrame, clients: list[Client], levels: dict, 
     for target, (field, fn) in TARGETS.items():
         if levels[field] != "drop":
             continue  # only attack attributes the policy withheld
-        xtr = _features(train, levels)
-        xte = _features(test, levels)
+        xtr = _features(train, levels, profile_fields)
+        xte = _features(test, levels, profile_fields)
         allx = pd.get_dummies(pd.concat([xtr, xte]), dtype=float)
         xtr, xte = allx.iloc[:len(xtr)], allx.iloc[len(xtr):]
         ytr, yte = fn(train).astype(str), fn(test).astype(str)

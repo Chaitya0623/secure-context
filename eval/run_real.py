@@ -251,7 +251,7 @@ def main():
     summary["cumulative_core_tasks_final"] = cum3[cum3.request == cum3.request.max()].to_dict(orient="records")
 
     log("attribute inference")
-    summary["attribute_inference"] = run_all.eval_inference(directory, clients).to_dict(orient="records")
+    summary["attribute_inference"] = run_all.eval_inference(directory, clients, profile_fields=False).to_dict(orient="records")
 
     log("transaction unicity")
     tu = exposure.transaction_unicity(exposure.transaction_streams(clients))

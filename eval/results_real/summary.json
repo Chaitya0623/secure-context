@@ -400,57 +400,57 @@
     {
       "task": "meeting_prep",
       "target": "occupation category",
+      "attacker_accuracy": 0.211,
+      "majority_baseline": 0.131,
+      "lift": 0.07999999999999999,
+      "n_classes": 24
+    },
+    {
+      "task": "meeting_prep",
+      "target": "region",
+      "attacker_accuracy": 0.357,
+      "majority_baseline": 0.362,
+      "lift": -0.0050000000000000044,
+      "n_classes": 4
+    },
+    {
+      "task": "concentration",
+      "target": "occupation category",
       "attacker_accuracy": 0.189,
       "majority_baseline": 0.131,
       "lift": 0.057999999999999996,
       "n_classes": 24
     },
     {
-      "task": "meeting_prep",
-      "target": "region",
-      "attacker_accuracy": 0.363,
-      "majority_baseline": 0.362,
-      "lift": 0.0010000000000000009,
-      "n_classes": 4
-    },
-    {
-      "task": "concentration",
-      "target": "occupation category",
-      "attacker_accuracy": 0.124,
-      "majority_baseline": 0.131,
-      "lift": -0.007000000000000006,
-      "n_classes": 24
-    },
-    {
       "task": "concentration",
       "target": "region",
-      "attacker_accuracy": 0.363,
+      "attacker_accuracy": 0.36,
       "majority_baseline": 0.362,
-      "lift": 0.0010000000000000009,
+      "lift": -0.0020000000000000018,
       "n_classes": 4
     },
     {
       "task": "concentration",
       "target": "age band",
-      "attacker_accuracy": 0.08,
+      "attacker_accuracy": 0.187,
       "majority_baseline": 0.201,
-      "lift": -0.12100000000000001,
+      "lift": -0.014000000000000012,
       "n_classes": 8
     },
     {
       "task": "income_plan",
       "target": "occupation category",
-      "attacker_accuracy": 0.223,
+      "attacker_accuracy": 0.226,
       "majority_baseline": 0.131,
-      "lift": 0.092,
+      "lift": 0.095,
       "n_classes": 24
     },
     {
       "task": "income_plan",
       "target": "region",
-      "attacker_accuracy": 0.363,
+      "attacker_accuracy": 0.37,
       "majority_baseline": 0.362,
-      "lift": 0.0010000000000000009,
+      "lift": 0.008000000000000007,
       "n_classes": 4
     }
   ],

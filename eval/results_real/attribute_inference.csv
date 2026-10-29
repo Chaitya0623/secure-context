@@ -1,8 +1,8 @@
 task,target,attacker_accuracy,majority_baseline,lift,n_classes
-meeting_prep,occupation category,0.189,0.131,0.057999999999999996,24
-meeting_prep,region,0.363,0.362,0.0010000000000000009,4
-concentration,occupation category,0.124,0.131,-0.007000000000000006,24
-concentration,region,0.363,0.362,0.0010000000000000009,4
-concentration,age band,0.08,0.201,-0.12100000000000001,8
-income_plan,occupation category,0.223,0.131,0.092,24
-income_plan,region,0.363,0.362,0.0010000000000000009,4
+meeting_prep,occupation category,0.211,0.131,0.07999999999999999,24
+meeting_prep,region,0.357,0.362,-0.0050000000000000044,4
+concentration,occupation category,0.189,0.131,0.057999999999999996,24
+concentration,region,0.36,0.362,-0.0020000000000000018,4
+concentration,age band,0.187,0.201,-0.014000000000000012,8
+income_plan,occupation category,0.226,0.131,0.095,24
+income_plan,region,0.37,0.362,0.008000000000000007,4
