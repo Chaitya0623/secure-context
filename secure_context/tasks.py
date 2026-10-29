@@ -86,7 +86,7 @@ def utility(task: str, c: Client, levels: dict) -> float:
         risk = c.risk if levels["risk"] != "drop" else None
         est = aum * _withdrawal_rate(age, risk)
         true = c.aum * _withdrawal_rate(c.age, c.risk)
-        acc = max(0.0, 1 - abs(est - true) / true / .3)
+        acc = max(0.0, 1 - abs(est - true) / max(true, 1e-4) / .3)  # $100 floor avoids dividing by zero
         rest = (levels["risk"] != "drop") * .5 + (levels["horizon"] != "drop") * .25 + \
             at_least("liquidity", levels["liquidity"], "bucket") * .25
         return .6 * acc + .4 * rest

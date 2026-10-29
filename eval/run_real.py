@@ -190,6 +190,7 @@ def main():
     ap.add_argument("--clients", type=int, default=1000)
     ap.add_argument("--no-presidio", action="store_true")
     ap.add_argument("--gliner", nargs="*", default=[])
+    ap.add_argument("--reuse-detection", action="store_true", help="reuse detection CSVs from a previous run")
     args = ap.parse_args()
     RES.mkdir(parents=True, exist_ok=True)
     FIG.mkdir(parents=True, exist_ok=True)
@@ -206,11 +207,16 @@ def main():
         "k_min": K_MIN}
     engine = KEngine(directory)
 
-    log("PII detection on Gretel financial documents")
-    summary["gretel_detection"] = gretel_detection(docs, not args.no_presidio, args.gliner).to_dict(orient="records")
-
-    log("PII detection on client notes (template and stress)")
-    summary["note_detection"] = run_all.eval_detection(clients, not args.no_presidio, args.gliner).to_dict(orient="records")
+    if args.reuse_detection and (RES / "gretel_detection.csv").exists() and (RES / "detection.csv").exists():
+        log("reusing detection results")
+        summary["gretel_detection"] = pd.read_csv(RES / "gretel_detection.csv").to_dict(orient="records")
+        summary["note_detection"] = pd.read_csv(RES / "detection.csv").to_dict(orient="records")
+    else:
+        log("PII detection on Gretel financial documents")
+        summary["gretel_detection"] = gretel_detection(docs, not args.no_presidio, args.gliner).to_dict(orient="records")
+        log("PII detection on client notes (template and stress)")
+        summary["note_detection"] = run_all.eval_detection(clients, not args.no_presidio,
+                                                           args.gliner).to_dict(orient="records")
 
     log("split storage and key attacks")
     storage = SplitStorage(EnsembleDetector([RegexDetector(), CRMDictionaryDetector()]))
