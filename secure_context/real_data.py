@@ -230,7 +230,9 @@ def _risk_label(x: float) -> str:
 
 
 def load_advisory(path=None) -> pd.DataFrame:
-    return pd.read_csv(path or DATA / "advisory_clients.csv")
+    """About 3.5% of rows miss income or portfolio value; they are dropped."""
+    df = pd.read_csv(path or DATA / "advisory_clients.csv")
+    return df.dropna(subset=["annual_income_usd", "investment_portfolio_usd"]).reset_index(drop=True)
 
 
 def build_clients(directory: pd.DataFrame, adv: pd.DataFrame, n: int = 1000, seed: int = 11) -> list[Client]:
