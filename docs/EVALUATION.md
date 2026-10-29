@@ -104,7 +104,7 @@ pending: `scripts/run_with_nvidia.sh` (hosted Llama 3.1 70B answers 15 clients x
 
 ## Results on synthetic data
 
-See `eval/results/`. The synthetic world was built to stress the system (wealthier clients, more concentrated positions, a 50,000-person directory), so its numbers are harsher, but the conclusions match: masking alone leaves every client unique, fixed task policies compound to 61% unique after 12 requests, the adaptive policy with a ledger holds k of 10 or more at about 0.89 utility.
+See `eval/results/`. The synthetic world was built to stress the system (wealthier clients, more concentrated positions, a 50,000-person directory), so its numbers are harsher, but the conclusions match: masking alone leaves every client unique, fixed task policies compound to 68% unique after 12 requests, and the adaptive policy with a ledger holds k of 10 or more at about 0.88 utility.
 
 ## Limitations
 
