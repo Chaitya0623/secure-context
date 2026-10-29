@@ -1,6 +1,9 @@
 """LLM backends. The pipeline only ever passes dehydrated, minimized text to these.
 
 simulated   offline template answers (default, no key needed)
+nvidia      hosted model on build.nvidia.com (default meta/llama-3.1-70b-instruct), needs NVIDIA_API_KEY
+hf-local    open model on this machine (default Qwen/Qwen2.5-1.5B-Instruct), `pip install transformers torch`
+hf-api      Hugging Face Inference Providers (default Qwen/Qwen2.5-7B-Instruct), needs HF_TOKEN
 anthropic   needs ANTHROPIC_API_KEY and LLM_MODEL, plus `pip install anthropic`
 openai      needs OPENAI_API_KEY and LLM_MODEL, plus `pip install openai`
 """
@@ -43,9 +46,83 @@ class OpenAILLM:
         return r.choices[0].message.content
 
 
+class HFLocalLLM:
+    """Open model run on this machine with transformers (Apple GPU via MPS when available)."""
+
+    def __init__(self, model: str | None = None, max_new_tokens: int = 350):
+        import torch
+        from transformers import AutoModelForCausalLM, AutoTokenizer
+        self.model_id = model or "Qwen/Qwen2.5-1.5B-Instruct"
+        self.device = "mps" if torch.backends.mps.is_available() else "cuda" if torch.cuda.is_available() else "cpu"
+        self.tok = AutoTokenizer.from_pretrained(self.model_id)
+        self.model = AutoModelForCausalLM.from_pretrained(
+            self.model_id, torch_dtype=torch.float16 if self.device != "cpu" else torch.float32).to(self.device)
+        self.max_new_tokens = max_new_tokens
+        self.name = f"hf-local:{self.model_id}"
+
+    def complete(self, system: str, prompt: str, **_) -> str:
+        import torch
+        msgs = [{"role": "system", "content": system}, {"role": "user", "content": prompt}]
+        ids = self.tok.apply_chat_template(msgs, add_generation_prompt=True, return_tensors="pt").to(self.device)
+        with torch.no_grad():
+            out = self.model.generate(ids, max_new_tokens=self.max_new_tokens, do_sample=False)
+        return self.tok.decode(out[0][ids.shape[1]:], skip_special_tokens=True).strip()
+
+
+class HFInferenceLLM:
+    """Hugging Face Inference Providers; needs HF_TOKEN."""
+
+    def __init__(self, model: str | None = None):
+        from huggingface_hub import InferenceClient
+        self.model_id = model or "Qwen/Qwen2.5-7B-Instruct"
+        self.client = InferenceClient(model=self.model_id, token=os.environ["HF_TOKEN"])
+        self.name = f"hf-api:{self.model_id}"
+
+    def complete(self, system: str, prompt: str, **_) -> str:
+        r = self.client.chat_completion(messages=[{"role": "system", "content": system},
+                                                  {"role": "user", "content": prompt}], max_tokens=500)
+        return r.choices[0].message.content
+
+
+class NvidiaLLM:
+    """Hosted LLM on NVIDIA's API catalog (OpenAI-compatible). Needs NVIDIA_API_KEY."""
+    URL = "https://integrate.api.nvidia.com/v1/chat/completions"
+
+    def __init__(self, model: str | None = None, min_interval: float = 1.6):
+        self.key = os.environ["NVIDIA_API_KEY"]
+        self.model_id = model or os.environ.get("NVIDIA_LLM_MODEL", "meta/llama-3.1-70b-instruct")
+        self.min_interval = min_interval
+        self._last = 0.0
+        self.name = f"nvidia:{self.model_id}"
+
+    def complete(self, system: str, prompt: str, **_) -> str:
+        import time
+        import requests
+        body = {"model": self.model_id, "temperature": 0.2, "max_tokens": 600,
+                "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]}
+        for attempt in range(8):
+            wait = self.min_interval - (time.time() - self._last)
+            if wait > 0:
+                time.sleep(wait)
+            self._last = time.time()
+            r = requests.post(self.URL, json=body, headers={"Authorization": f"Bearer {self.key}"}, timeout=180)
+            if r.status_code == 429 or r.status_code >= 500:
+                time.sleep(min(60, 2 ** attempt))
+                continue
+            r.raise_for_status()
+            return r.json()["choices"][0]["message"]["content"]
+        raise RuntimeError("NVIDIA API kept failing (rate limit or server error)")
+
+
 def get_backend(name: str = "simulated", model: str | None = None):
+    if name == "nvidia":
+        return NvidiaLLM(model)
     if name == "anthropic":
         return AnthropicLLM(model)
     if name == "openai":
         return OpenAILLM(model)
+    if name == "hf-local":
+        return HFLocalLLM(model)
+    if name == "hf-api":
+        return HFInferenceLLM(model)
     return SimulatedLLM()

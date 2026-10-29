@@ -1,14 +1,17 @@
-"""Optional evaluation with a real LLM: answer quality (LLM judge) and an LLM attacker.
+"""Real-model evaluation: answer quality (LLM judge) and an LLM attacker, on the public-data client book.
 
-Needs an API key, so it is not part of run_all.py.
+    export NVIDIA_API_KEY=...                       # free key from build.nvidia.com
+    python3 eval/llm_eval.py --backend nvidia --n 15
 
-    export ANTHROPIC_API_KEY=...  LLM_MODEL=<model id>
-    python eval/llm_eval.py --backend anthropic --n 30
+Other backends: anthropic (ANTHROPIC_API_KEY + LLM_MODEL), openai (OPENAI_API_KEY + LLM_MODEL),
+hf-api (HF_TOKEN), hf-local (downloads a model).
 
-    export OPENAI_API_KEY=...     LLM_MODEL=<model id>
-    python eval/llm_eval.py --backend openai --n 30
+For each client and core task it asks the model four times, with full context, masked context,
+the task policy and the adaptive policy, then has the model grade each answer against the
+full-context one (1 to 5). Separately, the model sees the task-policy context and tries to
+guess the client's hidden occupation group, region and age band.
 
-Writes eval/results/llm_quality.csv and eval/results/llm_attacker.csv.
+Writes eval/results_real/llm_quality.csv, llm_quality_summary.csv, llm_attacker.csv.
 """
 from __future__ import annotations
 
@@ -23,91 +26,109 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from secure_context.data import REGION, load_environment  # noqa: E402
-from secure_context.detect import default_detector  # noqa: E402
+from secure_context import real_data  # noqa: E402
+from secure_context.data import REGION  # noqa: E402
+from secure_context.detect import CRMDictionaryDetector, EnsembleDetector, RegexDetector  # noqa: E402
 from secure_context.llm import get_backend  # noqa: E402
 from secure_context.pipeline import Pipeline  # noqa: E402
 from secure_context.policy import TASKS  # noqa: E402
 from secure_context.privacy import KEngine  # noqa: E402
+from secure_context.tasks import CORE_TASKS, build_prompt  # noqa: E402
 from secure_context.tokens import Session  # noqa: E402
 from secure_context.vault import SplitStorage  # noqa: E402
 
-JUDGE = """You grade an assistant's answer for a financial advisor.
-Reference answer (written with the full client file):
+JUDGE = """You grade an AI assistant's answer for a financial advisor.
+
+Reference answer, written with the full client file:
 {ref}
 
-Candidate answer (written with a reduced, privacy-protected file):
+Candidate answer, written with a reduced, privacy-protected file:
 {cand}
 
 Score the candidate from 1 to 5 for how well it serves the advisor compared with the reference:
-5 = equally useful, 4 = minor gaps, 3 = noticeably less specific, 2 = misses key points, 1 = not useful.
+5 equally useful, 4 minor gaps, 3 noticeably less specific, 2 misses key points, 1 not useful.
 Reply with only the number."""
 
-ATTACK = """Here is a privacy-protected client context sent to an AI assistant:
+ATTACK = """This privacy-protected client context was sent to an AI assistant:
 {ctx}
 
-Guess the client's hidden attributes. Reply with JSON only:
-{{"occupation_category": one of {cats}, "region": one of ["Northeast","Midwest","South","West"],
-  "age_band": like "50-59"}}"""
+Guess the client's hidden attributes. Reply with JSON only, no other text:
+{{"occupation_group": one of {cats}, "region": one of ["Northeast", "Midwest", "South", "West"],
+  "age_band": a decade such as "50-59"}}"""
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--backend", default="anthropic")
+    ap.add_argument("--backend", default="nvidia")
     ap.add_argument("--model", default=None)
-    ap.add_argument("--n", type=int, default=30)
+    ap.add_argument("--n", type=int, default=15, help="clients to evaluate")
     args = ap.parse_args()
     llm = get_backend(args.backend, args.model)
+    out = ROOT / "eval" / "results_real"
+    out.mkdir(parents=True, exist_ok=True)
+    print(f"model: {llm.name}")
 
-    pop, clients = load_environment()
+    directory, clients = real_data.load_real_environment(n_clients=max(args.n, 50))
     clients = clients[:args.n]
-    storage = SplitStorage(default_detector())
+    storage = SplitStorage(EnsembleDetector([RegexDetector(), CRMDictionaryDetector()]))
     ctx_ids = [storage.ingest(c) for c in clients]
-    engine = KEngine(pop)
+    engine = KEngine(directory)
 
-    quality = []
+    rows = []
     for mode in ("full", "masked", "default", "adaptive"):
         pipe = Pipeline(storage, engine, llm)
-        for c, ctx in zip(clients, ctx_ids):
-            for task in TASKS:
+        for i, (c, ctx) in enumerate(zip(clients, ctx_ids)):
+            for task in CORE_TASKS:
                 tr = pipe.run(c, ctx, task, mode=mode, session=Session())
-                quality.append(dict(client=c.client_id, task=task, mode=mode, answer=tr.rehydrated,
-                                    unresolved=len(tr.unresolved), k=tr.k_single, refused=tr.refused))
-    q = pd.DataFrame(quality)
+                rows.append(dict(client=c.client_id, task=task, mode=mode, k=tr.k_single, refused=tr.refused,
+                                 unresolved_tokens=len(tr.unresolved), name_leaked_to_model=c.name in tr.prompt,
+                                 answer=tr.rehydrated))
+            print(f"  {mode}: {i + 1}/{len(clients)} clients", end="\r")
+        print()
+    q = pd.DataFrame(rows)
     ref = q[q["mode"] == "full"].set_index(["client", "task"])["answer"]
     scores = []
     for r in q.itertuples():
         if r.mode == "full":
             scores.append(5)
             continue
-        out = llm.complete("You are a strict grader.", JUDGE.format(ref=ref[(r.client, r.task)], cand=r.answer))
-        m = re.search(r"[1-5]", out)
+        if r.refused:
+            scores.append(1)
+            continue
+        g = llm.complete("You are a strict, consistent grader.", JUDGE.format(ref=ref[(r.client, r.task)], cand=r.answer))
+        m = re.search(r"[1-5]", g)
         scores.append(int(m.group(0)) if m else None)
     q["judge_score"] = scores
-    (ROOT / "eval" / "results").mkdir(parents=True, exist_ok=True)
-    q.to_csv(ROOT / "eval" / "results" / "llm_quality.csv", index=False)
-    print(q.groupby(["task", "mode"])[["judge_score", "unresolved"]].mean().round(2))
+    q.to_csv(out / "llm_quality.csv", index=False)
+    summ = q.groupby(["task", "mode"]).agg(judge_score=("judge_score", "mean"), k_median=("k", "median"),
+                                           unresolved=("unresolved_tokens", "mean"),
+                                           name_leaked=("name_leaked_to_model", "mean")).reset_index()
+    summ.to_csv(out / "llm_quality_summary.csv", index=False)
+    print(summ.round(2).to_string(index=False))
 
-    cats = sorted(pop.occ_cat.unique())
-    rows = []
+    cats = sorted(directory.occ_cat.unique())
+    att = []
     for c in clients:
-        for task in TASKS:
-            s = Session()
-            from secure_context.tasks import build_prompt
-            ctx = build_prompt(task, c, TASKS[task]["default"], s)
-            out = llm.complete("Answer with JSON only.", ATTACK.format(ctx=ctx, cats=json.dumps(cats)))
+        for task in CORE_TASKS:
+            ctx = build_prompt(task, c, TASKS[task]["default"], Session())
+            g = llm.complete("Answer with JSON only.", ATTACK.format(ctx=ctx, cats=json.dumps(cats)))
             try:
-                g = json.loads(out[out.index("{"):out.rindex("}") + 1])
+                guess = json.loads(g[g.index("{"):g.rindex("}") + 1])
             except ValueError:
-                g = {}
+                guess = {}
             lo = (c.age // 10) * 10
-            rows.append(dict(client=c.client_id, task=task,
-                             occupation_hit=g.get("occupation_category") == c.occ_cat,
-                             region_hit=g.get("region") == REGION[c.state],
-                             age_band_hit=g.get("age_band") == f"{lo}-{lo + 9}"))
-    a = pd.DataFrame(rows)
-    a.to_csv(ROOT / "eval" / "results" / "llm_attacker.csv", index=False)
-    print(a.groupby("task")[["occupation_hit", "region_hit", "age_band_hit"]].mean().round(2))
+            att.append(dict(client=c.client_id, task=task,
+                            occupation_hit=guess.get("occupation_group") == c.occ_cat,
+                            region_hit=guess.get("region") == REGION[c.state],
+                            age_band_hit=str(guess.get("age_band", "")).replace(" ", "") == f"{lo}-{lo + 9}"))
+    a = pd.DataFrame(att)
+    a.to_csv(out / "llm_attacker.csv", index=False)
+    print(a.groupby("task")[["occupation_hit", "region_hit", "age_band_hit"]].mean().round(2).to_string())
+    base = dict(occupation=directory.occ_cat.value_counts(normalize=True).iloc[0],
+                region=directory.region.value_counts(normalize=True).iloc[0],
+                age_band=(directory.age // 10).value_counts(normalize=True).iloc[0])
+    pd.DataFrame([base]).to_csv(out / "llm_attacker_baseline.csv", index=False)
+    print("majority-guess baseline:", {k: round(v, 2) for k, v in base.items()})
 
 
 if __name__ == "__main__":

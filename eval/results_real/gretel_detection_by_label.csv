@@ -1,0 +1,64 @@
+detector,label,recall,n
+regex,account_pin,0.0,80
+regex,api_key,0.0,54
+regex,bank_routing_number,0.4074074074074074,81
+regex,bban,0.0,93
+regex,credit_card_number,0.9397590361445783,83
+regex,credit_card_security_code,0.0,76
+regex,customer_id,0.0,94
+regex,date_of_birth,0.6507936507936508,126
+regex,driver_license_number,0.014705882352941176,68
+regex,email,0.9121212121212121,330
+regex,employee_id,0.0,114
+regex,first_name,0.0,159
+regex,iban,1.0,69
+regex,last_name,0.0,82
+regex,name,0.0017196904557179708,3489
+regex,passport_number,0.02631578947368421,76
+regex,password,0.0,47
+regex,phone_number,0.33958333333333335,480
+regex,ssn,0.8823529411764706,85
+regex,street_address,0.03828623518687329,2194
+regex,user_name,0.125,32
+presidio,account_pin,0.55,80
+presidio,api_key,0.037037037037037035,54
+presidio,bank_routing_number,0.7037037037037037,81
+presidio,bban,0.053763440860215055,93
+presidio,credit_card_number,0.5783132530120482,83
+presidio,credit_card_security_code,0.05263157894736842,76
+presidio,customer_id,0.1276595744680851,94
+presidio,date_of_birth,0.8809523809523809,126
+presidio,driver_license_number,0.5,68
+presidio,email,0.9090909090909091,330
+presidio,employee_id,0.10526315789473684,114
+presidio,first_name,0.4528301886792453,159
+presidio,iban,0.057971014492753624,69
+presidio,last_name,0.2073170731707317,82
+presidio,name,0.6173688736027515,3489
+presidio,passport_number,0.34210526315789475,76
+presidio,password,0.02127659574468085,47
+presidio,phone_number,0.7416666666666667,480
+presidio,ssn,0.788235294117647,85
+presidio,street_address,0.04421148587055606,2194
+presidio,user_name,0.3125,32
+regex + presidio,account_pin,0.55,80
+regex + presidio,api_key,0.037037037037037035,54
+regex + presidio,bank_routing_number,0.7407407407407407,81
+regex + presidio,bban,0.053763440860215055,93
+regex + presidio,credit_card_number,0.9759036144578314,83
+regex + presidio,credit_card_security_code,0.05263157894736842,76
+regex + presidio,customer_id,0.1276595744680851,94
+regex + presidio,date_of_birth,0.8809523809523809,126
+regex + presidio,driver_license_number,0.5147058823529411,68
+regex + presidio,email,0.9151515151515152,330
+regex + presidio,employee_id,0.10526315789473684,114
+regex + presidio,first_name,0.4528301886792453,159
+regex + presidio,iban,1.0,69
+regex + presidio,last_name,0.2073170731707317,82
+regex + presidio,name,0.6173688736027515,3489
+regex + presidio,passport_number,0.34210526315789475,76
+regex + presidio,password,0.02127659574468085,47
+regex + presidio,phone_number,0.75625,480
+regex + presidio,ssn,0.9058823529411765,85
+regex + presidio,street_address,0.08568824065633546,2194
+regex + presidio,user_name,0.3125,32

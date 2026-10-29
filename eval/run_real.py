@@ -3,7 +3,9 @@
     python3 scripts/download_data.py        # once
     python3 eval/run_real.py                # about 5 to 10 minutes
     python3 eval/run_real.py --no-presidio  # faster, skips the spaCy detector
-    python3 eval/run_real.py --gliner nvidia/gliner-PII   # add a GLiNER detector
+    python3 eval/run_real.py --gliner nvidia/gliner-PII   # add a GLiNER detector (downloads the model)
+    NVIDIA_API_KEY=... python3 eval/run_real.py --gliner nvidia-api --detect-docs 400 --detect-notes 200
+                                            # hosted nvidia/gliner-pii, no download
 
 Writes eval/results_real/*.csv, eval/results_real/summary.json and eval/figures_real/*.png.
 """
@@ -42,6 +44,7 @@ from secure_context.vault import SplitStorage  # noqa: E402
 RES = ROOT / "eval" / "results_real"
 FIG = ROOT / "eval" / "figures_real"
 K_MIN = 10
+_API_DETECTORS = []
 log = run_all.log
 
 
@@ -54,8 +57,9 @@ def gretel_detection(docs, use_presidio, gliner_models):
         dets["presidio"] = [p]
         dets["regex + presidio"] = [RegexDetector(), p]
     for mid in gliner_models:
-        from secure_context.detect import GlinerDetector
-        g = GlinerDetector(mid)
+        from secure_context.detect import model_detector
+        g = model_detector(mid)
+        _API_DETECTORS.append(g)
         dets[mid] = [g]
         dets[f"regex + {mid}"] = [RegexDetector(), g]
     rows, per = [], []
@@ -191,6 +195,8 @@ def main():
     ap.add_argument("--no-presidio", action="store_true")
     ap.add_argument("--gliner", nargs="*", default=[])
     ap.add_argument("--reuse-detection", action="store_true", help="reuse detection CSVs from a previous run")
+    ap.add_argument("--detect-docs", type=int, default=None, help="limit Gretel documents (API rate limits)")
+    ap.add_argument("--detect-notes", type=int, default=None, help="limit client notes for detection")
     args = ap.parse_args()
     RES.mkdir(parents=True, exist_ok=True)
     FIG.mkdir(parents=True, exist_ok=True)
@@ -199,6 +205,7 @@ def main():
     log("loading public datasets")
     directory, clients = load_real_environment(args.clients)
     adv, bitext, docs = load_advisory(), load_bitext(), load_gretel()
+    docs = random.Random(0).sample(docs, len(docs))  # so --detect-docs takes a random subset
     summary = {"datasets": {
         "Census ACS PUMS 2023 adults (directory)": len(directory),
         "Fed SCF 2022 records (wealth donors)": int(pd.read_csv(ROOT / "data/processed/scf2022.csv.gz").shape[0]),
@@ -213,10 +220,15 @@ def main():
         summary["note_detection"] = pd.read_csv(RES / "detection.csv").to_dict(orient="records")
     else:
         log("PII detection on Gretel financial documents")
-        summary["gretel_detection"] = gretel_detection(docs, not args.no_presidio, args.gliner).to_dict(orient="records")
+        summary["gretel_detection"] = gretel_detection(docs[:args.detect_docs], not args.no_presidio,
+                                                       args.gliner).to_dict(orient="records")
         log("PII detection on client notes (template and stress)")
-        summary["note_detection"] = run_all.eval_detection(clients, not args.no_presidio,
+        summary["note_detection"] = run_all.eval_detection(clients[:args.detect_notes], not args.no_presidio,
                                                            args.gliner).to_dict(orient="records")
+
+    for d in _API_DETECTORS + run_all._API_DETECTORS:
+        if hasattr(d, "flush"):
+            d.flush()
 
     log("split storage and key attacks")
     storage = SplitStorage(EnsembleDetector([RegexDetector(), CRMDictionaryDetector()]))

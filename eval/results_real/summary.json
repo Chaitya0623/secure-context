@@ -1,0 +1,948 @@
+{
+  "datasets": {
+    "Census ACS PUMS 2023 adults (directory)": 978284,
+    "Fed SCF 2022 records (wealth donors)": 22975,
+    "Financial-Advisory-Clients (profiles)": 4825,
+    "clients evaluated": 1000,
+    "Bitext wealth-management requests": 23806,
+    "Gretel English financial documents": 2891
+  },
+  "k_min": 10,
+  "gretel_detection": [
+    {
+      "detector": "regex",
+      "direct_id_recall": 0.1134984833164813,
+      "precision": 0.4599398414000546,
+      "docs_with_direct_leak": 0.7454168107921134,
+      "ms_per_doc": 0.3888518388109843
+    },
+    {
+      "detector": "presidio",
+      "direct_id_recall": 0.4338978766430738,
+      "precision": 0.3745999736969006,
+      "docs_with_direct_leak": 0.6800415081286753,
+      "ms_per_doc": 42.54985904669368
+    },
+    {
+      "detector": "regex + presidio",
+      "direct_id_recall": 0.4606926188068756,
+      "precision": 0.3727072633895818,
+      "docs_with_direct_leak": 0.6672431684538223,
+      "ms_per_doc": 41.47369878553984
+    }
+  ],
+  "note_detection": [
+    {
+      "note_set": "template",
+      "detector": "regex",
+      "span_recall": 0.6562132957481794,
+      "precision": 1.0,
+      "notes_with_leak": 1.0,
+      "ms_per_note": 0.1225021619934523
+    },
+    {
+      "note_set": "template",
+      "detector": "crm_dictionary",
+      "span_recall": 0.6476391825229034,
+      "precision": 1.0,
+      "notes_with_leak": 1.0,
+      "ms_per_note": 0.5320118329927936
+    },
+    {
+      "note_set": "template",
+      "detector": "regex + crm_dictionary",
+      "span_recall": 1.0,
+      "precision": 1.0,
+      "notes_with_leak": 0.0,
+      "ms_per_note": 0.6629063270033839
+    },
+    {
+      "note_set": "template",
+      "detector": "presidio",
+      "span_recall": 0.6450552031947381,
+      "precision": 0.8401831027962982,
+      "notes_with_leak": 1.0,
+      "ms_per_note": 21.94621622699833
+    },
+    {
+      "note_set": "template",
+      "detector": "regex + presidio",
+      "span_recall": 0.8569415081042988,
+      "precision": 0.8346035015447992,
+      "notes_with_leak": 0.778,
+      "ms_per_note": 21.85046364600157
+    },
+    {
+      "note_set": "template",
+      "detector": "regex + crm_dictionary + presidio",
+      "span_recall": 1.0,
+      "precision": 0.841304347826087,
+      "notes_with_leak": 0.0,
+      "ms_per_note": 22.98356328599766
+    },
+    {
+      "note_set": "stress",
+      "detector": "regex",
+      "span_recall": 0.059625,
+      "precision": 1.0,
+      "notes_with_leak": 1.0,
+      "ms_per_note": 0.0655966169979365
+    },
+    {
+      "note_set": "stress",
+      "detector": "crm_dictionary",
+      "span_recall": 0.002375,
+      "precision": 1.0,
+      "notes_with_leak": 1.0,
+      "ms_per_note": 0.5081663490022947
+    },
+    {
+      "note_set": "stress",
+      "detector": "regex + crm_dictionary",
+      "span_recall": 0.062,
+      "precision": 1.0,
+      "notes_with_leak": 1.0,
+      "ms_per_note": 0.6938649680059825
+    },
+    {
+      "note_set": "stress",
+      "detector": "presidio",
+      "span_recall": 0.563125,
+      "precision": 0.7146757679180887,
+      "notes_with_leak": 1.0,
+      "ms_per_note": 17.252869036999073
+    },
+    {
+      "note_set": "stress",
+      "detector": "regex + presidio",
+      "span_recall": 0.563125,
+      "precision": 0.7146757679180887,
+      "notes_with_leak": 1.0,
+      "ms_per_note": 16.677669023999897
+    },
+    {
+      "note_set": "stress",
+      "detector": "regex + crm_dictionary + presidio",
+      "span_recall": 0.563125,
+      "precision": 0.7146757679180887,
+      "notes_with_leak": 1.0,
+      "ms_per_note": 17.29306849498971
+    }
+  ],
+  "key_attacks": [
+    {
+      "attack": "Look up context store by AI-log token",
+      "detail": "0 rows found in 200 attempts",
+      "result": "blocked"
+    },
+    {
+      "attack": "Search context dump for name, SSN, email, account, phone",
+      "detail": "0 matches across 1000 values",
+      "result": "blocked"
+    },
+    {
+      "attack": "Join client_context to identity on a shared key",
+      "detail": "context columns: ctx_id, profile, holdings, notes_storage_tokens, summary, qi_mentions; shared identity keys: 0",
+      "result": "blocked"
+    },
+    {
+      "attack": "Read identity vault as llm_service",
+      "detail": "role 'llm_service' has no grant on the identity vault",
+      "result": "blocked"
+    },
+    {
+      "attack": "Link the same client across two sessions by token",
+      "detail": "0 of 200 tokens identical",
+      "result": "blocked"
+    },
+    {
+      "attack": "Brute-force a plain SHA-256(SSN) key",
+      "detail": "recovered=yes; full 10^9 SSN space in about 14 CPU-minutes (much less on a GPU)",
+      "result": "exposed"
+    },
+    {
+      "attack": "Brute-force an HMAC token without the key",
+      "detail": "0 chance collisions in 10,000 guesses (with a wrong key nothing is learned; the key space is 2^256)",
+      "result": "blocked"
+    }
+  ],
+  "single_request": [
+    {
+      "task": "meeting_prep",
+      "mode": "masked",
+      "pct_unique": 0.964,
+      "pct_k_lt_10": 0.999,
+      "median_k": 1.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "meeting_prep",
+      "mode": "default",
+      "pct_unique": 0.004,
+      "pct_k_lt_10": 0.006,
+      "median_k": 42993.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "meeting_prep",
+      "mode": "adaptive",
+      "pct_unique": 0.0,
+      "pct_k_lt_10": 0.0,
+      "median_k": 58980.0,
+      "mean_utility": 0.9993333333333333,
+      "refused": 0.0
+    },
+    {
+      "task": "concentration",
+      "mode": "masked",
+      "pct_unique": 0.964,
+      "pct_k_lt_10": 0.999,
+      "median_k": 1.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "concentration",
+      "mode": "default",
+      "pct_unique": 0.006,
+      "pct_k_lt_10": 0.008,
+      "median_k": 113939.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "concentration",
+      "mode": "adaptive",
+      "pct_unique": 0.0,
+      "pct_k_lt_10": 0.0,
+      "median_k": 113939.0,
+      "mean_utility": 0.9965714285714287,
+      "refused": 0.0
+    },
+    {
+      "task": "portfolio_review",
+      "mode": "masked",
+      "pct_unique": 0.964,
+      "pct_k_lt_10": 0.999,
+      "median_k": 1.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "portfolio_review",
+      "mode": "default",
+      "pct_unique": 0.035,
+      "pct_k_lt_10": 0.056,
+      "median_k": 3674.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "portfolio_review",
+      "mode": "adaptive",
+      "pct_unique": 0.0,
+      "pct_k_lt_10": 0.0,
+      "median_k": 3879.0,
+      "mean_utility": 0.9896666666666666,
+      "refused": 0.0
+    },
+    {
+      "task": "transaction",
+      "mode": "masked",
+      "pct_unique": 0.964,
+      "pct_k_lt_10": 0.999,
+      "median_k": 1.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "transaction",
+      "mode": "default",
+      "pct_unique": 0.0,
+      "pct_k_lt_10": 0.0,
+      "median_k": 978284.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "transaction",
+      "mode": "adaptive",
+      "pct_unique": 0.0,
+      "pct_k_lt_10": 0.0,
+      "median_k": 978284.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "general",
+      "mode": "masked",
+      "pct_unique": 0.964,
+      "pct_k_lt_10": 0.999,
+      "median_k": 1.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "general",
+      "mode": "default",
+      "pct_unique": 0.0,
+      "pct_k_lt_10": 0.0,
+      "median_k": 978284.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "general",
+      "mode": "adaptive",
+      "pct_unique": 0.0,
+      "pct_k_lt_10": 0.0,
+      "median_k": 978284.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "income_plan",
+      "mode": "masked",
+      "pct_unique": 0.964,
+      "pct_k_lt_10": 0.999,
+      "median_k": 1.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "income_plan",
+      "mode": "default",
+      "pct_unique": 0.0,
+      "pct_k_lt_10": 0.003,
+      "median_k": 886.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    },
+    {
+      "task": "income_plan",
+      "mode": "adaptive",
+      "pct_unique": 0.0,
+      "pct_k_lt_10": 0.0,
+      "median_k": 4267.0,
+      "mean_utility": 1.0,
+      "refused": 0.0
+    }
+  ],
+  "request_mix": [
+    {
+      "task": "general",
+      "share": 0.5839284214063681
+    },
+    {
+      "task": "portfolio_review",
+      "share": 0.16521045114676972
+    },
+    {
+      "task": "transaction",
+      "share": 0.08371839032176762
+    },
+    {
+      "task": "income_plan",
+      "share": 0.0835923716710073
+    },
+    {
+      "task": "meeting_prep",
+      "share": 0.04179618583550365
+    },
+    {
+      "task": "concentration",
+      "share": 0.04175417961858355
+    }
+  ],
+  "cumulative_final": [
+    {
+      "mode": "default",
+      "request": 12,
+      "pct_k_lt_10": 0.159,
+      "pct_unique": 0.089,
+      "median_k": 216.0,
+      "mean_utility": 1.0,
+      "refusal_rate": 0.0
+    },
+    {
+      "mode": "adaptive",
+      "request": 12,
+      "pct_k_lt_10": 0.0,
+      "pct_unique": 0.0,
+      "median_k": 880.0,
+      "mean_utility": 0.9939450429756311,
+      "refusal_rate": 0.0
+    }
+  ],
+  "cumulative_core_tasks_final": [
+    {
+      "mode": "default",
+      "request": 12,
+      "pct_k_lt_10": 0.224,
+      "pct_unique": 0.121,
+      "median_k": 76.5,
+      "mean_utility": 1.0,
+      "refusal_rate": 0.0
+    },
+    {
+      "mode": "adaptive",
+      "request": 12,
+      "pct_k_lt_10": 0.0,
+      "pct_unique": 0.0,
+      "median_k": 654.0,
+      "mean_utility": 0.9878116089763207,
+      "refusal_rate": 0.0
+    }
+  ],
+  "attribute_inference": [
+    {
+      "task": "meeting_prep",
+      "target": "occupation category",
+      "attacker_accuracy": 0.189,
+      "majority_baseline": 0.131,
+      "lift": 0.057999999999999996,
+      "n_classes": 24
+    },
+    {
+      "task": "meeting_prep",
+      "target": "region",
+      "attacker_accuracy": 0.363,
+      "majority_baseline": 0.362,
+      "lift": 0.0010000000000000009,
+      "n_classes": 4
+    },
+    {
+      "task": "concentration",
+      "target": "occupation category",
+      "attacker_accuracy": 0.124,
+      "majority_baseline": 0.131,
+      "lift": -0.007000000000000006,
+      "n_classes": 24
+    },
+    {
+      "task": "concentration",
+      "target": "region",
+      "attacker_accuracy": 0.363,
+      "majority_baseline": 0.362,
+      "lift": 0.0010000000000000009,
+      "n_classes": 4
+    },
+    {
+      "task": "concentration",
+      "target": "age band",
+      "attacker_accuracy": 0.08,
+      "majority_baseline": 0.201,
+      "lift": -0.12100000000000001,
+      "n_classes": 8
+    },
+    {
+      "task": "income_plan",
+      "target": "occupation category",
+      "attacker_accuracy": 0.223,
+      "majority_baseline": 0.131,
+      "lift": 0.092,
+      "n_classes": 24
+    },
+    {
+      "task": "income_plan",
+      "target": "region",
+      "attacker_accuracy": 0.363,
+      "majority_baseline": 0.362,
+      "lift": 0.0010000000000000009,
+      "n_classes": 4
+    }
+  ],
+  "transaction_unicity": [
+    {
+      "representation": "exact date and amount",
+      "known_points": 1,
+      "pct_unique": 0.99
+    },
+    {
+      "representation": "exact date and amount",
+      "known_points": 2,
+      "pct_unique": 0.9966666666666667
+    },
+    {
+      "representation": "exact date and amount",
+      "known_points": 3,
+      "pct_unique": 1.0
+    },
+    {
+      "representation": "exact date and amount",
+      "known_points": 4,
+      "pct_unique": 1.0
+    },
+    {
+      "representation": "exact date and amount",
+      "known_points": 5,
+      "pct_unique": 1.0
+    },
+    {
+      "representation": "week and amount to $100",
+      "known_points": 1,
+      "pct_unique": 0.03833333333333333
+    },
+    {
+      "representation": "week and amount to $100",
+      "known_points": 2,
+      "pct_unique": 0.6633333333333333
+    },
+    {
+      "representation": "week and amount to $100",
+      "known_points": 3,
+      "pct_unique": 0.9583333333333334
+    },
+    {
+      "representation": "week and amount to $100",
+      "known_points": 4,
+      "pct_unique": 0.9866666666666667
+    },
+    {
+      "representation": "week and amount to $100",
+      "known_points": 5,
+      "pct_unique": 0.9983333333333333
+    },
+    {
+      "representation": "month and amount band",
+      "known_points": 1,
+      "pct_unique": 0.0016666666666666668
+    },
+    {
+      "representation": "month and amount band",
+      "known_points": 2,
+      "pct_unique": 0.0016666666666666668
+    },
+    {
+      "representation": "month and amount band",
+      "known_points": 3,
+      "pct_unique": 0.008333333333333333
+    },
+    {
+      "representation": "month and amount band",
+      "known_points": 4,
+      "pct_unique": 0.03666666666666667
+    },
+    {
+      "representation": "month and amount band",
+      "known_points": 5,
+      "pct_unique": 0.12333333333333334
+    },
+    {
+      "representation": "month, type and amount band",
+      "known_points": 1,
+      "pct_unique": 0.0
+    },
+    {
+      "representation": "month, type and amount band",
+      "known_points": 2,
+      "pct_unique": 0.02
+    },
+    {
+      "representation": "month, type and amount band",
+      "known_points": 3,
+      "pct_unique": 0.11833333333333333
+    },
+    {
+      "representation": "month, type and amount band",
+      "known_points": 4,
+      "pct_unique": 0.335
+    },
+    {
+      "representation": "month, type and amount band",
+      "known_points": 5,
+      "pct_unique": 0.5516666666666666
+    }
+  ],
+  "advisor_queries": {
+    "queries": 1000,
+    "pct_with_direct_identifier": 1.0,
+    "pct_direct_left_after_sanitizing": 0.0,
+    "pct_unique_from_query_qis": 0.0,
+    "pct_k_lt_10_from_query_qis": 0.017361111111111112,
+    "pct_k_lt_10_after_sanitizing": 0.0,
+    "example_sanitized": "Prep for <PERSON_801854>, account <ACCOUNT_26a54f>: hw to hire a manager."
+  },
+  "reference_population": [
+    {
+      "task": "meeting_prep",
+      "reference": "general population directory",
+      "pct_k_lt_10": 0.006,
+      "median_k": 42993.0
+    },
+    {
+      "task": "meeting_prep",
+      "reference": "firm client book (1,000)",
+      "pct_k_lt_10": 0.064,
+      "median_k": 56.0
+    },
+    {
+      "task": "meeting_prep",
+      "reference": "one advisor's book (150)",
+      "pct_k_lt_10": 0.36,
+      "median_k": 11.0
+    },
+    {
+      "task": "concentration",
+      "reference": "general population directory",
+      "pct_k_lt_10": 0.008,
+      "median_k": 113939.0
+    },
+    {
+      "task": "concentration",
+      "reference": "firm client book (1,000)",
+      "pct_k_lt_10": 0.124,
+      "median_k": 158.0
+    },
+    {
+      "task": "concentration",
+      "reference": "one advisor's book (150)",
+      "pct_k_lt_10": 0.31333333333333335,
+      "median_k": 20.0
+    },
+    {
+      "task": "income_plan",
+      "reference": "general population directory",
+      "pct_k_lt_10": 0.003,
+      "median_k": 886.0
+    },
+    {
+      "task": "income_plan",
+      "reference": "firm client book (1,000)",
+      "pct_k_lt_10": 0.807,
+      "median_k": 3.0
+    },
+    {
+      "task": "income_plan",
+      "reference": "one advisor's book (150)",
+      "pct_k_lt_10": 0.8266666666666667,
+      "median_k": 1.0
+    }
+  ],
+  "policy_side_channel": [
+    {
+      "task": "meeting_prep",
+      "rare_share": 0.006,
+      "auc_policy_predicts_rare": 1.0,
+      "adaptive_utility": 0.9993333333333333,
+      "uniform_policy": {
+        "age": "band",
+        "location": "drop",
+        "occupation": "drop",
+        "aum": "bucket",
+        "holdings": "drop",
+        "household": "exact",
+        "objective": "exact",
+        "risk": "exact",
+        "horizon": "exact",
+        "liquidity": "bucket",
+        "notes": "summary"
+      },
+      "uniform_utility": 0.8752083333333333,
+      "uniform_pct_k_lt_10": 0.0
+    },
+    {
+      "task": "concentration",
+      "rare_share": 0.008,
+      "auc_policy_predicts_rare": 0.9138104838709677,
+      "adaptive_utility": 0.9965714285714287,
+      "uniform_policy": {
+        "age": "drop",
+        "location": "drop",
+        "occupation": "drop",
+        "aum": "bucket",
+        "holdings": "drop",
+        "household": "drop",
+        "objective": "drop",
+        "risk": "exact",
+        "horizon": "drop",
+        "liquidity": "bucket",
+        "notes": "drop"
+      },
+      "uniform_utility": 0.42857142857142855,
+      "uniform_pct_k_lt_10": 0.0
+    },
+    {
+      "task": "income_plan",
+      "rare_share": 0.082,
+      "auc_policy_predicts_rare": 0.6628141771613795,
+      "adaptive_utility": 1.0,
+      "uniform_policy": {
+        "age": "drop",
+        "location": "drop",
+        "occupation": "drop",
+        "aum": "exact",
+        "holdings": "drop",
+        "household": "drop",
+        "objective": "exact",
+        "risk": "exact",
+        "horizon": "exact",
+        "liquidity": "bucket",
+        "notes": "drop"
+      },
+      "uniform_utility": 0.5870379075095915,
+      "uniform_pct_k_lt_10": 0.0
+    }
+  ],
+  "amount_fingerprints": [
+    {
+      "amount": "portfolio value",
+      "precision": "exact",
+      "pct_unique": 0.889740932642487
+    },
+    {
+      "amount": "portfolio value",
+      "precision": "to $1K",
+      "pct_unique": 0.0661139896373057
+    },
+    {
+      "amount": "portfolio value",
+      "precision": "to $10K",
+      "pct_unique": 0.008911917098445596
+    },
+    {
+      "amount": "portfolio value",
+      "precision": "to $100K",
+      "pct_unique": 0.001243523316062176
+    },
+    {
+      "amount": "portfolio value",
+      "precision": "bucket",
+      "pct_unique": 0.0
+    },
+    {
+      "amount": "goal target",
+      "precision": "exact",
+      "pct_unique": 0.9937823834196892
+    },
+    {
+      "amount": "goal target",
+      "precision": "to $1K",
+      "pct_unique": 0.2681865284974093
+    },
+    {
+      "amount": "goal target",
+      "precision": "to $10K",
+      "pct_unique": 0.05699481865284974
+    },
+    {
+      "amount": "goal target",
+      "precision": "to $100K",
+      "pct_unique": 0.0018652849740932642
+    },
+    {
+      "amount": "goal target",
+      "precision": "bucket",
+      "pct_unique": 0.0
+    },
+    {
+      "amount": "annual income",
+      "precision": "exact",
+      "pct_unique": 0.9573056994818653
+    },
+    {
+      "amount": "annual income",
+      "precision": "to $1K",
+      "pct_unique": 0.010984455958549223
+    },
+    {
+      "amount": "annual income",
+      "precision": "to $10K",
+      "pct_unique": 0.0037305699481865284
+    },
+    {
+      "amount": "annual income",
+      "precision": "to $100K",
+      "pct_unique": 0.0004145077720207254
+    },
+    {
+      "amount": "annual income",
+      "precision": "bucket",
+      "pct_unique": 0.0002072538860103627
+    },
+    {
+      "amount": "goal target to $10K + horizon + goal",
+      "precision": "combined",
+      "pct_unique": 0.38694300518134717
+    }
+  ],
+  "strategy_at_2000_queries": [
+    {
+      "defense": "none",
+      "queries": 2000,
+      "equity_mae": 0.51143135648791,
+      "alt_rule_acc": 1.0,
+      "collar_rule_acc": 0.9996666666666667
+    },
+    {
+      "defense": "coarse",
+      "queries": 2000,
+      "equity_mae": 1.6789179632666367,
+      "alt_rule_acc": 0.56,
+      "collar_rule_acc": 0.596
+    },
+    {
+      "defense": "noise",
+      "queries": 2000,
+      "equity_mae": 1.3321080718212552,
+      "alt_rule_acc": 0.999,
+      "collar_rule_acc": 0.9996666666666667
+    },
+    {
+      "defense": "noise_cached",
+      "queries": 2000,
+      "equity_mae": 2.3216103022368553,
+      "alt_rule_acc": 0.999,
+      "collar_rule_acc": 0.9996666666666667
+    },
+    {
+      "defense": "book_bound",
+      "queries": 2000,
+      "equity_mae": 6.536935411648304,
+      "alt_rule_acc": 0.56,
+      "collar_rule_acc": 1.0
+    },
+    {
+      "defense": "book_bound+coarse",
+      "queries": 2000,
+      "equity_mae": 6.940611090710598,
+      "alt_rule_acc": 0.56,
+      "collar_rule_acc": 0.596
+    }
+  ],
+  "strategy_honest_user_error": {
+    "none": 0.0,
+    "coarse": 2.2409499999999998,
+    "noise": 3.9787668479432514,
+    "noise_cached": 4.038951520472212,
+    "book_bound": 0.0,
+    "book_bound+coarse": 2.2409499999999998
+  },
+  "dp": [
+    {
+      "cohort_size": 50,
+      "epsilon": "exact",
+      "differencing_attack_error": 0.0,
+      "blind_guess_error": 25.0656,
+      "cohort_mean_error": 0.0
+    },
+    {
+      "cohort_size": 50,
+      "epsilon": 0.1,
+      "differencing_attack_error": 47.74915655072381,
+      "blind_guess_error": 25.0656,
+      "cohort_mean_error": 19.51870378420208
+    },
+    {
+      "cohort_size": 50,
+      "epsilon": 0.5,
+      "differencing_attack_error": 44.63577139809428,
+      "blind_guess_error": 25.0656,
+      "cohort_mean_error": 3.903740756840416
+    },
+    {
+      "cohort_size": 50,
+      "epsilon": 1.0,
+      "differencing_attack_error": 40.97961601506769,
+      "blind_guess_error": 25.0656,
+      "cohort_mean_error": 1.951870378420208
+    },
+    {
+      "cohort_size": 50,
+      "epsilon": 2.0,
+      "differencing_attack_error": 33.95492536888268,
+      "blind_guess_error": 25.0656,
+      "cohort_mean_error": 0.9759351892101039
+    },
+    {
+      "cohort_size": 50,
+      "epsilon": 5.0,
+      "differencing_attack_error": 19.929591271776445,
+      "blind_guess_error": 25.0656,
+      "cohort_mean_error": 0.3903740756840416
+    },
+    {
+      "cohort_size": 500,
+      "epsilon": "exact",
+      "differencing_attack_error": 0.0,
+      "blind_guess_error": 25.18036,
+      "cohort_mean_error": 0.0
+    },
+    {
+      "cohort_size": 500,
+      "epsilon": 0.1,
+      "differencing_attack_error": 48.96358472469951,
+      "blind_guess_error": 25.18036,
+      "cohort_mean_error": 1.9518703784202078
+    },
+    {
+      "cohort_size": 500,
+      "epsilon": 0.5,
+      "differencing_attack_error": 45.40194853537509,
+      "blind_guess_error": 25.18036,
+      "cohort_mean_error": 0.3903740756840415
+    },
+    {
+      "cohort_size": 500,
+      "epsilon": 1.0,
+      "differencing_attack_error": 41.19805422575937,
+      "blind_guess_error": 25.18036,
+      "cohort_mean_error": 0.19518703784202082
+    },
+    {
+      "cohort_size": 500,
+      "epsilon": 2.0,
+      "differencing_attack_error": 33.87857615021046,
+      "blind_guess_error": 25.18036,
+      "cohort_mean_error": 0.09759351892101038
+    },
+    {
+      "cohort_size": 500,
+      "epsilon": 5.0,
+      "differencing_attack_error": 19.385138246429296,
+      "blind_guess_error": 25.18036,
+      "cohort_mean_error": 0.039037407568404126
+    }
+  ],
+  "rehydration": [
+    {
+      "corruption": "intact",
+      "restored": 1.0,
+      "flagged_for_review": 0.0,
+      "silently_wrong": 0.0
+    },
+    {
+      "corruption": "lowercase",
+      "restored": 1.0,
+      "flagged_for_review": 0.0,
+      "silently_wrong": 0.0
+    },
+    {
+      "corruption": "truncated",
+      "restored": 1.0,
+      "flagged_for_review": 0.0,
+      "silently_wrong": 0.0
+    },
+    {
+      "corruption": "no_brackets",
+      "restored": 1.0,
+      "flagged_for_review": 0.0,
+      "silently_wrong": 0.0
+    },
+    {
+      "corruption": "hallucinated",
+      "restored": 0.0,
+      "flagged_for_review": 1.0,
+      "silently_wrong": 0.0
+    }
+  ],
+  "latency_ms_mean": {
+    "detect_ms": 0.562,
+    "rekey_ms": 0.15,
+    "policy_ms": 0.605,
+    "llm_ms": 0.034,
+    "rehydrate_ms": 0.016
+  }
+}

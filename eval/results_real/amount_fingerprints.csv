@@ -1,0 +1,17 @@
+amount,precision,pct_unique
+portfolio value,exact,0.889740932642487
+portfolio value,to $1K,0.0661139896373057
+portfolio value,to $10K,0.008911917098445596
+portfolio value,to $100K,0.001243523316062176
+portfolio value,bucket,0.0
+goal target,exact,0.9937823834196892
+goal target,to $1K,0.2681865284974093
+goal target,to $10K,0.05699481865284974
+goal target,to $100K,0.0018652849740932642
+goal target,bucket,0.0
+annual income,exact,0.9573056994818653
+annual income,to $1K,0.010984455958549223
+annual income,to $10K,0.0037305699481865284
+annual income,to $100K,0.0004145077720207254
+annual income,bucket,0.0002072538860103627
+goal target to $10K + horizon + goal,combined,0.38694300518134717

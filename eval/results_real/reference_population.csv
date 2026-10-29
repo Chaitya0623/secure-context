@@ -1,0 +1,10 @@
+task,reference,pct_k_lt_10,median_k
+meeting_prep,general population directory,0.006,42993.0
+meeting_prep,"firm client book (1,000)",0.064,56.0
+meeting_prep,one advisor's book (150),0.36,11.0
+concentration,general population directory,0.008,113939.0
+concentration,"firm client book (1,000)",0.124,158.0
+concentration,one advisor's book (150),0.31333333333333335,20.0
+income_plan,general population directory,0.003,886.0
+income_plan,"firm client book (1,000)",0.807,3.0
+income_plan,one advisor's book (150),0.8266666666666667,1.0

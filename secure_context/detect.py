@@ -124,12 +124,156 @@ class GlinerDetector:
         from gliner import GLiNER
         self.model = GLiNER.from_pretrained(model_id)
         self.threshold = threshold
-        self.name = f"gliner:{model_id}"
+        self.name = model_id
+        self._cache = {}
 
     def detect(self, text: str, client: Optional[Client] = None) -> list[Detected]:
-        ents = self.model.predict_entities(text, list(self.LABELS), threshold=self.threshold)
-        return [Detected(e["start"], e["end"], self.LABELS[e["label"]], e["text"], e["text"], detector=self.name)
-                for e in ents]
+        if text not in self._cache:
+            out = []
+            # GLiNER encoders take about 384 words; long documents are scanned in overlapping windows
+            for off, chunk in _windows(text):
+                for e in self.model.predict_entities(chunk, list(self.LABELS), threshold=self.threshold):
+                    s, t = e["start"] + off, e["end"] + off
+                    out.append(Detected(s, t, self.LABELS[e["label"]], text[s:t], text[s:t], detector=self.name))
+            self._cache[text] = resolve_overlaps(out)
+        return self._cache[text]
+
+
+class Gliner2Detector:
+    """GLiNER2-PII (fastino). Needs `pip install gliner2`."""
+    LABELS = {"person": "PERSON", "full_name": "PERSON", "first_name": "PERSON", "last_name": "PERSON",
+              "date_of_birth": "DOB", "email": "EMAIL", "phone_number": "PHONE", "address": "ADDRESS",
+              "street_address": "ADDRESS", "national_id_number": "SSN", "tax_id": "SSN", "passport_number": "ACCOUNT",
+              "drivers_license_number": "ACCOUNT", "bank_account": "ACCOUNT", "account_number": "ACCOUNT",
+              "routing_number": "ROUTING", "iban": "ACCOUNT", "card_number": "ACCOUNT", "card_cvv": "ACCOUNT",
+              "username": "ACCOUNT", "account_id": "ACCOUNT", "password": "ACCOUNT", "api_key": "ACCOUNT"}
+
+    def __init__(self, model_id: str = "fastino/gliner2-privacy-filter-PII-multi", threshold: float = 0.5):
+        from gliner2 import GLiNER2
+        self.model = GLiNER2.from_pretrained(model_id)
+        self.threshold = threshold
+        self.name = model_id
+        self._cache = {}
+
+    def detect(self, text: str, client: Optional[Client] = None) -> list[Detected]:
+        if text in self._cache:
+            return self._cache[text]
+        out = []
+        for off, chunk in _windows(text):
+            res = self.model.extract_entities(chunk, list(self.LABELS), threshold=self.threshold, include_spans=True)
+            ents = res.get("entities", res) if isinstance(res, dict) else {}
+            for label, values in ents.items():
+                for v in values or []:
+                    if isinstance(v, dict) and "start" in v:
+                        s, t = v["start"], v["end"]
+                    else:  # plain string: locate it
+                        val = v.get("text") if isinstance(v, dict) else str(v)
+                        s = chunk.find(val)
+                        if s < 0:
+                            continue
+                        t = s + len(val)
+                    s, t = s + off, t + off
+                    out.append(Detected(s, t, self.LABELS.get(label, "ACCOUNT"), text[s:t], text[s:t], detector=self.name))
+        self._cache[text] = resolve_overlaps(out)
+        return self._cache[text]
+
+
+def _windows(text: str, size: int = 1500, overlap: int = 200):
+    if len(text) <= size:
+        yield 0, text
+        return
+    start = 0
+    while start < len(text):
+        yield start, text[start:start + size]
+        if start + size >= len(text):
+            break
+        start += size - overlap
+
+
+class NvidiaGlinerDetector:
+    """nvidia/gliner-pii through NVIDIA's hosted API (no download). Needs NVIDIA_API_KEY from build.nvidia.com.
+
+    Results are cached on disk (data/cache/) so reruns do not spend API calls again.
+    """
+    URL = "https://integrate.api.nvidia.com/v1/chat/completions"
+    KEYWORDS = [("birth", "DOB"), ("ssn", "SSN"), ("social", "SSN"), ("email", "EMAIL"), ("phone", "PHONE"),
+                ("fax", "PHONE"), ("address", "ADDRESS"), ("street", "ADDRESS"), ("name", "PERSON"),
+                ("routing", "ROUTING"), ("account", "ACCOUNT"), ("card", "ACCOUNT"), ("iban", "ACCOUNT"),
+                ("bban", "ACCOUNT"), ("swift", "ACCOUNT"), ("pin", "ACCOUNT"), ("password", "ACCOUNT"),
+                ("license", "ACCOUNT"), ("passport", "ACCOUNT"), ("_id", "ACCOUNT"), ("number", "ACCOUNT"),
+                ("company", "ORG"), ("organization", "ORG")]
+
+    def __init__(self, threshold: float = 0.4, min_interval: float = 1.6, cache_dir=None):
+        import json
+        import os
+        from pathlib import Path
+        self.key = os.environ["NVIDIA_API_KEY"]
+        self.threshold = threshold
+        self.min_interval = min_interval
+        self.name = "nvidia/gliner-pii (API)"
+        self.cache_path = Path(cache_dir or Path(__file__).resolve().parents[1] / "data" / "cache") / "nvidia_gliner.json"
+        self.cache_path.parent.mkdir(parents=True, exist_ok=True)
+        self._cache = json.loads(self.cache_path.read_text()) if self.cache_path.exists() else {}
+        self._last = 0.0
+        self._dirty = 0
+
+    def _label(self, lab: str) -> str:
+        lab = lab.lower()
+        for kw, ours in self.KEYWORDS:
+            if kw in lab:
+                return ours
+        return "OTHER"
+
+    def _call(self, text: str) -> list:
+        import json
+        import time
+        import requests
+        body = {"model": "nvidia/gliner-pii", "messages": [{"role": "user", "content": text}],
+                "threshold": self.threshold, "flat_ner": True}
+        headers = {"Authorization": f"Bearer {self.key}", "Accept": "application/json"}
+        for attempt in range(8):
+            wait = self.min_interval - (time.time() - self._last)
+            if wait > 0:
+                time.sleep(wait)
+            self._last = time.time()
+            r = requests.post(self.URL, json=body, headers=headers, timeout=120)
+            if r.status_code == 202:  # queued: poll for the result
+                rid = r.headers.get("NVCF-REQID")
+                while r.status_code == 202 and rid:
+                    time.sleep(1)
+                    r = requests.get(f"https://api.nvcf.nvidia.com/v2/nvcf/pexec/status/{rid}", headers=headers, timeout=120)
+            if r.status_code == 429 or r.status_code >= 500:
+                time.sleep(min(60, 2 ** attempt))
+                continue
+            r.raise_for_status()
+            content = r.json()["choices"][0]["message"]["content"]
+            data = json.loads(content) if isinstance(content, str) else content
+            return data.get("entities", [])
+        raise RuntimeError("NVIDIA API kept failing (rate limit or server error)")
+
+    def detect(self, text: str, client: Optional[Client] = None) -> list[Detected]:
+        import hashlib
+        import json
+        h = hashlib.sha256(text.encode()).hexdigest()
+        if h not in self._cache:
+            self._cache[h] = self._call(text)
+            self._dirty += 1
+            if self._dirty % 20 == 0:
+                self.cache_path.write_text(json.dumps(self._cache))
+        out = [Detected(e["start"], e["end"], self._label(e.get("label", "")), text[e["start"]:e["end"]],
+                        text[e["start"]:e["end"]], detector=self.name) for e in self._cache[h]]
+        return resolve_overlaps(out)
+
+    def flush(self):
+        import json
+        self.cache_path.write_text(json.dumps(self._cache))
+
+
+def model_detector(model_id: str):
+    """Pick the wrapper for a PII model id; 'nvidia-api' uses NVIDIA's hosted gliner-pii."""
+    if model_id == "nvidia-api":
+        return NvidiaGlinerDetector()
+    return Gliner2Detector(model_id) if "gliner2" in model_id.lower() else GlinerDetector(model_id)
 
 
 def resolve_overlaps(spans: Iterable[Detected]) -> list[Detected]:
@@ -208,7 +352,7 @@ def default_detector(use_presidio: bool = False, gliner_model: Optional[str] = N
     if use_presidio:
         dets.append(PresidioDetector())
     if gliner_model:
-        dets.append(GlinerDetector(gliner_model))
+        dets.append(model_detector(gliner_model))
     return EnsembleDetector(dets)
 
 

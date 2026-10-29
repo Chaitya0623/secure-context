@@ -1,0 +1,91 @@
+note_set,detector,label,recall,n
+template,regex,ACCOUNT,1.0,1000
+template,regex,ADDRESS,1.0,587
+template,regex,DOB,1.0,1000
+template,regex,EMAIL,1.0,1000
+template,regex,ORG,0.0,610
+template,regex,PERSON,0.0,2317
+template,regex,PHONE,1.0,1000
+template,regex,SSN,1.0,1000
+template,crm_dictionary,ACCOUNT,0.0,1000
+template,crm_dictionary,ADDRESS,1.0,587
+template,crm_dictionary,DOB,0.0,1000
+template,crm_dictionary,EMAIL,1.0,1000
+template,crm_dictionary,ORG,1.0,610
+template,crm_dictionary,PERSON,1.0,2317
+template,crm_dictionary,PHONE,1.0,1000
+template,crm_dictionary,SSN,0.0,1000
+template,regex + crm_dictionary,ACCOUNT,1.0,1000
+template,regex + crm_dictionary,ADDRESS,1.0,587
+template,regex + crm_dictionary,DOB,1.0,1000
+template,regex + crm_dictionary,EMAIL,1.0,1000
+template,regex + crm_dictionary,ORG,1.0,610
+template,regex + crm_dictionary,PERSON,1.0,2317
+template,regex + crm_dictionary,PHONE,1.0,1000
+template,regex + crm_dictionary,SSN,1.0,1000
+template,presidio,ACCOUNT,0.0,1000
+template,presidio,ADDRESS,0.010221465076660987,587
+template,presidio,DOB,1.0,1000
+template,presidio,EMAIL,1.0,1000
+template,presidio,ORG,0.01639344262295082,610
+template,presidio,PERSON,0.7332757876564523,2317
+template,presidio,PHONE,0.954,1000
+template,presidio,SSN,0.823,1000
+template,regex + presidio,ACCOUNT,1.0,1000
+template,regex + presidio,ADDRESS,1.0,587
+template,regex + presidio,DOB,1.0,1000
+template,regex + presidio,EMAIL,1.0,1000
+template,regex + presidio,ORG,0.01639344262295082,610
+template,regex + presidio,PERSON,0.7332757876564523,2317
+template,regex + presidio,PHONE,1.0,1000
+template,regex + presidio,SSN,1.0,1000
+template,regex + crm_dictionary + presidio,ACCOUNT,1.0,1000
+template,regex + crm_dictionary + presidio,ADDRESS,1.0,587
+template,regex + crm_dictionary + presidio,DOB,1.0,1000
+template,regex + crm_dictionary + presidio,EMAIL,1.0,1000
+template,regex + crm_dictionary + presidio,ORG,1.0,610
+template,regex + crm_dictionary + presidio,PERSON,1.0,2317
+template,regex + crm_dictionary + presidio,PHONE,1.0,1000
+template,regex + crm_dictionary + presidio,SSN,1.0,1000
+stress,regex,ACCOUNT,0.0,1000
+stress,regex,ADDRESS,0.0,1000
+stress,regex,DOB,0.0,1000
+stress,regex,EMAIL,0.0,1000
+stress,regex,PERSON,0.0,2000
+stress,regex,PHONE,0.0,1000
+stress,regex,SSN,0.477,1000
+stress,crm_dictionary,ACCOUNT,0.0,1000
+stress,crm_dictionary,ADDRESS,0.0,1000
+stress,crm_dictionary,DOB,0.0,1000
+stress,crm_dictionary,EMAIL,0.0,1000
+stress,crm_dictionary,PERSON,0.0095,2000
+stress,crm_dictionary,PHONE,0.0,1000
+stress,crm_dictionary,SSN,0.0,1000
+stress,regex + crm_dictionary,ACCOUNT,0.0,1000
+stress,regex + crm_dictionary,ADDRESS,0.0,1000
+stress,regex + crm_dictionary,DOB,0.0,1000
+stress,regex + crm_dictionary,EMAIL,0.0,1000
+stress,regex + crm_dictionary,PERSON,0.0095,2000
+stress,regex + crm_dictionary,PHONE,0.0,1000
+stress,regex + crm_dictionary,SSN,0.477,1000
+stress,presidio,ACCOUNT,1.0,1000
+stress,presidio,ADDRESS,0.117,1000
+stress,presidio,DOB,0.015,1000
+stress,presidio,EMAIL,0.0,1000
+stress,presidio,PERSON,0.806,2000
+stress,presidio,PHONE,0.761,1000
+stress,presidio,SSN,1.0,1000
+stress,regex + presidio,ACCOUNT,1.0,1000
+stress,regex + presidio,ADDRESS,0.117,1000
+stress,regex + presidio,DOB,0.015,1000
+stress,regex + presidio,EMAIL,0.0,1000
+stress,regex + presidio,PERSON,0.806,2000
+stress,regex + presidio,PHONE,0.761,1000
+stress,regex + presidio,SSN,1.0,1000
+stress,regex + crm_dictionary + presidio,ACCOUNT,1.0,1000
+stress,regex + crm_dictionary + presidio,ADDRESS,0.117,1000
+stress,regex + crm_dictionary + presidio,DOB,0.015,1000
+stress,regex + crm_dictionary + presidio,EMAIL,0.0,1000
+stress,regex + crm_dictionary + presidio,PERSON,0.806,2000
+stress,regex + crm_dictionary + presidio,PHONE,0.761,1000
+stress,regex + crm_dictionary + presidio,SSN,1.0,1000

@@ -42,6 +42,7 @@ from secure_context.vault import SplitStorage  # noqa: E402
 RES = ROOT / "eval" / "results"
 FIG = ROOT / "eval" / "figures"
 K_MIN = 10
+_API_DETECTORS = []
 
 plt.rcParams.update({"figure.dpi": 130, "axes.spines.top": False, "axes.spines.right": False, "font.size": 9})
 C = {"masked": "#B23A30", "default": "#A6620F", "adaptive": "#22704C", "full": "#5A6A74"}
@@ -61,8 +62,9 @@ def eval_detection(clients, use_presidio, gliner_models=()):
         dets["regex + presidio"] = [RegexDetector(), p]
         dets["regex + crm_dictionary + presidio"] = [RegexDetector(), CRMDictionaryDetector(), p]
     for mid in gliner_models:
-        from secure_context.detect import GlinerDetector
-        g = GlinerDetector(mid)
+        from secure_context.detect import model_detector
+        g = model_detector(mid)
+        _API_DETECTORS.append(g)
         dets[mid] = [g]
         dets[f"regex + crm_dictionary + {mid}"] = [RegexDetector(), CRMDictionaryDetector(), g]
     stress = make_stress_notes(clients)
