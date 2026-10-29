@@ -44,6 +44,8 @@ class RegexDetector:
         ("DOB", re.compile(r"\b\d{1,2}/\d{1,2}/\d{4}\b")),
         ("DOB", re.compile(rf"\b(?:{MONTHS}) \d{{1,2}}, \d{{4}}\b")),
         ("ADDRESS", re.compile(r"\b\d{1,6}(?: [A-Z][A-Za-z.]+)+,(?: [A-Z][A-Za-z.]+)+, [A-Z]{2} \d{5}\b")),
+        ("ACCOUNT", re.compile(r"\b(?:\d{4}[ -]?){3}\d{1,4}\b")),                  # card-like numbers
+        ("ACCOUNT", re.compile(r"\b[A-Z]{2}\d{2}(?: ?[A-Z0-9]{4}){2,7}(?: ?[A-Z0-9]{1,4})?\b")),  # IBAN
     ]
 
     def detect(self, text: str, client: Optional[Client] = None) -> list[Detected]:

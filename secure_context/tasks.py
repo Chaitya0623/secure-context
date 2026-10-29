@@ -90,7 +90,12 @@ def utility(task: str, c: Client, levels: dict) -> float:
         rest = (levels["risk"] != "drop") * .5 + (levels["horizon"] != "drop") * .25 + \
             at_least("liquidity", levels["liquidity"], "bucket") * .25
         return .6 * acc + .4 * rest
+    if task in TASKS:  # portfolio_review, transaction, general: share of needs met
+        from .policy import coverage
+        return coverage(levels, task)[0]
     raise KeyError(task)
+
+CORE_TASKS = ("meeting_prep", "concentration", "income_plan")
 
 
 def _bucket(m):
@@ -143,6 +148,13 @@ def simulated_answer(task: str, c: Client, levels: dict, session) -> str:
         out.append(f"Risk tolerance: {ctx.get('Risk tolerance', 'not provided')}.")
         out.append(f"Liquidity: {ctx.get('Liquidity need', 'not provided')}.")
         out.append(f"Share the trim schedule with {email}.")
+    elif task in ("portfolio_review", "transaction", "general"):
+        out.append(f"{TASKS[task]['name']} for {name}")
+        for label, v in ctx.items():
+            out.append(f"{label}: {v}")
+        if not ctx:
+            out.append("Answered from general product information; no client data was needed.")
+        out.append(f"Confirmation goes to {email}.")
     else:
         if levels["aum"] == "drop":
             out.append(f"Income estimate for {name}: assets were not shared, so no estimate is possible.")

@@ -35,7 +35,7 @@ from secure_context.pipeline import Pipeline  # noqa: E402
 from secure_context.policy import ALL_EXACT, TASKS  # noqa: E402
 from secure_context.privacy import ExposureLedger, KEngine, candidate_policies, choose_policy  # noqa: E402
 from secure_context.strategy import extraction_curve, honest_user_error  # noqa: E402
-from secure_context.tasks import simulated_answer, utility  # noqa: E402
+from secure_context.tasks import CORE_TASKS, simulated_answer, utility  # noqa: E402
 from secure_context.tokens import Session, rehydrate  # noqa: E402
 from secure_context.vault import SplitStorage  # noqa: E402
 
@@ -113,7 +113,7 @@ def eval_detection(clients, use_presidio, gliner_models=()):
 
 def eval_single_request(clients, engine):
     rows = []
-    for task in TASKS:
+    for task in CORE_TASKS:
         modes = {"masked": lambda c: dict(ALL_EXACT), "default": lambda c: dict(TASKS[task]["default"])}
         for mode, fn in modes.items():
             ks = np.array([engine.k(c, fn(c)) for c in clients])
@@ -142,7 +142,7 @@ def eval_single_request(clients, engine):
 
 def eval_frontier(clients, engine):
     rows = []
-    for task in TASKS:
+    for task in CORE_TASKS:
         for lv in candidate_policies(task):
             ks = np.array([engine.k(c, lv) for c in clients])
             us = np.array([utility(task, c, lv) for c in clients])
@@ -151,7 +151,7 @@ def eval_frontier(clients, engine):
     df = pd.DataFrame(rows)
     df.to_csv(RES / "frontier.csv", index=False)
     fig, axes = plt.subplots(1, 3, figsize=(10, 3.3), sharey=True)
-    for ax, task in zip(axes, TASKS):
+    for ax, task in zip(axes, CORE_TASKS):
         d = df[df.task == task]
         ax.scatter(d.pct_k_lt_10 * 100, d.mean_utility, s=10, color="#9DB3C2", label="candidate policies")
         dd = d[d.is_default]
@@ -172,7 +172,7 @@ def eval_frontier(clients, engine):
 
 def eval_cumulative(clients, engine, n_requests=12, seed=3):
     rng = random.Random(seed)
-    seqs = {c.client_id: [rng.choice(list(TASKS)) for _ in range(n_requests)] for c in clients}
+    seqs = {c.client_id: [rng.choice(list(CORE_TASKS)) for _ in range(n_requests)] for c in clients}
     rows = []
     for mode in ("default", "adaptive"):
         ledger = ExposureLedger(engine)
@@ -219,7 +219,7 @@ def eval_cumulative(clients, engine, n_requests=12, seed=3):
 
 def eval_inference(pop, clients):
     out = []
-    for task in TASKS:
+    for task in CORE_TASKS:
         df = attribute_inference(pop, clients, TASKS[task]["default"])
         df.insert(0, "task", task)
         out.append(df)
@@ -307,7 +307,7 @@ def eval_latency(clients, ctx_ids, storage, engine):
     pipe = Pipeline(storage, engine, SimulatedLLM(), K_MIN)
     t = []
     for c, ctx in list(zip(clients, ctx_ids))[:300]:
-        for task in TASKS:
+        for task in CORE_TASKS:
             tr = pipe.run(c, ctx, task, mode="adaptive")
             t.append(tr.timings)
     df = pd.DataFrame(t).describe(percentiles=[.5, .95]).T[["mean", "50%", "95%"]]

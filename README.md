@@ -12,7 +12,42 @@ An advisor's AI assistant is more useful when it knows the client's goals, holdi
 6. **Rehydrate** the model's answer for the advisor and flag tokens it cannot resolve.
 7. **Attack it**: key lookups, cross-session linkage, hash brute force, quasi-identifier linkage against a 50,000-person directory, attribute inference, and extraction of a planted proprietary strategy.
 
-All data is synthetic and generated from a fixed seed.
+## Data
+
+LPL client data is not available, so the evaluation runs on public datasets, each covering one layer of the system. Names, SSNs, accounts and contact details are always generated, never real.
+
+| Layer | Dataset | Size | License | Used for |
+|---|---|---|---|---|
+| Client profiles | [Finance-Agentic-AI/Financial-Advisory-Clients](https://hf.co/datasets/Finance-Agentic-AI/Financial-Advisory-Clients) | 5,000 clients | MIT | age, income, marital status, dependents, portfolio value, goal, horizon, risk tolerance, topics discussed, recommended products |
+| Population directory | [Census ACS PUMS 2023, 1-year](https://www.census.gov/programs-surveys/acs/microdata.html) (NY, NJ, CA, TX, FL, IL) | 978,284 adults | public domain | real age, state, local area (PUMA), occupation and income; the attacker's reference data for re-identification |
+| Wealth and portfolios | [Federal Reserve SCF 2022](https://www.federalreserve.gov/econres/scf_2022.htm) summary extract | 22,975 records | public domain | financial assets and portfolio mix, matched to each directory person by age, income and occupation |
+| Request types | [bitext/Bitext-wealth-management-llm-chatbot-training-dataset](https://hf.co/datasets/bitext/Bitext-wealth-management-llm-chatbot-training-dataset) | 23,806 requests, 24 intents | CDLA-Sharing-1.0 | which client context each kind of request needs; realistic request text |
+| PII documents | [gretelai/synthetic_pii_finance_multilingual](https://hf.co/datasets/gretelai/synthetic_pii_finance_multilingual) (English test split) | 2,891 documents | Apache 2.0 | PII detection benchmark written by a third party |
+
+Each Advisory client is placed on a Census person with the same age, marital status and similar income, so every client exists in the directory with a real location and occupation. A fully synthetic environment (`secure_context/data.py`) is kept for tests and as a fallback.
+
+```bash
+python3 scripts/download_data.py   # downloads everything into data/ (about 250 MB, stdlib only)
+python3 eval/run_real.py           # every metric on the public datasets -> eval/results_real/
+python3 eval/run_all.py            # same metrics on the fully synthetic environment -> eval/results/
+```
+
+`data/sample/` holds a small committed extract (150K Census rows, SCF, Advisory clients) so the hosted app runs on public data without downloading.
+
+## Metrics
+
+| Question from the brief | Metric |
+|---|---|
+| Can a client be identified from what the AI sees? | crowd size k (directory entries matching everything disclosed), % unique, % with k < 10 |
+| Does exposure accumulate across interactions? | cumulative k after N requests, under the real request mix |
+| Can hidden attributes be inferred? | attacker accuracy vs. majority-guess baseline |
+| Is personal data caught before it leaves? | direct-identifier span recall, precision, % of documents with a leak |
+| Can primary keys or tokens be used to look people up? | pass/fail per key-based attack, brute-force time |
+| Can institutional IP be reconstructed? | surrogate error and rule recovery vs. number of queries, cost to honest users |
+| Does the AI stay useful? | task utility (0 to 1) vs. full context, needs covered, refusal rate |
+| Other channels | transaction unicity, advisor-query exposure, k against the firm's own book, policy side channel, uniqueness of exact amounts, differential-privacy error, rehydration accuracy, latency |
+
+What could not be measured without LPL data is listed in [docs/FUTURE_WORK.md](docs/FUTURE_WORK.md).
 
 ## Headline results
 
@@ -58,7 +93,11 @@ secure_context/
   dp.py          Laplace-mechanism cohort statistics and a differencing attack
   llm.py         simulated, Anthropic and OpenAI backends
   pipeline.py    one request end to end, with timings
-eval/run_all.py  every experiment; writes eval/results/*.csv and eval/figures/*.png
+  real_data.py   loaders for the public datasets; Census + SCF directory; client book from Advisory profiles
+  exposure.py    transaction unicity, advisor queries, reference population, policy side channel, amounts
+scripts/download_data.py  fetches the public datasets
+eval/run_real.py every experiment on the public datasets; writes eval/results_real/ and eval/figures_real/
+eval/run_all.py  every experiment on the synthetic environment; writes eval/results/ and eval/figures/
 eval/llm_eval.py optional: LLM-judged answer quality and an LLM attacker (needs an API key)
 app/             Streamlit app
 prototype/       static HTML walkthrough

@@ -6,7 +6,7 @@ The full Python app, with live detection, tokens, minimization, the exposure led
 
 1. Go to https://share.streamlit.io and sign in with GitHub.
 2. Create app, then pick repository `Chaitya0623/secure-context` (or your fork), branch `rishika`, main file `app/streamlit_app.py`.
-3. Deploy. The first load takes about 20 seconds while it generates the synthetic data.
+3. Deploy. The first load takes about 30 seconds while it builds the client book from the committed public-data sample in `data/sample/` (150K Census adults, Fed SCF, Advisory clients). A sidebar switch flips to the fully synthetic environment.
 4. Optional real model: in the app's Settings, then Secrets, add
    ```toml
    ANTHROPIC_API_KEY = "..."

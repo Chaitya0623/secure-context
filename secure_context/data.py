@@ -206,7 +206,8 @@ def _make_holdings(rng: random.Random, occ_cat: str, age: int, risk: str):
 
 
 def holdings_summary(holdings):
-    top = max((h for h in holdings if h.ticker != "CASH"), key=lambda h: h.weight)
+    invested = [h for h in holdings if h.ticker != "CASH" and h.weight > 0]
+    top = max(invested, key=lambda h: h.weight) if invested else next(h for h in holdings if h.ticker == "CASH")
     groups = {}
     for h in holdings:
         groups[h.group] = groups.get(h.group, 0) + h.weight

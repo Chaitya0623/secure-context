@@ -43,16 +43,28 @@ st.markdown("""<style>
 </style>""", unsafe_allow_html=True)
 
 
-@st.cache_resource(show_spinner="Generating synthetic clients and a 50,000-person directory...")
-def environment(n_pop=50_000, n_clients=300):
-    pop, clients = load_environment(n_pop, n_clients)
+from secure_context import real_data  # noqa: E402
+
+SOURCES = (["Public datasets (Census ACS, Fed SCF, Advisory Clients)"] if real_data.available() else []) + \
+    ["Fully synthetic"]
+source = st.sidebar.radio("Data", SOURCES, help="Public datasets: real Census population and Fed wealth data with "
+                          "Hugging Face client profiles; names and IDs are always fake.")
+
+
+@st.cache_resource(show_spinner="Building the client book and population directory...")
+def environment(source: str, n_clients=300):
+    if source.startswith("Public"):
+        pop, clients = real_data.load_real_environment(n_clients)
+    else:
+        pop, clients = load_environment(50_000, n_clients)
     storage = SplitStorage(EnsembleDetector([RegexDetector(), CRMDictionaryDetector()]))
     ids = [storage.ingest(c) for c in clients]
     return pop, clients, storage, ids, KEngine(pop)
 
 
-pop, clients, storage, ctx_ids, engine = environment()
-by_label = {f"{c.client_id} · {c.name} ({c.occupation}, {c.city}, {c.state})": i for i, c in enumerate(clients)}
+pop, clients, storage, ctx_ids, engine = environment(source)
+st.sidebar.caption(f"Directory: {len(pop):,} people · book: {len(clients):,} clients")
+by_label = {f"{c.client_id} · {c.name} ({c.occ_cat}, {c.state}, age {c.age})": i for i, c in enumerate(clients)}
 
 if "session" not in st.session_state:
     st.session_state.session = Session()
@@ -284,20 +296,29 @@ with tab_ledger:
 
 # Evaluation tab
 
-RES, FIG = ROOT / "eval" / "results", ROOT / "eval" / "figures"
 with tab_eval:
+    which = st.radio("Results", ["Public datasets", "Synthetic"], horizontal=True)
+    RES, FIG = (ROOT / "eval" / "results_real", ROOT / "eval" / "figures_real") if which == "Public datasets" \
+        else (ROOT / "eval" / "results", ROOT / "eval" / "figures")
     if not (RES / "summary.json").exists():
-        st.warning("Run `python eval/run_all.py` to generate results.")
+        st.warning("Run `python eval/run_real.py` (public data) or `python eval/run_all.py` (synthetic).")
     else:
         s = json.loads((RES / "summary.json").read_text())
-        st.caption(f"{s['clients']:,} synthetic clients · {s['population']:,}-person directory · k_min = {s['k_min']}")
+        if "datasets" in s:
+            st.dataframe(pd.DataFrame(list(s["datasets"].items()), columns=["dataset", "rows"]), hide_index=True)
+        else:
+            st.caption(f"{s['clients']:,} synthetic clients · {s['population']:,}-person directory · k_min = {s['k_min']}")
         sr = pd.DataFrame(s["single_request"])
         st.subheader("One request: masking vs. task policy vs. adaptive")
         st.dataframe(sr.pivot(index="mode", columns="task", values="pct_k_lt_10").style.format("{:.0%}"),
                      width="stretch")
         st.caption("Share of clients whose context matches fewer than 10 people.")
-        for name, title in [("frontier.png", "Privacy-utility frontier"), ("cumulative.png", "Cumulative exposure"),
-                            ("detection_recall.png", "PII detection"), ("strategy_extraction.png", "Strategy extraction")]:
+        for name, title in [("frontier.png", "Privacy-utility frontier"), ("request_mix.png", "Real request mix"),
+                            ("cumulative_real_mix.png", "Cumulative exposure, real request mix"),
+                            ("cumulative.png", "Cumulative exposure"), ("transaction_unicity.png", "Transaction unicity"),
+                            ("gretel_detection.png", "PII detection on Gretel documents"),
+                            ("detection_recall.png", "PII detection on client notes"),
+                            ("strategy_extraction.png", "Strategy extraction")]:
             if (FIG / name).exists():
                 st.subheader(title)
                 st.image(str(FIG / name))

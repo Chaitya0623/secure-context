@@ -21,14 +21,30 @@ from .tasks import utility
 
 
 def _codes(series_list):
-    key = pd.Series(list(zip(*series_list))) if len(series_list) > 1 else series_list[0]
-    return pd.factorize(key)[0].astype(np.int32)
+    if len(series_list) == 1:
+        return pd.factorize(series_list[0])[0].astype(np.int32)
+    df = pd.DataFrame({i: s.values for i, s in enumerate(series_list)})
+    return df.groupby(list(df.columns), sort=False, dropna=False).ngroup().values.astype(np.int32)
 
 
 class KEngine:
-    def __init__(self, pop: pd.DataFrame):
+    """Counts directory entries that match a client on every disclosed quasi-identifier.
+
+    Levels are nested (exact age implies the band, city implies state and region,
+    exact holdings imply the sector mix), so for each client every directory row
+    gets a small match signature: the most detailed level it agrees on, per field.
+    A histogram of signatures (at most 432 cells) answers any policy instantly,
+    which keeps the per-client policy search fast on a million-row directory.
+    Pass `weights` (e.g. census person weights) to estimate population counts.
+    """
+
+    def __init__(self, pop: pd.DataFrame, weights=None):
         self.n = len(pop)
+        self.weights = None if weights is None else np.asarray(weights, dtype=float)
+        self.total = float(self.weights.sum()) if self.weights is not None else self.n
         p = pop
+        bucket = pd.cut(p.aum, [-1, 1, 5, 10, 25, 1e12], right=False).astype(str)
+        sect = [p.largest_group, p.largest_group_weight.map(conc_bucket)]
         self.codes = {
             ("age", "exact"): _codes([p.age]),
             ("age", "band"): _codes([p.age // 10]),
@@ -37,13 +53,18 @@ class KEngine:
             ("location", "region"): _codes([p.region]),
             ("occupation", "exact"): _codes([p.occupation]),
             ("occupation", "category"): _codes([p.occ_cat]),
-            ("aum", "exact"): _codes([p.aum.round(1)]),
-            ("aum", "bucket"): _codes([pd.cut(p.aum, [0, 1, 5, 10, 25, 1e9], right=False).astype(str)]),
-            ("holdings", "exact"): _codes([p.top_ticker, p.top_weight // 5]),
-            ("holdings", "anonymized"): _codes([p.top_group, p.top_single, p.top_weight // 5]),
-            ("holdings", "sectors"): _codes([p.largest_group, p.largest_group_weight.map(conc_bucket)]),
+            ("aum", "exact"): _codes([bucket, p.aum.round(1)]),
+            ("aum", "bucket"): _codes([bucket]),
+            ("holdings", "exact"): _codes([p.top_ticker, p.top_weight // 5] + sect),
+            ("holdings", "anonymized"): _codes([p.top_group, p.top_single, p.top_weight // 5] + sect),
+            ("holdings", "sectors"): _codes(sect),
         }
-        self._mask_cache = {}
+        self.fields = QI_FIELDS
+        self.nlev = [len(FIELDS[f].levels) for f in self.fields]
+        self.mult = np.cumprod([1] + self.nlev[:-1])
+        grid = np.array(list(itertools.product(*[range(n) for n in reversed(self.nlev)])))[:, ::-1]
+        self._sig_levels = grid[np.argsort(grid @ self.mult)]  # row s holds the level index per field
+        self._hist = {}
 
     @staticmethod
     def effective(levels: dict, c: Client) -> dict:
@@ -54,27 +75,27 @@ class KEngine:
                 eff[f] = more_detailed(f, lv, eff[f])
         return eff
 
-    def _mask(self, pidx: int, field: str, level: str):
-        key = (pidx, field, level)
-        m = self._mask_cache.get(key)
-        if m is None:
-            col = self.codes[(field, level)]
-            m = np.packbits(col == col[pidx])
-            if len(self._mask_cache) > 200_000:
-                self._mask_cache.clear()
-            self._mask_cache[key] = m
-        return m
+    def _histogram(self, pidx: int):
+        h = self._hist.get(pidx)
+        if h is None:
+            sig = np.zeros(self.n, dtype=np.int32)
+            for f, n, m in zip(self.fields, self.nlev, self.mult):
+                best = np.full(self.n, n - 1, dtype=np.int32)  # "drop" always matches
+                for i in range(n - 2, -1, -1):                 # coarse to detailed
+                    col = self.codes[(f, FIELDS[f].levels[i])]
+                    best[col == col[pidx]] = i
+                sig += best * m
+            h = np.bincount(sig, weights=self.weights, minlength=int(np.prod(self.nlev)))
+            if len(self._hist) > 50_000:
+                self._hist.clear()
+            self._hist[pidx] = h
+        return h
 
     def k(self, c: Client, levels: dict, effective: bool = True) -> int:
         eff = self.effective(levels, c) if effective else levels
-        acc = None
-        for f in QI_FIELDS:
-            lv = eff[f]
-            if lv == "drop":
-                continue
-            m = self._mask(c.person_idx, f, lv)
-            acc = m if acc is None else np.bitwise_and(acc, m)
-        return self.n if acc is None else int(np.bitwise_count(acc).sum())
+        req = np.array([rank(f, eff[f]) for f in self.fields])
+        h = self._histogram(c.person_idx)
+        return int(round(h[(self._sig_levels <= req).all(axis=1)].sum()))
 
     def k_many(self, clients: list[Client], levels: dict) -> np.ndarray:
         return np.array([self.k(c, levels) for c in clients])

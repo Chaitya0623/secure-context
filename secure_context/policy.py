@@ -65,6 +65,24 @@ TASKS = {
         default=dict(age="drop", location="drop", occupation="drop", aum="bucket", holdings="anonymized",
                      household="drop", objective="drop", risk="exact", horizon="drop", liquidity="bucket",
                      notes="drop")),
+    "portfolio_review": dict(
+        name="Portfolio value and performance review",
+        needs=dict(aum="exact", holdings="anonymized", risk="exact"),
+        default=dict(age="drop", location="drop", occupation="drop", aum="exact", holdings="anonymized",
+                     household="drop", objective="drop", risk="exact", horizon="drop", liquidity="drop",
+                     notes="drop")),
+    "transaction": dict(
+        name="Transfer or withdrawal",
+        needs=dict(liquidity="bucket"),
+        default=dict(age="drop", location="drop", occupation="drop", aum="drop", holdings="drop",
+                     household="drop", objective="drop", risk="drop", horizon="drop", liquidity="bucket",
+                     notes="drop")),
+    "general": dict(
+        name="General question (no client context)",
+        needs=dict(),
+        default=dict(age="drop", location="drop", occupation="drop", aum="drop", holdings="drop",
+                     household="drop", objective="drop", risk="drop", horizon="drop", liquidity="drop",
+                     notes="drop")),
     "income_plan": dict(
         name="Retirement income estimate",
         needs=dict(age="exact", aum="exact", risk="exact", horizon="exact", liquidity="bucket"),
@@ -162,6 +180,8 @@ def render_context(c: Client, levels: dict, tokenized_notes: str = "") -> dict:
 def coverage(levels: dict, task: str) -> tuple[float, list]:
     """Share of the task's needs met at the required level (partial credit 0.5 if present but coarser)."""
     needs = TASKS[task]["needs"]
+    if not needs:
+        return 1.0, []
     score, missing = 0.0, []
     for f, need in needs.items():
         lv = levels[f]
