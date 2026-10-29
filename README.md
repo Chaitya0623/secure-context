@@ -49,22 +49,26 @@ python3 eval/run_all.py            # same metrics on the fully synthetic environ
 
 What could not be measured without LPL data is listed in [docs/FUTURE_WORK.md](docs/FUTURE_WORK.md).
 
-## Headline results
+## Headline results (public data)
+
+1,000 clients from Financial-Advisory-Clients placed in a directory of 978,284 real Census adults; k is how many people match everything the AI saw.
 
 | | Masking only | Task policy | Adaptive + ledger |
 |---|---|---|---|
-| Clients unique after one request (meeting brief) | 100% | 0.7% | 0% |
-| Clients with k < 10 after one income-plan request | 100% | 47% | 0% |
-| Clients unique after 12 mixed requests | n/a | 61% | 0% |
-| Mean task utility after 12 requests | 1.00 | 1.00 | 0.89 |
+| Clients unique after one request | 96.4% | 0% to 3.5% by task | 0% |
+| Clients with k < 10 after 12 real-mix requests | n/a | 15.9% | 0% |
+| Task utility after 12 requests | 1.00 | 1.00 | 0.99 |
 
-* Masking names and account numbers leaves every client unique: exact age, city, occupation, assets and top holding match one person in the directory.
-* Fixed per-task policies look safe one request at a time, but exposure compounds. After 12 requests 61% of clients are unique again. The exposure ledger keeps everyone at k of 10 or more for an 11% utility cost.
-* Split storage with HMAC tokens blocked every key-based attack. A plain SHA-256 of the SSN as a key was recovered by brute force.
-* Rule-based PII detection scores 100% on notes written in expected formats but leaks in every note of a harder stress set (best recall 57%). This is the case for adding GLiNER.
-* Coarse answers (rounded allocations, hidden rule outputs) kept the planted strategy's thresholds at chance level after 2,000 attacker queries, at a cost of 2.2 points of allocation precision for honest users.
+* **Masking is not enough:** with names and accounts tokenized, 96% of clients are still unique among almost a million real people.
+* **58% of real wealth-management requests need no client data** (Bitext intents), so the cheapest protection is to send nothing for them.
+* **Exposure compounds:** safe-looking single requests leave 16% of clients identifiable after 12; the exposure ledger keeps everyone at k of 10 or more with almost no utility cost.
+* **The reference population decides everything:** against one advisor's 150-client book, 83% of clients are identifiable from an income-plan request that is safe against the general population. Minimization has to run inside the firm.
+* **Detection leaks on real-world text:** regex plus Presidio catch 46% of direct identifiers in third-party Gretel documents (addresses 9%).
+* **Transactions are the most identifying data:** one exact transaction singles out 99% of clients.
+* **Split storage with HMAC tokens blocked every key-based attack;** a plain SHA-256 of the SSN was brute-forced.
+* **Strategy protection:** binding queries to the advisor's real clients plus coarse answers kept every planted rule at chance after 2,000 queries.
 
-Full method and numbers: [docs/EVALUATION.md](docs/EVALUATION.md).
+Full method and numbers: [docs/EVALUATION.md](docs/EVALUATION.md). Hosted-model results (nvidia/gliner-PII, LLM answers, LLM attacker): `bash scripts/run_with_nvidia.sh`.
 
 ## Try it
 

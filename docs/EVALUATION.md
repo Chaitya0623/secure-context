@@ -1,132 +1,116 @@
 # Evaluation
 
-Reproduce with `python eval/run_all.py` (about 2 minutes; add `--no-presidio` to skip spaCy). Every number below comes from `eval/results/` for seed 7, 1,000 clients and a 50,000-person directory. Crowd size k is the number of directory entries that match everything a context reveals; k = 1 means the client is unique. The privacy floor used throughout is k of 10 or more.
+Two environments run the same experiments:
 
-## Setup
+* **Public data (primary):** `python3 eval/run_real.py`, results in `eval/results_real/`. Census ACS PUMS 2023 (978,284 adults in NY, NJ, CA, TX, FL, IL) is the attacker's directory; each person gets wealth and a portfolio mix from a Fed SCF 2022 household in the same age, income and occupation cell; 1,000 clients come from Financial-Advisory-Clients (4,825 usable rows) and are placed on matching Census people; request types come from Bitext (23,806 requests, 24 intents); PII detection is also benchmarked on 2,891 Gretel financial documents.
+* **Synthetic (secondary):** `python3 eval/run_all.py`, results in `eval/results/`, a fully generated 50,000-person world kept for tests.
 
-**Population directory.** 50,000 synthetic people with age, state, city (20 per state, skewed), occupation (36 in 9 categories), assets, risk tolerance, objective, horizon and a portfolio. Occupation drives wealth and the chance of holding a concentrated single stock; age drives risk, objective and the bond share. The directory stands in for what an outsider could know or buy.
+Crowd size **k** is the number of directory people who match everything a context reveals; k = 1 means the client is unique. The privacy floor is k of 10 or more. Names, SSNs, accounts and contact details are always generated.
 
-**Client book.** 1,000 people sampled from the directory (wealthier people more likely), each with a synthetic identity, household, liquidity need and an advisor note. Notes are assembled from templates and record ground-truth spans for every identifier, plus which quasi-identifiers the note mentions in plain words (occupation, a ticker, a city).
+## Results on public data
 
-**Stress notes.** A second note per client written in formats the detectors were not built around: typos and lowercase names, nicknames, a relative the CRM does not know, spaced or prefixed SSNs, +1 phone formats, bare account digits, emails written as "name at domain dot com", addresses without a ZIP, short DOBs.
+### 1. Masking alone does not protect clients
 
-**Tasks and utility.** Three advisor tasks (meeting brief, concentration check, retirement income estimate). A deterministic reference engine answers each task from whatever context it receives, and utility is scored against its full-context answer (agenda items covered, concentration metrics within tolerance, income estimate error). `eval/llm_eval.py` adds an LLM judge with real model answers when an API key is available.
+Share of clients with k < 10 after one request (share unique in brackets), against the 978K-person Census directory:
 
-**Sharing modes.** Full context (identifiers included), masking only (identifiers tokenized, every other field exact), task policy (a fixed generalization per task), and adaptive (per-client search for the best utility with k of 10 or more, optionally against the cumulative ledger).
-
-## 1. PII detection
-
-| Note set | Detector | Span recall | Precision | Notes with a leak | ms/note |
-|---|---|---|---|---|---|
-| template | regex | 66.2% | 100% | 100% | 0.1 |
-| template | CRM dictionary | 54.2% | 100% | 100% | 0.7 |
-| template | regex + CRM dictionary | 100% | 100% | 0% | 0.7 |
-| template | Presidio (spaCy sm) | 69.4% | 87.2% | 100% | 21 |
-| template | regex + CRM + Presidio | 100% | 87.1% | 0% | 22 |
-| stress | regex + CRM dictionary | 6.5% | 99.6% | 100% | 0.6 |
-| stress | Presidio | 57.0% | 64.7% | 100% | 18 |
-| stress | regex + CRM + Presidio | 57.1% | 64.8% | 100% | 18 |
-
-The template result is optimistic by construction: the regexes were written for the same formats the generator uses. The stress set is the honest number. Obfuscated emails (0%), short DOBs (1%) and addresses without a ZIP (9%) were missed by every detector; Presidio caught most names, phones, SSNs and bare account digits. A missed span is a leak, so the next step is running `--gliner nvidia/gliner-PII` (and GLiNER2-PII) on a machine with Hugging Face access and reporting the same table.
-
-## 2. Split storage and key-based attacks
-
-| Attack | Result |
-|---|---|
-| Look up the context store by an AI-log token | blocked (0 rows in 200 attempts) |
-| Search a context dump for name, SSN, email, account, phone | blocked (0 matches across 1,000 values) |
-| Join context to identity on a shared key | blocked (no identity column in the context store) |
-| Read the vault as the LLM service role | blocked (no grant) |
-| Link one client across two sessions by token | blocked (0 of 200 tokens identical) |
-| Brute-force a plain SHA-256(SSN) key | **exposed**: recovered; the full SSN space takes about 19 CPU-minutes |
-| Brute-force an HMAC token without the key | blocked (2^256 key space) |
-
-Primary keys are random UUIDs and the only link sits in the vault, so a stolen context store cannot be joined back. A hashed SSN is not a safe key.
-
-## 3. Re-identification from one request
-
-Share of clients with k < 10 (share unique in brackets):
-
-| Task | Masking only | Task policy | Adaptive (k of 10 or more) |
+| Task (share of real requests) | Masking only | Task policy | Adaptive |
 |---|---|---|---|
-| Meeting brief | 100% (100%) | 3.4% (0.7%) | 0% (0%), utility 0.996 |
-| Concentration check | 100% (100%) | 1.7% (0.1%) | 0% (0%), utility 0.998 |
-| Retirement income | 100% (100%) | 47.4% (12.0%) | 0% (0%), utility 0.944 |
+| General question (58.4%) | 99.9% (96.4%) | 0% | 0% |
+| Portfolio review (16.5%) | 99.9% (96.4%) | 5.6% (3.5%) | 0%, utility 0.99 |
+| Transfer or withdrawal (8.4%) | 99.9% (96.4%) | 0% | 0% |
+| Retirement income (8.4%) | 99.9% (96.4%) | 0.3% (0%) | 0%, utility 1.00 |
+| Meeting brief (4.2%) | 99.9% (96.4%) | 0.6% (0.4%) | 0%, utility 0.999 |
+| Concentration check (4.2%) | 99.9% (96.4%) | 0.8% (0.6%) | 0%, utility 0.997 |
 
-Masking alone fails completely. Fixed policies work for tasks that tolerate generalization, but the income task needs exact age and assets and leaves almost half the book identifiable. The adaptive search coarsens those fields only for the clients who need it and gives up 6% utility on that task. `eval/figures/frontier.png` shows every candidate policy.
+With names and accounts tokenized but everything else exact, 96.4% of clients are still unique among almost a million real people. **58% of real wealth-management requests need no client data at all** (Bitext intents such as fees, services, account setup), so the biggest single win is not sending context for them.
 
-## 4. Cumulative exposure across requests
+### 2. Exposure accumulates across requests
 
-Each client receives 12 requests with randomly chosen tasks. The ledger assumes the provider can link all requests about a client by content.
+Twelve requests per client drawn from the real Bitext request mix; the ledger assumes the provider can link requests by content.
 
 | After request | Task policy: k < 10 | Task policy: unique | Adaptive + ledger: k < 10 | Adaptive utility |
 |---|---|---|---|---|
-| 1 | 17.2% | 3.6% | 0% | 0.98 |
-| 2 | 49.6% | 23.6% | 0% | 0.89 |
-| 4 | 78.7% | 45.5% | 0% | 0.89 |
-| 12 | 98.9% | 60.9% | 0% | 0.89 |
+| 1 | 1.2% | 0.7% | 0% | 0.997 |
+| 4 | 5.6% | 3.2% | 0% | 0.996 |
+| 12 | 15.9% | 8.9% | 0% | 0.994 |
 
-This is the central finding. Requests that are each safe compose into a unique fingerprint (exact age from the income task plus sector weights from the meeting brief plus position sizes from the concentration check). With the ledger, the minimizer plans each request against what has already been revealed: no refusals were needed, and utility settled at 0.89. Median cumulative k fell from 302 to 27, so the floor is doing the work.
+With only the three data-heavy tasks (meeting brief, concentration, income plan) the fixed policies reach 22.4% with k < 10 after 12 requests; the ledger holds 0% at utility 0.988. No request was refused in either case.
 
-## 5. Attribute inference
+### 3. Who the attacker compares against matters most
 
-An attacker trains a gradient-boosted classifier on 20,000 directory entries and guesses attributes the task policy withheld.
+Same task policies, three reference populations:
 
-| Task policy | Hidden attribute | Attacker accuracy | Majority guess |
+| Task | General population (978K) | Firm's client book (1,000) | One advisor's book (150) |
 |---|---|---|---|
-| Concentration check | age band | 31.2% | 19.5% |
-| Concentration check | occupation category | 24.8% | 17.7% |
-| Meeting brief | occupation category | 22.5% | 17.7% |
-| any | region | 36-37% | 36.7% |
+| Meeting brief: k < 10 | 0.6% | 6.4% | 36.0% |
+| Concentration check: k < 10 | 0.8% | 12.4% | 31.3% |
+| Retirement income: k < 10 | 0.3% | 80.7% | 82.7% |
 
-Dropping a field does not make it unknowable: position sizes and risk tolerance carry age and occupation signal. The gains here are modest because the synthetic correlations are modest; real books are likely more correlated, so this should be rerun on LPL's sample data and with the LLM attacker in `eval/llm_eval.py`.
+A policy that looks safe against the general population can identify most clients to anyone who already knows they are clients of a given advisor (the advisor's assistant, a vendor serving one branch, an insider). The k floor should be set against the firm's own client base. This is the strongest argument for running minimization inside LPL, not at the model provider.
 
-## 6. Proprietary strategy extraction
+### 4. PII detection on third-party documents
 
-A planted model-portfolio rule has four secrets: glide-path knee (age 52), slope (1.1 points per year), the asset level that unlocks alternatives ($5M) and the concentration that triggers a collar (25%). The attacker queries with chosen profiles and fits a surrogate. At 2,000 queries:
+2,891 Gretel financial documents (direct identifiers only: names, SSNs, accounts, contact details, IDs):
 
-| Defense | Surrogate equity error (pts) | Alternatives rule recovered | Collar rule recovered | Cost to honest advisors (pts) |
+| Detector | Direct-identifier recall | Precision | Documents with a leak | ms/doc |
 |---|---|---|---|---|
-| none | 0.51 | 100% | 100% | 0 |
-| noise (fresh each query) | 1.33 | 100% | 100% | 4.0 |
-| noise, cached per profile | 2.32 | 100% | 100% | 4.0 |
-| book-bound (own 150 clients only) | 1.20 | 99.6% | 81.1% | 0 |
-| coarse (rounded, rule outputs hidden) | 1.68 | 56% (chance) | 60% (chance) | 2.2 |
-| book-bound + coarse | 2.64 | 56% (chance) | 60% (chance) | 2.2 |
+| Regex | 11.3% | 46.0% | 74.5% | 0.4 |
+| Presidio (spaCy small) | 43.4% | 37.5% | 68.0% | 43 |
+| Regex + Presidio | 46.1% | 37.3% | 66.7% | 41 |
+| nvidia/gliner-PII (hosted) | pending: `scripts/run_with_nvidia.sh` | | | |
 
-Numeric noise only slows extraction, and averaging repeated queries defeats it unless answers are cached. Hiding the discrete rule outputs is what protects the thresholds. Binding queries to the caller's real clients removes the attacker's ability to probe edge cases and is free for honest users.
+By type (regex + Presidio): emails 92%, SSNs 91%, credit cards 98%, IBANs 100%, but person names 62% and street addresses only 9%. On our own client notes, regex plus the CRM dictionary catch 100% of identifiers in the expected formats, but only 6% in the stress notes (typos, nicknames, unknown relatives, obfuscated emails); adding Presidio raises that to 56%. Rule-based detection is not enough on its own; the CRM dictionary covers known clients, and a model such as GLiNER is needed for everything else.
 
-## 7. Differentially private cohort statistics
+### 5. Other exposure channels
 
-"How does this client compare with similar clients?" leaks through a differencing attack (average with and without one client).
+**Transactions are the most identifying data.** In the client book, one exact transaction (date and amount) singles out 99% of clients. Coarsening helps a lot: with month and an amount band, 5 known transactions single out 12%; adding the transaction type raises that to 55%. Transaction tasks should receive monthly aggregates, not line items.
 
-| Cohort | epsilon | Differencing attack error (pts) | Blind guess error | Cohort mean error |
+**Exact amounts are fingerprints.** Among 4,825 Advisory clients, 89% have a unique exact portfolio value and 99% a unique exact goal target; rounding to $10K brings these to 0.9% and 5.7%, and buckets to 0%. Goal target to $10K plus horizon plus goal type is still unique for 39%.
+
+**Advisor queries.** All 1,000 simulated advisor requests contained a direct identifier (name or account) typed by the advisor; after the query sanitizer none remained, and the share with k < 10 from typed details (age, state, occupation, rough assets) fell from 1.7% to 0%.
+
+**Policy side channel.** The adaptive policy's choices predict which clients are rare (AUC 0.66 to 1.00, though rare clients are only 0.6% to 8% of the book). Using one uniform policy per task (the most generalized level any client needed) removes the signal but costs utility: 0.875 for meeting briefs, 0.43 for concentration, 0.59 for income estimates. In practice the generalization level should be chosen per cohort, not per client.
+
+**Attribute inference.** Trained on 20,000 Census people, an attacker guesses the withheld occupation group 19 to 23% of the time against a 13% majority baseline (income and assets carry the signal). Region and age band were not inferable above chance.
+
+### 6. Split storage and keys
+
+Every key-based attack was blocked: AI-log tokens find nothing in the context store, a context dump contains no identity column or value, the LLM role cannot read the vault, and the same client's tokens never repeat across sessions. A plain SHA-256 of the SSN used as a key was brute-forced (the full SSN space takes about 14 CPU-minutes); HMAC tokens without the key yield nothing.
+
+### 7. Proprietary strategy extraction
+
+A planted allocation rule (glide-path knee, an asset level that unlocks alternatives, a concentration level that triggers a collar), attacked with 2,000 queries:
+
+| Defense | Surrogate error (pts) | Alternatives rule recovered | Collar rule recovered | Cost to honest advisors (pts) |
 |---|---|---|---|---|
-| 50 | exact | 0.0 | 13.3 | 0.0 |
-| 50 | 1.0 | 46.1 | 13.3 | 1.95 |
-| 500 | 1.0 | 44.1 | 16.2 | 0.20 |
-| 500 | 5.0 | 24.6 | 16.2 | 0.04 |
+| none | 0.5 | 100% | 100% | 0 |
+| noise, fresh per query | 1.3 | 100% | 100% | 4.0 |
+| noise, cached per profile | 2.3 | 100% | 100% | 4.0 |
+| coarse answers | 1.7 | 56% (chance) | 60% (chance) | 2.2 |
+| book-bound (own 150 real clients only) | 6.5 | 56% (chance) | 100% | 0 |
+| book-bound + coarse | 6.9 | 56% (chance) | 60% (chance) | 2.2 |
 
-Exact cohort averages reveal a member's value exactly. With epsilon of 1 the attack is worse than guessing while the average itself stays within 2 points for a cohort of 50.
+With real client books, binding queries to the advisor's own clients is the strongest free defense: real books do not cover the edge cases an attacker needs. Combined with coarse answers it hides every rule tested.
 
-## 8. Rehydration robustness
+### 8. Differential privacy, rehydration, overhead
 
-| Token corruption by the model | Restored | Flagged for review | Silently wrong |
-|---|---|---|---|
-| none | 100% | 0% | 0% |
-| lowercase | 100% | 0% | 0% |
-| truncated by 2 hex chars | 100% | 0% | 0% |
-| brackets dropped | 100% | 0% | 0% |
-| invented token | 0% | 100% | 0% |
+* Exact cohort averages let a differencing attack recover a member's equity share exactly; with epsilon of 1 the attack error (41 points) is worse than a blind guess (25 points) while the cohort average moves by 2 points for 50 clients and 0.2 for 500.
+* Rehydration restored 100% of lowercase, truncated and bracket-less tokens and flagged 100% of invented tokens; none were silently wrong.
+* Per request: detection 0.6 ms, session re-keying 0.15 ms, policy search 0.6 ms, rehydration 0.02 ms (Presidio adds about 40 ms per document).
 
-## 9. Overhead
+### 9. Real-model answers and the LLM attacker
 
-Mean per request with regex + CRM detection: detection 0.5 ms, session re-keying 0.14 ms, adaptive policy search 0.44 ms, rehydration 0.02 ms. Presidio adds about 20 ms per note. All of it is small next to an LLM call.
+pending: `scripts/run_with_nvidia.sh` (hosted Llama 3.1 70B answers 15 clients x 3 tasks x 4 sharing modes, grades each against the full-context answer, and tries to guess hidden attributes).
 
-## Limitations and next steps
+## Results on synthetic data
 
-* Synthetic data: correlations, note styles and the directory are assumptions. Rerun on LPL's approved samples.
-* The ledger assumes full linkability, which is conservative. Measure how often requests are actually linkable by content.
-* Utility is a deterministic proxy. Run `eval/llm_eval.py` for LLM-judged quality and an LLM attacker.
-* GLiNER detectors were not run here (no Hugging Face access in the build environment).
-* Free-text liquidity and objective strings were treated as non-identifying; they can still act as linkage fingerprints.
+See `eval/results/`. The synthetic world was built to stress the system (wealthier clients, more concentrated positions, a 50,000-person directory), so its numbers are harsher, but the conclusions match: masking alone leaves every client unique, fixed task policies compound to 61% unique after 12 requests, the adaptive policy with a ledger holds k of 10 or more at about 0.89 utility.
+
+## Limitations
+
+* No LPL data: notes, holdings, transactions, request logs and strategies are public or generated stand-ins. See [FUTURE_WORK.md](FUTURE_WORK.md).
+* The directory joins two real sources statistically (Census geography and occupation, SCF wealth), so wealth is realistic in distribution but not tied to real individuals.
+* Census income is personal income; SCF income is household income. Cells use the same cut points for both.
+* The ledger assumes every request about a client is linkable; real linkability is likely lower.
+* Advisor queries are built by inserting client details into Bitext requests.
+* Gretel's labels were partly produced with GLiNER, which may favor GLiNER-family detectors on that benchmark.
