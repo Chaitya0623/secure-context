@@ -3,8 +3,6 @@
 **p040: Giving AI Client Context Without Exposing Client Data**
 Columbia Data Science Institute industry project with LPL Financial.
 
-Code, prototype and evaluation live on the [`rishika`](https://github.com/Chaitya0623/secure-context/tree/rishika) branch.
-
 ## Industry context
 
 AI in wealth management is only as useful as its understanding of context. An advisor's AI assistant becomes much more helpful when it knows a client's investment objectives, financial circumstances, portfolio characteristics, preferences and history. That same personalization creates privacy, confidentiality and data-protection risk.
