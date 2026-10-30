@@ -71,7 +71,10 @@ def answer(defense, prof, rng, noise_scale=4.0, cache=None):
 
 
 def _X(p):
-    return np.column_stack([p["age"], p["risk"], np.log(p["aum"]), p["income"], p["conc"]])
+    # Public SCF records can have zero financial assets. Use a $1 floor (AUM
+    # is in millions) for the log feature, without changing the strategy inputs.
+    log_aum = np.log(np.maximum(np.asarray(p["aum"], dtype=float), 1e-6))
+    return np.column_stack([p["age"], p["risk"], log_aum, p["income"], p["conc"]])
 
 
 def extraction_curve(pop, query_counts=(25, 50, 100, 200, 500, 1000, 2000), n_test=3000, book_size=150, seed=0):

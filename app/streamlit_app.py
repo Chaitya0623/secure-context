@@ -69,7 +69,9 @@ by_label = {f"{c.client_id} · {c.name} ({c.occ_cat}, {c.state}, age {c.age})": 
 if "session" not in st.session_state:
     st.session_state.session = Session()
     st.session_state.sessions = 1
-if "ledgers" not in st.session_state:
+if "ledgers" not in st.session_state or st.session_state.get("ledger_source") != source:
+    st.session_state.ledger_source = source
+    st.session_state.session = Session()
     st.session_state.ledgers = {"default": ExposureLedger(engine), "adaptive": ExposureLedger(engine)}
     st.session_state.log = []
 
@@ -106,7 +108,8 @@ def box(inner):
 # Sidebar
 
 st.sidebar.title("Client Context Shield")
-st.sidebar.caption("All clients, notes and the population directory are synthetic.")
+st.sidebar.caption("Public population and wealth data with generated client identities and notes."
+                   if source.startswith("Public") else "All clients, notes and the population directory are synthetic.")
 choice = st.sidebar.selectbox("Client", list(by_label))
 c = clients[by_label[choice]]
 ctx_id = ctx_ids[by_label[choice]]
@@ -194,7 +197,7 @@ with tab_pipe:
         with right:
             st.subheader("If sent as-is")
             k1 = engine.k(c, ALL_EXACT)
-            st.metric("Crowd size k with masking only", k1, help="People in the 50,000 directory who match")
+            st.metric("Crowd size k with masking only", k1, help=f"People in the {len(pop):,}-person directory who match")
             box(esc(f"Client: {c.name}, DOB {c.dob}, SSN {c.ssn}\n{c.email}, {c.phone}\n{c.address}\n\n{c.notes}"))
     elif step.startswith("2"):
         with left:
@@ -337,9 +340,10 @@ with tab_strat:
     q = st.select_slider("Attacker queries", options=[25, 50, 100, 200, 500, 1000, 2000], value=500)
 
     @st.cache_data
-    def curve():
-        return extraction_curve(pop)
-    cv = curve()
+    def curve(data_source):
+        population = environment(data_source)[0]
+        return extraction_curve(population)
+    cv = curve(source)
     row = cv[(cv.defense == defense) & (cv.queries == q)].iloc[0]
     a, b, cc, d = st.columns(4)
     a.metric("Surrogate equity error", f"{row.equity_mae:.1f} pts")
