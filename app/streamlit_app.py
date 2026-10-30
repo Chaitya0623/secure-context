@@ -45,6 +45,11 @@ st.markdown("""<style>
 
 from secure_context import real_data  # noqa: E402
 
+if st.sidebar.toggle("Guided demo", value=True, help="A presentation walkthrough that needs no evaluation results or API key."):
+    from app.demo_mode import render_demo
+    render_demo()
+    st.stop()
+
 SOURCES = (["Public datasets (Census ACS, Fed SCF, Advisory Clients)"] if real_data.available() else []) + \
     ["Fully synthetic"]
 source = st.sidebar.radio("Data", SOURCES, help="Public datasets: real Census population and Fed wealth data with "

@@ -9,6 +9,7 @@ def test_app_pipeline_and_source_switch(monkeypatch):
     root = Path(__file__).resolve().parents[1]
     monkeypatch.setattr(real_data, 'DATA', root / 'data/sample')
     app = AppTest.from_file(str(root / 'app/streamlit_app.py'), default_timeout=90).run()
+    app.toggle[0].set_value(False).run()
 
     def healthy():
         assert not app.exception, [e.message for e in app.exception]
@@ -17,6 +18,7 @@ def test_app_pipeline_and_source_switch(monkeypatch):
         return next(r for r in app.radio if r.label == label)
 
     healthy()
+
     for step in radio('Pipeline step').options:
         radio('Pipeline step').set_value(step).run()
         healthy()
@@ -39,3 +41,17 @@ def test_app_pipeline_and_source_switch(monkeypatch):
     source = next(option for option in radio('Data').options if option.startswith('Public'))
     radio('Data').set_value(source).run()
     healthy()
+
+
+def test_guided_demo_needs_no_population_or_model(monkeypatch):
+    def forbidden(*args, **kwargs):
+        raise AssertionError("Guided demo must not load data or call a model")
+    from secure_context import llm
+    monkeypatch.setattr(real_data, 'load_real_environment', forbidden)
+    monkeypatch.setattr(llm, 'get_backend', forbidden)
+    root = Path(__file__).resolve().parents[1]
+    app = AppTest.from_file(str(root / 'app/streamlit_app.py')).run()
+    for step in app.radio[0].options:
+        app.radio[0].set_value(step).run()
+        assert not app.exception
+    assert '2 tokens restored' in app.success[0].value
