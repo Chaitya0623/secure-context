@@ -123,8 +123,14 @@ The runner uses `openai/gpt-oss-20b` for prompted PII extraction and
 with `GROQ_DETECT_MODEL` and `GROQ_LLM_MODEL`. Model access and quotas depend on
 your Groq account; this runner does not guarantee free usage.
 
-The `groq-llm` detector is a prompted LLM, not GLiNER. It extracts exact text
-matches into the existing span schema. This benchmark sends public dataset
+The `groq-llm` detector is a prompted LLM, not GLiNER. It uses strict structured
+outputs to require an items array of exact text and allowed entity labels, then
+matches these against the source text to produce the existing span schema.
+`GROQ_DETECT_MODEL` must support Groq strict structured outputs. Plain JSON mode
+can fail with HTTP 400 `json_validate_failed`, even when the key is valid.
+Live testing also observed intermittent validation errors in strict mode, so the
+client retries this specific generation error up to twice. Persistent failures
+stop with the provider error code and message; failed answers are not cached. This benchmark sends public dataset
 text to Groq. Results should be attributed to the selected models, not to NVIDIA.
 
 Successful responses are checkpointed in ignored `data/cache/groq/`, keyed by

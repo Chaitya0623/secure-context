@@ -128,19 +128,25 @@ class GroqLLM:
         self.cache_dir = Path(cache_dir or Path(__file__).resolve().parents[1] / "data/cache/groq")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-    def complete(self, system, prompt, *, json_mode=False, **_):
+    def complete(self, system, prompt, *, json_mode=False, json_schema=None, **_):
         import hashlib
         import json
         import time
         import requests
         body = {"model": self.model_id, "temperature": 0.2, "max_completion_tokens": 4096,
                 "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]}
-        if json_mode:
+        if json_schema is not None:
+            body["response_format"] = {
+                "type": "json_schema",
+                "json_schema": {"name": "response", "strict": True, "schema": json_schema},
+            }
+        elif json_mode:
             body["response_format"] = {"type": "json_object"}
         digest = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
         path = self.cache_dir / (digest + ".json")
         if path.exists():
             return json.loads(path.read_text())["content"]
+        validation_failures = 0
         for attempt in range(8):
             try:
                 r = requests.post(self.URL, json=body,
@@ -162,12 +168,27 @@ class GroqLLM:
                 time.sleep(max(0, delay))
                 continue
             if not r.ok:
-                raise RuntimeError(f"Groq HTTP {r.status_code}; check your key, model access and quota")
+                try:
+                    error = r.json().get("error", {})
+                    code = str(error.get("code") or error.get("type") or "unknown")
+                    message = str(error.get("message", "No error details returned"))
+                except (ValueError, AttributeError):
+                    code, message = "unknown", "Non-JSON error response"
+                # Groq can still intermittently reject generated JSON in strict mode.
+                # Retry only this generation error, never auth or invalid request settings.
+                if (r.status_code == 400 and code == "json_validate_failed"
+                        and (json_mode or json_schema is not None) and validation_failures < 2):
+                    validation_failures += 1
+                    time.sleep(2 ** (validation_failures - 1))
+                    continue
+                # Never include credentials or the API's failed_generation payload.
+                detail = f"{code}: {message}".replace(self.key, "[redacted]")[:800]
+                raise RuntimeError(f"Groq HTTP {r.status_code} ({self.model_id}): {detail}")
             choice = r.json()["choices"][0]
             content = choice["message"].get("content")
             if choice.get("finish_reason") != "stop" or not isinstance(content, str) or not content.strip():
                 raise RuntimeError("Groq returned an incomplete answer; it was not cached")
-            if json_mode:
+            if json_mode or json_schema is not None:
                 json.loads(content)
             import tempfile
             with tempfile.NamedTemporaryFile(mode="w", dir=self.cache_dir, delete=False) as f:
