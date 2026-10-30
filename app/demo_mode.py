@@ -37,7 +37,7 @@ def render_demo():
         "Only the selected prompt crosses the answer-generation boundary. The model uses it to prepare a meeting brief.",
         "Restore known tokens locally so the advisor sees a readable answer. Unknown or ambiguous tokens are flagged for review.",
     ]
-    pipeline, models, metrics = st.tabs(["Pipeline demo", "Tech stack & models", "Evaluation"])
+    pipeline, data, models, metrics = st.tabs(["Pipeline demo", "Data", "Tech stack & models", "Evaluation"])
     with pipeline:
         step = st.radio("Walkthrough step", steps, key="guided_step")
         idx = steps.index(step)
@@ -102,6 +102,28 @@ def render_demo():
             if idx == 4:
                 st.code("Choose highest task utility\nsubject to k(previous disclosures + proposed context) >= 10", language=None)
                 st.caption("k is a count under the directory's matching rules. It depends on the chosen reference population and tracked attributes.")
+    with data:
+        st.subheader("Data used in the project")
+        st.write("The project combines public demographic and financial datasets with generated identities and notes. Maya's guided example is a separate, hand-written fictional record.")
+        st.table({
+            "Dataset": ["Census ACS PUMS 2023", "Federal Reserve SCF 2022", "Financial-Advisory-Clients", "Bitext Wealth Management", "Gretel synthetic PII finance"],
+            "Information used": ["Age, state, local area, occupation and income", "Household wealth and financial-asset composition", "Client goals, risk tolerance, horizon, portfolio value and discussion topics", "Wealth-management questions and intent labels", "Synthetic financial documents with labeled PII spans"],
+            "Role in the pipeline / evaluation": ["Reference directory for crowd-size and linkage calculations", "Financial-asset donors for the reference directory", "Build experimental client profiles and advisor notes", "Map request intents to tasks and construct repeated-request mixes", "Measure identifier detection recall, precision and leakage"],
+        })
+        st.subheader("How the experimental client book is built")
+        st.markdown("1. Start with ACS demographic records.\n2. Statistically match financial attributes from SCF households using age, income and occupation groups.\n3. Place advisory profiles on matching directory records.\n4. Generate names, identifiers and contact details with Faker, and build notes from profile topics and products.")
+        st.caption("This is an experimental combination of sources, not a verified join of the same real people across datasets. Client placement in the directory is part of the evaluation setup.")
+        st.subheader("Which data appears where?")
+        st.table({
+            "View": ["Guided demo", "Hosted interactive app", "Local public-data evaluation", "Fully synthetic mode"],
+            "Data": ["Maya Patel: fictional identity and financial values", "Committed ACS sample of 150,000 adults, SCF extract and advisory profiles; a 300-client book", "Processed source files, with sample sizes chosen by the evaluation runner", "Generated population, client records, identities and notes"],
+        })
+        st.subheader("Example of the guided input")
+        st.table({"Field": ["Client", "Age", "Assets", "Objective", "Risk tolerance", "Horizon", "Liquidity need"],
+                  "Fictional value": ["Maya Patel", "47", "$3.2 million", "Retirement planning", "Moderate", "15 years", "$80,000 within 12 months"]})
+        st.caption("The demo values explain the transformations. Evaluation measurements come from the benchmark datasets above.")
+        with st.expander("Dataset sources"):
+            st.markdown("- [Census ACS PUMS 2023 files](https://www2.census.gov/programs-surveys/acs/data/pums/2023/1-Year/)\n- [Federal Reserve SCF 2022 extract](https://www.federalreserve.gov/econres/files/scfp2022excel.zip)\n- [Financial-Advisory-Clients](https://huggingface.co/datasets/Finance-Agentic-AI/Financial-Advisory-Clients)\n- [Bitext Wealth Management](https://huggingface.co/datasets/bitext/Bitext-wealth-management-llm-chatbot-training-dataset)\n- [Gretel synthetic PII finance](https://huggingface.co/datasets/gretelai/synthetic_pii_finance_multilingual)")
     with models:
         st.subheader("Tech stack")
         st.table({
