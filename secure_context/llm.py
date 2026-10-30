@@ -177,8 +177,16 @@ class GroqLLM:
                 # Groq can still intermittently reject generated JSON in strict mode.
                 # Retry only this generation error, never auth or invalid request settings.
                 if (r.status_code == 400 and code == "json_validate_failed"
-                        and (json_mode or json_schema is not None) and validation_failures < 2):
+                        and (json_mode or json_schema is not None) and validation_failures < 3):
                     validation_failures += 1
+                    if validation_failures == 3:
+                        # Bypass the provider's failing format enforcement, but
+                        # enforce the same schema locally before caching anything.
+                        body.pop("response_format", None)
+                        instruction = " Return only a JSON object, without markdown."
+                        if json_schema is not None:
+                            instruction += " Match this JSON schema: " + json.dumps(json_schema)
+                        body["messages"][0]["content"] = system + instruction
                     time.sleep(2 ** (validation_failures - 1))
                     continue
                 # Never include credentials or the API's failed_generation payload.
@@ -189,7 +197,17 @@ class GroqLLM:
             if choice.get("finish_reason") != "stop" or not isinstance(content, str) or not content.strip():
                 raise RuntimeError("Groq returned an incomplete answer; it was not cached")
             if json_mode or json_schema is not None:
-                json.loads(content)
+                import jsonschema
+                try:
+                    parsed = json.loads(content)
+                    if json_schema is not None:
+                        jsonschema.validate(parsed, json_schema)
+                    elif not isinstance(parsed, dict):
+                        raise ValueError("Expected a JSON object")
+                except (ValueError, jsonschema.ValidationError):
+                    if attempt == 7:
+                        raise RuntimeError("Groq returned invalid JSON; it was not cached") from None
+                    continue
             import tempfile
             with tempfile.NamedTemporaryFile(mode="w", dir=self.cache_dir, delete=False) as f:
                 json.dump({"content": content}, f)

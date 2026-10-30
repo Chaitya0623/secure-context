@@ -142,3 +142,26 @@ def test_other_400_errors_are_not_retried(monkeypatch, tmp_path):
     with pytest.raises(RuntimeError, match='invalid_parameter'):
         GroqLLM('a', tmp_path).complete('s', 'p', json_schema=GroqPIIDetector.SCHEMA)
     assert len(calls) == 1
+
+
+def test_format_fallback_validates_before_caching(monkeypatch, tmp_path):
+    monkeypatch.setenv('GROQ_API_KEY', 'test-key')
+    monkeypatch.setattr('time.sleep', lambda _: None)
+    class InvalidJSON(Response):
+        def json(self):
+            return {'error': {'code': 'json_validate_failed', 'message': 'Invalid JSON'}}
+    responses = iter([InvalidJSON(400)] * 3 + [
+        Response(content='{"items": [{"text": "Alice", "type": "INVALID"}]}'),
+        Response(content='{"items": []}')])
+    formats = []
+    def post(*args, **kwargs):
+        formats.append(kwargs['json'].get('response_format'))
+        return next(responses)
+    monkeypatch.setattr(requests, 'post', post)
+    llm = GroqLLM('a', tmp_path)
+    assert llm.complete('s', 'p', json_schema=GroqPIIDetector.SCHEMA) == '{"items": []}'
+    assert formats[:3] == [formats[0]] * 3
+    assert formats[3:] == [None, None]
+    assert llm.complete('s', 'p', json_schema=GroqPIIDetector.SCHEMA) == '{"items": []}'
+    assert len(formats) == 5
+    assert len(list(tmp_path.iterdir())) == 1
