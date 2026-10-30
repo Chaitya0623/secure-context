@@ -114,7 +114,73 @@ class NvidiaLLM:
         raise RuntimeError("NVIDIA API kept failing (rate limit or server error)")
 
 
+class GroqLLM:
+    """Groq chat API with atomic, per-request checkpoints."""
+    URL = "https://api.groq.com/openai/v1/chat/completions"
+
+    def __init__(self, model=None, cache_dir=None):
+        from pathlib import Path
+        self.key = os.environ.get("GROQ_API_KEY")
+        if not self.key:
+            raise ValueError("Set GROQ_API_KEY in your Terminal before running the evaluation")
+        self.model_id = model or os.environ.get("GROQ_LLM_MODEL", "openai/gpt-oss-120b")
+        self.name = f"groq:{self.model_id}"
+        self.cache_dir = Path(cache_dir or Path(__file__).resolve().parents[1] / "data/cache/groq")
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+
+    def complete(self, system, prompt, *, json_mode=False, **_):
+        import hashlib
+        import json
+        import time
+        import requests
+        body = {"model": self.model_id, "temperature": 0.2, "max_completion_tokens": 4096,
+                "messages": [{"role": "system", "content": system}, {"role": "user", "content": prompt}]}
+        if json_mode:
+            body["response_format"] = {"type": "json_object"}
+        digest = hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
+        path = self.cache_dir / (digest + ".json")
+        if path.exists():
+            return json.loads(path.read_text())["content"]
+        for attempt in range(8):
+            try:
+                r = requests.post(self.URL, json=body,
+                                  headers={"Authorization": f"Bearer {self.key}"}, timeout=180)
+            except (requests.Timeout, requests.ConnectionError):
+                if attempt == 7:
+                    raise RuntimeError("Groq connection failed; rerun to resume") from None
+                time.sleep(min(60, 2 ** attempt))
+                continue
+            if r.status_code == 429 or r.status_code >= 500:
+                if attempt == 7:
+                    break
+                try:
+                    delay = float(r.headers.get("retry-after", 2 ** attempt))
+                except ValueError:
+                    delay = 2 ** attempt
+                if delay > 300:
+                    raise RuntimeError(f"Groq requests a {delay:.0f}s wait; rerun later to resume")
+                time.sleep(max(0, delay))
+                continue
+            if not r.ok:
+                raise RuntimeError(f"Groq HTTP {r.status_code}; check your key, model access and quota")
+            choice = r.json()["choices"][0]
+            content = choice["message"].get("content")
+            if choice.get("finish_reason") != "stop" or not isinstance(content, str) or not content.strip():
+                raise RuntimeError("Groq returned an incomplete answer; it was not cached")
+            if json_mode:
+                json.loads(content)
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode="w", dir=self.cache_dir, delete=False) as f:
+                json.dump({"content": content}, f)
+                temporary = f.name
+            os.replace(temporary, path)
+            return content
+        raise RuntimeError("Groq rate limit or server errors persisted; rerun later to resume")
+
+
 def get_backend(name: str = "simulated", model: str | None = None):
+    if name == "groq":
+        return GroqLLM(model)
     if name == "nvidia":
         return NvidiaLLM(model)
     if name == "anthropic":
@@ -125,4 +191,6 @@ def get_backend(name: str = "simulated", model: str | None = None):
         return HFLocalLLM(model)
     if name == "hf-api":
         return HFInferenceLLM(model)
-    return SimulatedLLM()
+    if name == "simulated":
+        return SimulatedLLM()
+    raise ValueError(f"Unknown LLM backend: {name}")

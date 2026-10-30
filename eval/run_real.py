@@ -4,8 +4,8 @@
     python3 eval/run_real.py                # about 5 to 10 minutes
     python3 eval/run_real.py --no-presidio  # faster, skips the spaCy detector
     python3 eval/run_real.py --gliner nvidia/gliner-PII   # add a GLiNER detector (downloads the model)
-    NVIDIA_API_KEY=... python3 eval/run_real.py --gliner nvidia-api --detect-docs 400 --detect-notes 200
-                                            # hosted nvidia/gliner-pii, no download
+    GROQ_API_KEY=... python3 eval/run_real.py --gliner groq-llm --detect-docs 120 --detect-notes 50
+                                            # prompted Groq PII detector, no download
 
 Writes eval/results_real/*.csv, eval/results_real/summary.json and eval/figures_real/*.png.
 """

@@ -114,3 +114,28 @@ See `eval/results/`. The synthetic world was built to stress the system (wealthi
 * The ledger assumes every request about a client is linkable; real linkability is likely lower.
 * Advisor queries are built by inserting client details into Bitext requests.
 * Gretel's labels were partly produced with GLiNER, which may favor GLiNER-family detectors on that benchmark.
+
+### Groq evaluation
+
+Set `GROQ_API_KEY` in your shell, then run `bash scripts/run_with_groq.sh`.
+The runner uses `openai/gpt-oss-20b` for prompted PII extraction and
+`openai/gpt-oss-120b` for answers, grading and attribute inference. Override these
+with `GROQ_DETECT_MODEL` and `GROQ_LLM_MODEL`. Model access and quotas depend on
+your Groq account; this runner does not guarantee free usage.
+
+The `groq-llm` detector is a prompted LLM, not GLiNER. It extracts exact text
+matches into the existing span schema. This benchmark sends public dataset
+text to Groq. Results should be attributed to the selected models, not to NVIDIA.
+
+Successful responses are checkpointed in ignored `data/cache/groq/`, keyed by
+model, prompts and generation settings. Evaluation-only session keys persist
+in `data/cache/eval_sessions/` so pseudonymized prompts remain stable on resume.
+Production sessions continue to use fresh random keys. Interrupted runs can
+resume by running the same command. Keep the cache private: responses and
+benchmark session keys are stored locally. Delete these cache directories to
+force fresh requests. Timing measurements on resumed runs include cache hits
+and should not be interpreted as uncached API latency.
+
+The runner checks access to both models before evaluating, and backs up previous
+outputs under `data/cache/run_backups/`. Tests use mocks and do not write to the
+real evaluation result folders.

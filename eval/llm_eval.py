@@ -1,7 +1,7 @@
 """Real-model evaluation: answer quality (LLM judge) and an LLM attacker, on the public-data client book.
 
-    export NVIDIA_API_KEY=...                       # free key from build.nvidia.com
-    python3 eval/llm_eval.py --backend nvidia --n 15
+    export GROQ_API_KEY=...
+    python3 eval/llm_eval.py --backend groq --n 8
 
 Other backends: anthropic (ANTHROPIC_API_KEY + LLM_MODEL), openai (OPENAI_API_KEY + LLM_MODEL),
 hf-api (HF_TOKEN), hf-local (downloads a model).
@@ -57,9 +57,29 @@ Guess the client's hidden attributes. Reply with JSON only, no other text:
   "age_band": a decade such as "50-59"}}"""
 
 
+def evaluation_session(identity):
+    """Stable sessions only for this public-data benchmark, to resume exact prompts."""
+    import hashlib
+    import os
+    directory = ROOT / "data/cache/eval_sessions"
+    directory.mkdir(parents=True, exist_ok=True)
+    path = directory / hashlib.sha256(identity.encode()).hexdigest()
+    try:
+        fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        pass
+    else:
+        with os.fdopen(fd, "wb") as f:
+            f.write(os.urandom(32))
+    key = path.read_bytes()
+    if len(key) != 32:
+        raise ValueError(f"Invalid evaluation session checkpoint: {path}")
+    return Session(key=key)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--backend", default="nvidia")
+    ap.add_argument("--backend", default="groq")
     ap.add_argument("--model", default=None)
     ap.add_argument("--n", type=int, default=15, help="clients to evaluate")
     args = ap.parse_args()
@@ -79,7 +99,7 @@ def main():
         pipe = Pipeline(storage, engine, llm)
         for i, (c, ctx) in enumerate(zip(clients, ctx_ids)):
             for task in CORE_TASKS:
-                tr = pipe.run(c, ctx, task, mode=mode, session=Session())
+                tr = pipe.run(c, ctx, task, mode=mode, session=evaluation_session(f"{mode}:{c.client_id}:{task}"))
                 rows.append(dict(client=c.client_id, task=task, mode=mode, k=tr.k_single, refused=tr.refused,
                                  unresolved_tokens=len(tr.unresolved), name_leaked_to_model=c.name in tr.prompt,
                                  answer=tr.rehydrated))
@@ -110,7 +130,7 @@ def main():
     att = []
     for c in clients:
         for task in CORE_TASKS:
-            ctx = build_prompt(task, c, TASKS[task]["default"], Session())
+            ctx = build_prompt(task, c, TASKS[task]["default"], evaluation_session(f"attack:{c.client_id}:{task}"))
             g = llm.complete("Answer with JSON only.", ATTACK.format(ctx=ctx, cats=json.dumps(cats)))
             try:
                 guess = json.loads(g[g.index("{"):g.rindex("}") + 1])
