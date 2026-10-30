@@ -1,0 +1,8 @@
+numpy>=1.26
+pandas>=2.1
+scikit-learn>=1.4
+faker>=24
+cryptography>=42
+matplotlib>=3.8
+streamlit>=1.40
+jsonschema>=4.20

@@ -1,0 +1,6 @@
+corruption,restored,flagged_for_review,silently_wrong
+intact,1.0,0.0,0.0
+lowercase,1.0,0.0,0.0
+truncated,1.0,0.0,0.0
+no_brackets,1.0,0.0,0.0
+hallucinated,0.0,1.0,0.0

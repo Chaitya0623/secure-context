@@ -1,0 +1,4 @@
+task,rare_share,auc_policy_predicts_rare,adaptive_utility,uniform_policy,uniform_utility,uniform_pct_k_lt_10
+meeting_prep,0.006,1.0,0.9993333333333333,"{'age': 'band', 'location': 'drop', 'occupation': 'drop', 'aum': 'bucket', 'holdings': 'drop', 'household': 'exact', 'objective': 'exact', 'risk': 'exact', 'horizon': 'exact', 'liquidity': 'bucket', 'notes': 'summary'}",0.8752083333333333,0.0
+concentration,0.008,0.9138104838709677,0.9965714285714287,"{'age': 'drop', 'location': 'drop', 'occupation': 'drop', 'aum': 'bucket', 'holdings': 'drop', 'household': 'drop', 'objective': 'drop', 'risk': 'exact', 'horizon': 'drop', 'liquidity': 'bucket', 'notes': 'drop'}",0.42857142857142855,0.0
+income_plan,0.082,0.6628141771613795,1.0,"{'age': 'drop', 'location': 'drop', 'occupation': 'drop', 'aum': 'exact', 'holdings': 'drop', 'household': 'drop', 'objective': 'exact', 'risk': 'exact', 'horizon': 'exact', 'liquidity': 'bucket', 'notes': 'drop'}",0.5870379075095915,0.0

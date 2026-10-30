@@ -1,0 +1,21 @@
+representation,known_points,pct_unique
+exact date and amount,1,0.99
+exact date and amount,2,0.9966666666666667
+exact date and amount,3,1.0
+exact date and amount,4,1.0
+exact date and amount,5,1.0
+week and amount to $100,1,0.03833333333333333
+week and amount to $100,2,0.6633333333333333
+week and amount to $100,3,0.9583333333333334
+week and amount to $100,4,0.9866666666666667
+week and amount to $100,5,0.9983333333333333
+month and amount band,1,0.0016666666666666668
+month and amount band,2,0.0016666666666666668
+month and amount band,3,0.008333333333333333
+month and amount band,4,0.03666666666666667
+month and amount band,5,0.12333333333333334
+"month, type and amount band",1,0.0
+"month, type and amount band",2,0.02
+"month, type and amount band",3,0.11833333333333333
+"month, type and amount band",4,0.335
+"month, type and amount band",5,0.5516666666666666

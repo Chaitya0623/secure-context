@@ -1,0 +1,8 @@
+attack,detail,result
+Look up context store by AI-log token,0 rows found in 200 attempts,blocked
+"Search context dump for name, SSN, email, account, phone",0 matches across 1000 values,blocked
+Join client_context to identity on a shared key,"context columns: ctx_id, profile, holdings, notes_storage_tokens, summary, qi_mentions; shared identity keys: 0",blocked
+Read identity vault as llm_service,role 'llm_service' has no grant on the identity vault,blocked
+Link the same client across two sessions by token,0 of 200 tokens identical,blocked
+Brute-force a plain SHA-256(SSN) key,recovered=yes; full 10^9 SSN space in about 14 CPU-minutes (much less on a GPU),exposed
+Brute-force an HMAC token without the key,"0 chance collisions in 10,000 guesses (with a wrong key nothing is learned; the key space is 2^256)",blocked

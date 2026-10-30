@@ -1,0 +1,13 @@
+task,mode,pct_unique,pct_k_lt_10,median_k,mean_utility,refused
+meeting_prep,masked,1.0,1.0,1.0,1.0,0.0
+meeting_prep,default,0.007,0.034,407.0,1.0,0.0
+meeting_prep,adaptive,0.0,0.0,415.0,0.9961388888888889,0.0
+meeting_prep,full,1.0,1.0,1.0,1.0,0.0
+concentration,masked,1.0,1.0,1.0,1.0,0.0
+concentration,default,0.006,0.056,304.0,1.0,0.0
+concentration,adaptive,0.0,0.0,335.0,0.9915714285714285,0.0
+concentration,full,1.0,1.0,1.0,1.0,0.0
+income_plan,masked,1.0,1.0,1.0,1.0,0.0
+income_plan,default,0.121,0.475,10.0,1.0,0.0
+income_plan,adaptive,0.0,0.0,57.0,0.9436139085814316,0.0
+income_plan,full,1.0,1.0,1.0,1.0,0.0

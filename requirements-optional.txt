@@ -1,0 +1,9 @@
+# Presidio detector (eval/run_all.py uses it unless --no-presidio)
+presidio-analyzer>=2.2
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+# GLiNER detectors: python eval/run_all.py --gliner nvidia/gliner-PII
+gliner>=0.2
+# Real LLM backends for eval/llm_eval.py and the app
+anthropic>=0.40
+openai>=1.40
+pytest>=8
