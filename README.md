@@ -1,5 +1,7 @@
 # secure-context
 
+For the industry context, project scope and expected outcomes, see the [project brief](docs/PROJECT_BRIEF.md).
+
 Giving AI client context without exposing client data (DSI industry project p040 with LPL Financial).
 
 An advisor's AI assistant is more useful when it knows the client's goals, holdings and history, but sending the full client file to a model provider exposes far more than the task needs. This repo builds and evaluates a privacy-preserving context layer:
