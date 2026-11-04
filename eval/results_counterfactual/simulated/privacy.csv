@@ -1,0 +1,7 @@
+task,policy,k_median,pct_k_lt_min,pct_unique,fields_sent
+meeting_prep,hand-coded task policy,6583.0,0.0,0.0,"age=band, aum=bucket, holdings=sectors, household=exact, objective=exact, risk=exact, horizon=exact, liquidity=bucket, notes=summary"
+meeting_prep,measured policy,6583.0,0.0,0.0,"age=band, aum=bucket, holdings=sectors, household=exact, objective=exact, risk=exact, horizon=exact, liquidity=bucket, notes=summary"
+concentration,hand-coded task policy,8816.0,0.0,0.0,"aum=bucket, holdings=anonymized, risk=exact, liquidity=bucket"
+concentration,measured policy,19738.0,0.0,0.0,"holdings=anonymized, risk=exact, liquidity=bucket"
+income_plan,hand-coded task policy,149.0,0.045,0.005,"age=exact, aum=exact, objective=exact, risk=exact, horizon=exact, liquidity=bucket"
+income_plan,measured policy,149.0,0.045,0.005,"age=exact, aum=exact, risk=exact, horizon=exact, liquidity=bucket"

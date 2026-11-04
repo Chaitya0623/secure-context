@@ -70,7 +70,7 @@ What could not be measured without LPL data is listed in [docs/FUTURE_WORK.md](d
 * **Split storage with HMAC tokens blocked every key-based attack;** a plain SHA-256 of the SSN was brute-forced.
 * **Strategy protection:** binding queries to the advisor's real clients plus coarse answers kept every planted rule at chance after 2,000 queries.
 
-Full method and numbers: [docs/EVALUATION.md](docs/EVALUATION.md). Hosted-model results (nvidia/gliner-PII, LLM answers, LLM attacker): `bash scripts/run_with_nvidia.sh`.
+Full method and numbers: [docs/EVALUATION.md](docs/EVALUATION.md). Which fields each task actually needs, measured with counterfactuals: [docs/COUNTERFACTUAL.md](docs/COUNTERFACTUAL.md). Hosted-model results (nvidia/gliner-PII, LLM answers, LLM attacker): `bash scripts/run_with_nvidia.sh`.
 
 ## Try it
 
@@ -101,9 +101,11 @@ secure_context/
   pipeline.py    one request end to end, with timings
   real_data.py   loaders for the public datasets; Census + SCF directory; client book from Advisory profiles
   exposure.py    transaction unicity, advisor queries, reference population, policy side channel, amounts
+  counterfactual.py  counterfactual necessity test: which fields each task's answer depends on
 scripts/download_data.py  fetches the public datasets
 eval/run_real.py every experiment on the public datasets; writes eval/results_real/ and eval/figures_real/
 eval/run_all.py  every experiment on the synthetic environment; writes eval/results/ and eval/figures/
+eval/run_counterfactual.py counterfactual necessity test (simulator offline, or a real model with --backend groq)
 eval/llm_eval.py optional: LLM-judged answer quality and an LLM attacker (needs an API key)
 app/             Streamlit app
 prototype/       static HTML walkthrough
