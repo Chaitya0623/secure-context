@@ -34,7 +34,7 @@ python3 eval/run_real.py           # every metric on the public datasets -> eval
 python3 eval/run_all.py            # same metrics on the fully synthetic environment -> eval/results/
 ```
 
-`data/sample/` holds a small committed extract (150K Census rows, SCF, Advisory clients) so the hosted app runs on public data without downloading.
+`data/sample/` holds a small committed extract (150K Census rows, SCF, Advisory clients) so the evaluations and tests run on public data without downloading.
 
 ## Metrics
 
@@ -76,12 +76,11 @@ Full method and numbers: [docs/EVALUATION.md](docs/EVALUATION.md). Which fields 
 
 ```bash
 pip install -r requirements.txt
-streamlit run app/streamlit_app.py          # interactive demo
 python eval/run_all.py --no-presidio         # full evaluation (add Presidio: pip install -r requirements-optional.txt)
 pytest -q
 ```
 
-A static walkthrough that needs no Python is in [`prototype/index.html`](prototype/index.html). Deployment options are in [docs/DEPLOY.md](docs/DEPLOY.md).
+The demo is a static walkthrough that needs no Python: open [`prototype/index.html`](prototype/index.html) in a browser. To host it, see [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ## Layout
 
@@ -109,7 +108,6 @@ eval/run_combinations.py  combination risk and the household gap; writes eval/re
 eval/run_all.py  every experiment on the synthetic environment; writes eval/results/ and eval/figures/
 eval/run_counterfactual.py counterfactual necessity test (simulator offline, or a real model with --backend groq)
 eval/llm_eval.py optional: LLM-judged answer quality and an LLM attacker (needs an API key)
-app/             Streamlit app
 prototype/       static HTML walkthrough
 tests/           pytest suite
 ```

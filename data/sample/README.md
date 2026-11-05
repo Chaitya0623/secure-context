@@ -1,6 +1,6 @@
-# Sample data for the hosted app
+# Sample data
 
-Small extracts so the Streamlit app can run on public data without downloading anything.
+Small extracts so the evaluations and tests can run on public data without downloading anything.
 Run `python3 scripts/download_data.py` for the full files used by `eval/run_real.py`.
 
 * `acs_persons.csv.gz`: 150,000 adults sampled from Census ACS PUMS 2023 1-year (NY, NJ, CA, TX, FL, IL). Public domain.

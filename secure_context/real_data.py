@@ -36,7 +36,7 @@ from .data import REGION, SINGLE_STOCKS, Client, Holding, _Builder, holdings_sum
 
 _ROOT = Path(__file__).resolve().parents[1]
 DATA = _ROOT / "data" / "processed" if (_ROOT / "data" / "processed" / "acs_persons.csv.gz").exists() \
-    else _ROOT / "data" / "sample"  # small committed sample (ACS, SCF, advisory clients) for the hosted app
+    else _ROOT / "data" / "sample"  # small committed sample (ACS, SCF, advisory clients) for running without a download
 
 
 def available() -> bool:
