@@ -1,0 +1,73 @@
+a,b,risk_a,risk_b,joint,synergy,reference,level
+occupation,holdings,0.0,0.4,0.7000000000000001,0.30000000000000004,"Census directory (150,000)",coarse
+age,holdings,0.0,0.4,0.5,0.09999999999999998,"Census directory (150,000)",coarse
+location,holdings,0.0,0.4,0.5,0.09999999999999998,"Census directory (150,000)",coarse
+holdings,marital,0.4,0.0,0.5,0.09999999999999998,"Census directory (150,000)",coarse
+aum,holdings,0.0,0.4,0.4,0.0,"Census directory (150,000)",coarse
+age,location,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+age,occupation,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+age,aum,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+age,marital,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+location,occupation,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+location,aum,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+location,marital,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+occupation,aum,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+occupation,marital,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+aum,marital,0.0,0.0,0.0,0.0,"Census directory (150,000)",coarse
+age,location,0.0,0.0,98.7,98.7,"Census directory (150,000)",fine
+location,occupation,0.0,0.0,84.7,84.7,"Census directory (150,000)",fine
+location,aum,0.0,0.0,50.3,50.3,"Census directory (150,000)",fine
+location,holdings,0.0,0.5,35.0,34.5,"Census directory (150,000)",fine
+age,occupation,0.0,0.0,33.5,33.5,"Census directory (150,000)",fine
+occupation,aum,0.0,0.0,20.5,20.5,"Census directory (150,000)",fine
+occupation,holdings,0.0,0.5,15.6,15.1,"Census directory (150,000)",fine
+aum,holdings,0.0,0.5,7.6,7.1,"Census directory (150,000)",fine
+age,holdings,0.0,0.5,5.5,5.0,"Census directory (150,000)",fine
+age,aum,0.0,0.0,3.5000000000000004,3.5000000000000004,"Census directory (150,000)",fine
+occupation,marital,0.0,0.0,2.6,2.6,"Census directory (150,000)",fine
+location,marital,0.0,0.0,1.7000000000000002,1.7000000000000002,"Census directory (150,000)",fine
+holdings,marital,0.5,0.0,0.7000000000000001,0.20000000000000007,"Census directory (150,000)",fine
+age,marital,0.0,0.0,0.3,0.3,"Census directory (150,000)",fine
+aum,marital,0.0,0.0,0.3,0.3,"Census directory (150,000)",fine
+age,occupation,0.0,0.7000000000000001,36.3,35.599999999999994,"firm client book (1,000)",coarse
+location,occupation,0.0,0.7000000000000001,23.3,22.6,"firm client book (1,000)",coarse
+occupation,marital,0.7000000000000001,0.0,20.4,19.7,"firm client book (1,000)",coarse
+occupation,holdings,0.7000000000000001,0.8,20.200000000000003,19.400000000000002,"firm client book (1,000)",coarse
+occupation,dependents,0.7000000000000001,0.0,18.4,17.7,"firm client book (1,000)",coarse
+age,marital,0.0,0.0,4.1000000000000005,4.1000000000000005,"firm client book (1,000)",coarse
+age,holdings,0.0,0.8,4.0,3.2,"firm client book (1,000)",coarse
+holdings,dependents,0.8,0.0,3.5999999999999996,2.8,"firm client book (1,000)",coarse
+occupation,aum,0.7000000000000001,0.0,3.5999999999999996,2.8999999999999995,"firm client book (1,000)",coarse
+location,dependents,0.0,0.0,2.1,2.1,"firm client book (1,000)",coarse
+location,holdings,0.0,0.8,2.1,1.3,"firm client book (1,000)",coarse
+holdings,marital,0.8,0.0,2.0,1.2,"firm client book (1,000)",coarse
+age,location,0.0,0.0,1.9,1.9,"firm client book (1,000)",coarse
+aum,holdings,0.0,0.8,1.7000000000000002,0.9000000000000001,"firm client book (1,000)",coarse
+age,aum,0.0,0.0,1.2,1.2,"firm client book (1,000)",coarse
+location,marital,0.0,0.0,1.0,1.0,"firm client book (1,000)",coarse
+aum,dependents,0.0,0.0,0.7000000000000001,0.7000000000000001,"firm client book (1,000)",coarse
+aum,marital,0.0,0.0,0.5,0.5,"firm client book (1,000)",coarse
+location,aum,0.0,0.0,0.4,0.4,"firm client book (1,000)",coarse
+marital,dependents,0.0,0.0,0.3,0.3,"firm client book (1,000)",coarse
+age,dependents,0.0,0.0,0.0,0.0,"firm client book (1,000)",coarse
+age,occupation,4.0,45.33333333333333,100.0,54.66666666666667,one advisor's book (150),coarse
+occupation,dependents,45.33333333333333,2.666666666666667,93.33333333333333,48.0,one advisor's book (150),coarse
+location,occupation,0.0,45.33333333333333,92.66666666666666,47.33333333333333,one advisor's book (150),coarse
+occupation,holdings,45.33333333333333,6.0,80.66666666666666,35.33333333333333,one advisor's book (150),coarse
+occupation,marital,45.33333333333333,2.0,78.0,32.66666666666667,one advisor's book (150),coarse
+age,location,4.0,0.0,65.33333333333333,61.33333333333333,one advisor's book (150),coarse
+occupation,aum,45.33333333333333,4.666666666666667,47.333333333333336,2.000000000000007,one advisor's book (150),coarse
+age,holdings,4.0,6.0,46.0,40.0,one advisor's book (150),coarse
+age,marital,4.0,2.0,42.0,38.0,one advisor's book (150),coarse
+age,dependents,4.0,2.666666666666667,39.33333333333333,35.33333333333333,one advisor's book (150),coarse
+location,marital,0.0,2.0,30.666666666666664,28.666666666666664,one advisor's book (150),coarse
+holdings,marital,6.0,2.0,28.000000000000004,22.000000000000004,one advisor's book (150),coarse
+holdings,dependents,6.0,2.666666666666667,26.666666666666668,20.666666666666668,one advisor's book (150),coarse
+location,dependents,0.0,2.666666666666667,21.333333333333336,18.666666666666668,one advisor's book (150),coarse
+location,holdings,0.0,6.0,17.333333333333336,11.333333333333336,one advisor's book (150),coarse
+aum,holdings,4.666666666666667,6.0,10.0,4.0,one advisor's book (150),coarse
+age,aum,4.0,4.666666666666667,8.666666666666668,4.000000000000001,one advisor's book (150),coarse
+aum,dependents,4.666666666666667,2.666666666666667,7.333333333333333,2.666666666666666,one advisor's book (150),coarse
+aum,marital,4.666666666666667,2.0,6.666666666666667,2.0,one advisor's book (150),coarse
+marital,dependents,2.0,2.666666666666667,6.666666666666667,4.0,one advisor's book (150),coarse
+location,aum,0.0,4.666666666666667,4.666666666666667,0.0,one advisor's book (150),coarse

@@ -1,0 +1,354 @@
+{
+  "data": "data/sample",
+  "directory_rows": 150000,
+  "clients": 1000,
+  "k_min": 10,
+  "agreement_with_kengine_meeting_prep": 1.0,
+  "Census directory (150,000) [coarse]": {
+    "max_single_field_pct_k_below_min": 0.4,
+    "all_fields_pct_k_below_min": 19.8,
+    "clients_with_identifying_set_pct": 19.8,
+    "smallest_set_size_distribution": {
+      "0": 802,
+      "1": 4,
+      "2": 3,
+      "3": 23,
+      "4": 85,
+      "5": 78,
+      "6": 5
+    },
+    "top_minimal_sets": [
+      {
+        "fields": "age + location + occupation + holdings + marital",
+        "pct_clients": 7.2,
+        "size": 5
+      },
+      {
+        "fields": "age + occupation + holdings + marital",
+        "pct_clients": 4.4,
+        "size": 4
+      },
+      {
+        "fields": "age + location + occupation + marital",
+        "pct_clients": 2.9,
+        "size": 4
+      },
+      {
+        "fields": "age + location + occupation + holdings",
+        "pct_clients": 2.4,
+        "size": 4
+      },
+      {
+        "fields": "age + location + occupation + aum + marital",
+        "pct_clients": 1.2,
+        "size": 5
+      }
+    ]
+  },
+  "Census directory (150,000) [fine]": {
+    "max_single_field_pct_k_below_min": 0.5,
+    "all_fields_pct_k_below_min": 100.0,
+    "clients_with_identifying_set_pct": 100.0,
+    "smallest_set_size_distribution": {
+      "1": 5,
+      "2": 995
+    },
+    "top_minimal_sets": [
+      {
+        "fields": "age + location",
+        "pct_clients": 98.7,
+        "size": 2
+      },
+      {
+        "fields": "location + occupation",
+        "pct_clients": 84.7,
+        "size": 2
+      },
+      {
+        "fields": "location + aum",
+        "pct_clients": 50.3,
+        "size": 2
+      },
+      {
+        "fields": "location + holdings",
+        "pct_clients": 34.5,
+        "size": 2
+      },
+      {
+        "fields": "age + occupation + holdings",
+        "pct_clients": 34.0,
+        "size": 3
+      }
+    ]
+  },
+  "firm client book (1,000) [coarse]": {
+    "max_single_field_pct_k_below_min": 0.8,
+    "all_fields_pct_k_below_min": 100.0,
+    "clients_with_identifying_set_pct": 100.0,
+    "smallest_set_size_distribution": {
+      "1": 14,
+      "2": 546,
+      "3": 387,
+      "4": 53
+    },
+    "top_minimal_sets": [
+      {
+        "fields": "age + location + occupation",
+        "pct_clients": 37.1,
+        "size": 3
+      },
+      {
+        "fields": "age + occupation",
+        "pct_clients": 35.6,
+        "size": 2
+      },
+      {
+        "fields": "age + occupation + dependents",
+        "pct_clients": 33.0,
+        "size": 3
+      },
+      {
+        "fields": "location + occupation + dependents",
+        "pct_clients": 30.1,
+        "size": 3
+      },
+      {
+        "fields": "age + location + holdings + dependents",
+        "pct_clients": 30.1,
+        "size": 4
+      }
+    ]
+  },
+  "one advisor's book (150) [coarse]": {
+    "max_single_field_pct_k_below_min": 45.33333333333333,
+    "all_fields_pct_k_below_min": 100.0,
+    "clients_with_identifying_set_pct": 100.0,
+    "smallest_set_size_distribution": {
+      "1": 83,
+      "2": 67
+    },
+    "top_minimal_sets": [
+      {
+        "fields": "age + location",
+        "pct_clients": 61.333333333333336,
+        "size": 2
+      },
+      {
+        "fields": "age + occupation",
+        "pct_clients": 50.666666666666664,
+        "size": 2
+      },
+      {
+        "fields": "location + occupation",
+        "pct_clients": 47.333333333333336,
+        "size": 2
+      },
+      {
+        "fields": "occupation + dependents",
+        "pct_clients": 46.0,
+        "size": 2
+      },
+      {
+        "fields": "occupation",
+        "pct_clients": 45.333333333333336,
+        "size": 1
+      }
+    ]
+  },
+  "household_gap": [
+    {
+      "reference": "Census directory (150,000)",
+      "variant": "marital status only",
+      "pct_k_below_min": 1.5,
+      "pct_unique": 0.6,
+      "median_k": 2356.0
+    },
+    {
+      "reference": "Census directory (150,000)",
+      "variant": "household dropped (current k engine)",
+      "pct_k_below_min": 0.5,
+      "pct_unique": 0.4,
+      "median_k": 6591.0
+    },
+    {
+      "reference": "firm client book (1,000)",
+      "variant": "as sent: marital + dependents",
+      "pct_k_below_min": 48.199999999999996,
+      "pct_unique": 9.4,
+      "median_k": 10.0
+    },
+    {
+      "reference": "firm client book (1,000)",
+      "variant": "marital status only",
+      "pct_k_below_min": 22.900000000000002,
+      "pct_unique": 4.2,
+      "median_k": 26.0
+    },
+    {
+      "reference": "firm client book (1,000)",
+      "variant": "'has dependents' flag only",
+      "pct_k_below_min": 14.7,
+      "pct_unique": 2.0,
+      "median_k": 32.0
+    },
+    {
+      "reference": "firm client book (1,000)",
+      "variant": "household dropped (current k engine)",
+      "pct_k_below_min": 6.4,
+      "pct_unique": 1.5,
+      "median_k": 57.0
+    },
+    {
+      "reference": "one advisor's book (150)",
+      "variant": "as sent: marital + dependents",
+      "pct_k_below_min": 100.0,
+      "pct_unique": 35.333333333333336,
+      "median_k": 2.0
+    },
+    {
+      "reference": "one advisor's book (150)",
+      "variant": "marital status only",
+      "pct_k_below_min": 92.0,
+      "pct_unique": 22.666666666666664,
+      "median_k": 5.0
+    },
+    {
+      "reference": "one advisor's book (150)",
+      "variant": "'has dependents' flag only",
+      "pct_k_below_min": 76.66666666666667,
+      "pct_unique": 10.0,
+      "median_k": 5.0
+    },
+    {
+      "reference": "one advisor's book (150)",
+      "variant": "household dropped (current k engine)",
+      "pct_k_below_min": 50.0,
+      "pct_unique": 6.666666666666667,
+      "median_k": 9.5
+    }
+  ],
+  "inference_top": [
+    {
+      "known": "location",
+      "inferred": "hidden: state",
+      "uncertainty_removed": 0.7604390083277253
+    },
+    {
+      "known": "holdings",
+      "inferred": "hidden: asset bucket",
+      "uncertainty_removed": 0.18000500667297217
+    },
+    {
+      "known": "occupation",
+      "inferred": "hidden: income band",
+      "uncertainty_removed": 0.13655656501630126
+    },
+    {
+      "known": "age",
+      "inferred": "hidden: marital status",
+      "uncertainty_removed": 0.12938448605643538
+    },
+    {
+      "known": "holdings",
+      "inferred": "hidden: income band",
+      "uncertainty_removed": 0.08252333064173163
+    },
+    {
+      "known": "occupation",
+      "inferred": "hidden: asset bucket",
+      "uncertainty_removed": 0.06883886672888936
+    },
+    {
+      "known": "age",
+      "inferred": "hidden: occupation group",
+      "uncertainty_removed": 0.061762996287476425
+    },
+    {
+      "known": "aum",
+      "inferred": "hidden: income band",
+      "uncertainty_removed": 0.04893609416943933
+    }
+  ],
+  "crowd_homogeneity": [
+    {
+      "hidden": "state",
+      "clients_k_ok": 995,
+      "pct_disclosed": 0.0,
+      "attacker_accuracy": 34.37185929648241,
+      "majority_baseline": 34.2713567839196,
+      "sent": "meeting brief"
+    },
+    {
+      "hidden": "occupation group",
+      "clients_k_ok": 995,
+      "pct_disclosed": 3.919597989949749,
+      "attacker_accuracy": 22.311557788944725,
+      "majority_baseline": 14.170854271356784,
+      "sent": "meeting brief"
+    },
+    {
+      "hidden": "income band",
+      "clients_k_ok": 995,
+      "pct_disclosed": 5.025125628140704,
+      "attacker_accuracy": 35.47738693467337,
+      "majority_baseline": 31.65829145728643,
+      "sent": "meeting brief"
+    },
+    {
+      "hidden": "marital status",
+      "clients_k_ok": 995,
+      "pct_disclosed": 0.10050251256281408,
+      "attacker_accuracy": 53.36683417085427,
+      "majority_baseline": 57.48743718592964,
+      "sent": "meeting brief"
+    },
+    {
+      "hidden": "state",
+      "clients_k_ok": 996,
+      "pct_disclosed": 0.0,
+      "attacker_accuracy": 34.23694779116466,
+      "majority_baseline": 34.23694779116466,
+      "sent": "concentration check"
+    },
+    {
+      "hidden": "occupation group",
+      "clients_k_ok": 996,
+      "pct_disclosed": 0.0,
+      "attacker_accuracy": 15.963855421686745,
+      "majority_baseline": 14.156626506024098,
+      "sent": "concentration check"
+    },
+    {
+      "hidden": "income band",
+      "clients_k_ok": 996,
+      "pct_disclosed": 0.0,
+      "attacker_accuracy": 38.35341365461847,
+      "majority_baseline": 31.626506024096386,
+      "sent": "concentration check"
+    },
+    {
+      "hidden": "marital status",
+      "clients_k_ok": 996,
+      "pct_disclosed": 0.0,
+      "attacker_accuracy": 57.42971887550201,
+      "majority_baseline": 57.42971887550201,
+      "sent": "concentration check"
+    },
+    {
+      "hidden": "occupation group",
+      "clients_k_ok": 976,
+      "pct_disclosed": 4.098360655737705,
+      "attacker_accuracy": 23.36065573770492,
+      "majority_baseline": 14.344262295081966,
+      "sent": "five coarse fields"
+    },
+    {
+      "hidden": "income band",
+      "clients_k_ok": 976,
+      "pct_disclosed": 7.069672131147541,
+      "attacker_accuracy": 38.42213114754098,
+      "majority_baseline": 32.06967213114754,
+      "sent": "five coarse fields"
+    }
+  ]
+}

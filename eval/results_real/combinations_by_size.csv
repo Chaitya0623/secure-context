@@ -1,0 +1,27 @@
+size,worst,median,reference,level
+1,0.4,0.0,"Census directory (150,000)",coarse
+2,0.7000000000000001,0.0,"Census directory (150,000)",coarse
+3,1.0999999999999999,0.5,"Census directory (150,000)",coarse
+4,6.4,2.1,"Census directory (150,000)",coarse
+5,16.7,6.45,"Census directory (150,000)",coarse
+6,19.8,19.8,"Census directory (150,000)",coarse
+1,0.5,0.0,"Census directory (150,000)",fine
+2,98.7,7.6,"Census directory (150,000)",fine
+3,100.0,68.4,"Census directory (150,000)",fine
+4,100.0,97.3,"Census directory (150,000)",fine
+5,100.0,100.0,"Census directory (150,000)",fine
+6,100.0,100.0,"Census directory (150,000)",fine
+1,0.8,0.0,"firm client book (1,000)",coarse
+2,36.3,2.1,"firm client book (1,000)",coarse
+3,79.3,21.9,"firm client book (1,000)",coarse
+4,99.0,64.1,"firm client book (1,000)",coarse
+5,100.0,92.80000000000001,"firm client book (1,000)",coarse
+6,100.0,97.89999999999999,"firm client book (1,000)",coarse
+7,100.0,100.0,"firm client book (1,000)",coarse
+1,45.33333333333333,4.0,one advisor's book (150),coarse
+2,100.0,30.666666666666664,one advisor's book (150),coarse
+3,100.0,91.33333333333333,one advisor's book (150),coarse
+4,100.0,100.0,one advisor's book (150),coarse
+5,100.0,100.0,one advisor's book (150),coarse
+6,100.0,100.0,one advisor's book (150),coarse
+7,100.0,100.0,one advisor's book (150),coarse

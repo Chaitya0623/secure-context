@@ -1,0 +1,381 @@
+fields,size,pct_k_below_min,pct_unique,median_k,reference,level
+holdings,1,0.4,0.4,100276.0,"Census directory (150,000)",coarse
+age,1,0.0,0.0,25993.0,"Census directory (150,000)",coarse
+location,1,0.0,0.0,43840.0,"Census directory (150,000)",coarse
+occupation,1,0.0,0.0,7412.0,"Census directory (150,000)",coarse
+aum,1,0.0,0.0,144253.0,"Census directory (150,000)",coarse
+marital,1,0.0,0.0,86199.0,"Census directory (150,000)",coarse
+occupation + holdings,2,0.7000000000000001,0.4,2975.0,"Census directory (150,000)",coarse
+age + holdings,2,0.5,0.4,9030.0,"Census directory (150,000)",coarse
+location + holdings,2,0.5,0.4,12411.0,"Census directory (150,000)",coarse
+holdings + marital,2,0.5,0.5,21745.0,"Census directory (150,000)",coarse
+aum + holdings,2,0.4,0.4,99842.0,"Census directory (150,000)",coarse
+age + location,2,0.0,0.0,6604.0,"Census directory (150,000)",coarse
+age + occupation,2,0.0,0.0,1254.0,"Census directory (150,000)",coarse
+age + aum,2,0.0,0.0,23781.0,"Census directory (150,000)",coarse
+age + marital,2,0.0,0.0,8533.0,"Census directory (150,000)",coarse
+location + occupation,2,0.0,0.0,2049.0,"Census directory (150,000)",coarse
+location + aum,2,0.0,0.0,42035.0,"Census directory (150,000)",coarse
+location + marital,2,0.0,0.0,19073.0,"Census directory (150,000)",coarse
+occupation + aum,2,0.0,0.0,7369.0,"Census directory (150,000)",coarse
+occupation + marital,2,0.0,0.0,2662.0,"Census directory (150,000)",coarse
+aum + marital,2,0.0,0.0,81964.0,"Census directory (150,000)",coarse
+age + occupation + holdings,3,1.0999999999999999,0.4,526.5,"Census directory (150,000)",coarse
+occupation + aum + holdings,3,1.0999999999999999,0.4,2726.5,"Census directory (150,000)",coarse
+age + occupation + marital,3,1.0,0.3,418.0,"Census directory (150,000)",coarse
+location + occupation + holdings,3,0.8999999999999999,0.5,774.0,"Census directory (150,000)",coarse
+occupation + holdings + marital,3,0.8999999999999999,0.5,1105.0,"Census directory (150,000)",coarse
+age + holdings + marital,3,0.8,0.6,2605.0,"Census directory (150,000)",coarse
+age + location + holdings,3,0.7000000000000001,0.6,2293.0,"Census directory (150,000)",coarse
+age + aum + holdings,3,0.5,0.4,6591.0,"Census directory (150,000)",coarse
+location + aum + holdings,3,0.5,0.4,10926.0,"Census directory (150,000)",coarse
+location + holdings + marital,3,0.5,0.5,6350.0,"Census directory (150,000)",coarse
+occupation + aum + marital,3,0.5,0.0,2432.0,"Census directory (150,000)",coarse
+aum + holdings + marital,3,0.5,0.5,18675.0,"Census directory (150,000)",coarse
+age + location + occupation,3,0.4,0.0,343.0,"Census directory (150,000)",coarse
+location + occupation + aum,3,0.4,0.0,1935.0,"Census directory (150,000)",coarse
+age + occupation + aum,3,0.3,0.0,1140.0,"Census directory (150,000)",coarse
+age + location + marital,3,0.1,0.0,1934.0,"Census directory (150,000)",coarse
+age + location + aum,3,0.0,0.0,5760.0,"Census directory (150,000)",coarse
+age + aum + marital,3,0.0,0.0,8517.0,"Census directory (150,000)",coarse
+location + occupation + marital,3,0.0,0.0,781.0,"Census directory (150,000)",coarse
+location + aum + marital,3,0.0,0.0,10890.0,"Census directory (150,000)",coarse
+age + occupation + holdings + marital,4,6.4,1.3,169.0,"Census directory (150,000)",coarse
+age + location + occupation + marital,4,4.0,0.5,124.0,"Census directory (150,000)",coarse
+age + location + occupation + holdings,4,3.9,1.0,139.0,"Census directory (150,000)",coarse
+age + occupation + aum + marital,4,2.7,0.5,392.0,"Census directory (150,000)",coarse
+age + occupation + aum + holdings,4,2.1,0.5,476.0,"Census directory (150,000)",coarse
+location + occupation + aum + holdings,4,2.1,0.6,667.0,"Census directory (150,000)",coarse
+location + occupation + holdings + marital,4,2.1,0.7000000000000001,290.0,"Census directory (150,000)",coarse
+occupation + aum + holdings + marital,4,2.1,0.8999999999999999,994.0,"Census directory (150,000)",coarse
+age + aum + holdings + marital,4,1.5,0.6,2356.0,"Census directory (150,000)",coarse
+location + occupation + aum + marital,4,1.5,0.3,747.0,"Census directory (150,000)",coarse
+age + location + holdings + marital,4,1.3,0.8,807.0,"Census directory (150,000)",coarse
+age + location + occupation + aum,4,1.2,0.1,319.0,"Census directory (150,000)",coarse
+age + location + aum + holdings,4,0.8999999999999999,0.6,1928.0,"Census directory (150,000)",coarse
+location + aum + holdings + marital,4,0.8,0.5,5403.0,"Census directory (150,000)",coarse
+age + location + aum + marital,4,0.2,0.0,1689.0,"Census directory (150,000)",coarse
+age + location + occupation + holdings + marital,5,16.7,2.6,45.0,"Census directory (150,000)",coarse
+age + occupation + aum + holdings + marital,5,8.6,2.0,159.0,"Census directory (150,000)",coarse
+age + location + occupation + aum + marital,5,7.000000000000001,1.3,113.0,"Census directory (150,000)",coarse
+age + location + occupation + aum + holdings,5,5.8999999999999995,1.2,126.0,"Census directory (150,000)",coarse
+location + occupation + aum + holdings + marital,5,4.7,1.4000000000000001,271.5,"Census directory (150,000)",coarse
+age + location + aum + holdings + marital,5,2.4,1.0999999999999999,698.0,"Census directory (150,000)",coarse
+age + location + occupation + aum + holdings + marital,6,19.8,3.9,40.0,"Census directory (150,000)",coarse
+holdings,1,0.5,0.4,19738.0,"Census directory (150,000)",fine
+age,1,0.0,0.0,2522.0,"Census directory (150,000)",fine
+location,1,0.0,0.0,155.0,"Census directory (150,000)",fine
+occupation,1,0.0,0.0,797.0,"Census directory (150,000)",fine
+aum,1,0.0,0.0,8340.0,"Census directory (150,000)",fine
+marital,1,0.0,0.0,86199.0,"Census directory (150,000)",fine
+age + location,2,98.7,9.4,4.0,"Census directory (150,000)",fine
+location + occupation,2,84.7,39.300000000000004,2.0,"Census directory (150,000)",fine
+location + aum,2,50.3,8.5,9.0,"Census directory (150,000)",fine
+location + holdings,2,35.0,8.6,19.0,"Census directory (150,000)",fine
+age + occupation,2,33.5,4.8,17.0,"Census directory (150,000)",fine
+occupation + aum,2,20.5,3.5000000000000004,56.0,"Census directory (150,000)",fine
+occupation + holdings,2,15.6,4.2,82.0,"Census directory (150,000)",fine
+aum + holdings,2,7.6,3.5999999999999996,603.0,"Census directory (150,000)",fine
+age + holdings,2,5.5,0.8999999999999999,338.5,"Census directory (150,000)",fine
+age + aum,2,3.5000000000000004,0.4,141.0,"Census directory (150,000)",fine
+occupation + marital,2,2.6,0.0,310.0,"Census directory (150,000)",fine
+location + marital,2,1.7000000000000002,0.0,69.0,"Census directory (150,000)",fine
+holdings + marital,2,0.7000000000000001,0.5,5980.0,"Census directory (150,000)",fine
+age + marital,2,0.3,0.0,1092.0,"Census directory (150,000)",fine
+aum + marital,2,0.3,0.0,2811.0,"Census directory (150,000)",fine
+age + location + occupation,3,100.0,88.4,1.0,"Census directory (150,000)",fine
+age + location + holdings,3,100.0,62.2,1.0,"Census directory (150,000)",fine
+age + location + marital,3,99.9,38.7,2.0,"Census directory (150,000)",fine
+age + location + aum,3,99.8,67.4,1.0,"Census directory (150,000)",fine
+location + occupation + aum,3,96.8,76.0,1.0,"Census directory (150,000)",fine
+location + occupation + holdings,3,91.10000000000001,74.1,1.0,"Census directory (150,000)",fine
+location + occupation + marital,3,89.4,55.900000000000006,1.0,"Census directory (150,000)",fine
+location + aum + holdings,3,83.5,47.9,2.0,"Census directory (150,000)",fine
+age + occupation + holdings,3,73.8,32.300000000000004,3.0,"Census directory (150,000)",fine
+age + occupation + aum,3,72.39999999999999,37.6,3.0,"Census directory (150,000)",fine
+location + aum + marital,3,64.4,22.3,5.0,"Census directory (150,000)",fine
+age + occupation + marital,3,59.699999999999996,17.5,6.0,"Census directory (150,000)",fine
+occupation + aum + holdings,3,58.3,28.7,5.5,"Census directory (150,000)",fine
+location + holdings + marital,3,52.5,17.599999999999998,8.0,"Census directory (150,000)",fine
+age + aum + holdings,3,43.7,17.8,14.0,"Census directory (150,000)",fine
+occupation + aum + marital,3,36.7,10.4,25.0,"Census directory (150,000)",fine
+occupation + holdings + marital,3,30.3,9.2,33.0,"Census directory (150,000)",fine
+age + aum + marital,3,21.8,3.9,48.0,"Census directory (150,000)",fine
+age + holdings + marital,3,17.8,3.9,89.0,"Census directory (150,000)",fine
+aum + holdings + marital,3,13.600000000000001,5.0,231.0,"Census directory (150,000)",fine
+age + location + occupation + aum,4,100.0,97.89999999999999,1.0,"Census directory (150,000)",fine
+age + location + occupation + holdings,4,100.0,95.0,1.0,"Census directory (150,000)",fine
+age + location + occupation + marital,4,100.0,93.8,1.0,"Census directory (150,000)",fine
+age + location + aum + holdings,4,100.0,86.2,1.0,"Census directory (150,000)",fine
+age + location + aum + marital,4,100.0,80.4,1.0,"Census directory (150,000)",fine
+age + location + holdings + marital,4,100.0,78.8,1.0,"Census directory (150,000)",fine
+location + occupation + aum + marital,4,97.89999999999999,84.89999999999999,1.0,"Census directory (150,000)",fine
+location + occupation + aum + holdings,4,97.3,90.7,1.0,"Census directory (150,000)",fine
+location + occupation + holdings + marital,4,93.7,81.69999999999999,1.0,"Census directory (150,000)",fine
+age + occupation + aum + holdings,4,89.2,69.19999999999999,1.0,"Census directory (150,000)",fine
+age + occupation + aum + marital,4,86.4,52.2,1.0,"Census directory (150,000)",fine
+location + aum + holdings + marital,4,85.0,60.6,1.0,"Census directory (150,000)",fine
+age + occupation + holdings + marital,4,83.89999999999999,49.3,2.0,"Census directory (150,000)",fine
+occupation + aum + holdings + marital,4,68.89999999999999,38.9,2.0,"Census directory (150,000)",fine
+age + aum + holdings + marital,4,60.699999999999996,27.700000000000003,5.0,"Census directory (150,000)",fine
+age + location + occupation + aum + holdings,5,100.0,98.8,1.0,"Census directory (150,000)",fine
+age + location + occupation + aum + marital,5,100.0,98.7,1.0,"Census directory (150,000)",fine
+age + location + occupation + holdings + marital,5,100.0,97.3,1.0,"Census directory (150,000)",fine
+age + location + aum + holdings + marital,5,100.0,92.0,1.0,"Census directory (150,000)",fine
+location + occupation + aum + holdings + marital,5,98.0,93.89999999999999,1.0,"Census directory (150,000)",fine
+age + occupation + aum + holdings + marital,5,94.69999999999999,78.2,1.0,"Census directory (150,000)",fine
+age + location + occupation + aum + holdings + marital,6,100.0,99.3,1.0,"Census directory (150,000)",fine
+holdings,1,0.8,0.6,534.0,"firm client book (1,000)",coarse
+occupation,1,0.7000000000000001,0.0,69.0,"firm client book (1,000)",coarse
+age,1,0.0,0.0,177.0,"firm client book (1,000)",coarse
+location,1,0.0,0.0,343.0,"firm client book (1,000)",coarse
+aum,1,0.0,0.0,953.0,"firm client book (1,000)",coarse
+marital,1,0.0,0.0,568.0,"firm client book (1,000)",coarse
+dependents,1,0.0,0.0,311.0,"firm client book (1,000)",coarse
+age + occupation,2,36.3,2.3,13.0,"firm client book (1,000)",coarse
+location + occupation,2,23.3,0.6,18.0,"firm client book (1,000)",coarse
+occupation + marital,2,20.4,0.8999999999999999,25.0,"firm client book (1,000)",coarse
+occupation + holdings,2,20.200000000000003,1.7000000000000002,26.0,"firm client book (1,000)",coarse
+occupation + dependents,2,18.4,1.3,27.0,"firm client book (1,000)",coarse
+age + marital,2,4.1000000000000005,0.0,59.0,"firm client book (1,000)",coarse
+age + holdings,2,4.0,0.8999999999999999,57.0,"firm client book (1,000)",coarse
+occupation + aum,2,3.5999999999999996,0.8999999999999999,64.0,"firm client book (1,000)",coarse
+holdings + dependents,2,3.5999999999999996,0.8,156.0,"firm client book (1,000)",coarse
+location + holdings,2,2.1,0.6,108.0,"firm client book (1,000)",coarse
+location + dependents,2,2.1,0.0,108.0,"firm client book (1,000)",coarse
+holdings + marital,2,2.0,0.7000000000000001,136.0,"firm client book (1,000)",coarse
+age + location,2,1.9,0.0,46.0,"firm client book (1,000)",coarse
+aum + holdings,2,1.7000000000000002,0.6,524.0,"firm client book (1,000)",coarse
+age + aum,2,1.2,0.2,166.0,"firm client book (1,000)",coarse
+location + marital,2,1.0,0.0,118.0,"firm client book (1,000)",coarse
+aum + dependents,2,0.7000000000000001,0.0,295.0,"firm client book (1,000)",coarse
+aum + marital,2,0.5,0.1,545.0,"firm client book (1,000)",coarse
+location + aum,2,0.4,0.0,322.0,"firm client book (1,000)",coarse
+marital + dependents,2,0.3,0.0,174.0,"firm client book (1,000)",coarse
+age + dependents,2,0.0,0.0,64.0,"firm client book (1,000)",coarse
+age + location + occupation,3,79.3,14.6,4.0,"firm client book (1,000)",coarse
+age + occupation + dependents,3,73.2,10.4,5.0,"firm client book (1,000)",coarse
+age + occupation + holdings,3,69.3,11.600000000000001,6.0,"firm client book (1,000)",coarse
+age + occupation + marital,3,68.8,12.4,5.0,"firm client book (1,000)",coarse
+location + occupation + holdings,3,61.3,7.9,7.0,"firm client book (1,000)",coarse
+location + occupation + dependents,3,60.4,5.7,8.0,"firm client book (1,000)",coarse
+location + occupation + marital,3,59.599999999999994,6.800000000000001,7.0,"firm client book (1,000)",coarse
+occupation + holdings + marital,3,51.0,8.5,9.0,"firm client book (1,000)",coarse
+occupation + marital + dependents,3,50.8,6.2,9.0,"firm client book (1,000)",coarse
+occupation + holdings + dependents,3,49.2,7.6,10.0,"firm client book (1,000)",coarse
+age + occupation + aum,3,38.5,3.4000000000000004,13.0,"firm client book (1,000)",coarse
+location + occupation + aum,3,28.599999999999998,2.1,16.0,"firm client book (1,000)",coarse
+occupation + aum + marital,3,25.0,2.7,21.0,"firm client book (1,000)",coarse
+occupation + aum + dependents,3,23.7,2.5,26.0,"firm client book (1,000)",coarse
+age + location + marital,3,23.599999999999998,1.7000000000000002,17.0,"firm client book (1,000)",coarse
+occupation + aum + holdings,3,23.3,3.2,25.0,"firm client book (1,000)",coarse
+age + location + holdings,3,21.9,2.0,18.0,"firm client book (1,000)",coarse
+age + location + dependents,3,21.9,0.8,17.0,"firm client book (1,000)",coarse
+age + holdings + dependents,3,19.6,1.7000000000000002,23.0,"firm client book (1,000)",coarse
+age + holdings + marital,3,19.400000000000002,3.0,27.0,"firm client book (1,000)",coarse
+age + marital + dependents,3,17.2,0.6,25.0,"firm client book (1,000)",coarse
+location + holdings + marital,3,12.9,1.0999999999999999,38.0,"firm client book (1,000)",coarse
+holdings + marital + dependents,3,12.8,1.4000000000000001,68.0,"firm client book (1,000)",coarse
+location + marital + dependents,3,11.700000000000001,0.3,46.0,"firm client book (1,000)",coarse
+location + holdings + dependents,3,11.1,2.0,41.0,"firm client book (1,000)",coarse
+aum + holdings + dependents,3,6.9,1.0,142.0,"firm client book (1,000)",coarse
+age + aum + marital,3,6.5,0.7000000000000001,50.0,"firm client book (1,000)",coarse
+age + aum + holdings,3,6.4,1.5,57.0,"firm client book (1,000)",coarse
+location + aum + dependents,3,5.800000000000001,0.2,101.0,"firm client book (1,000)",coarse
+location + aum + holdings,3,5.3,0.8,105.0,"firm client book (1,000)",coarse
+age + location + aum,3,4.9,0.4,42.0,"firm client book (1,000)",coarse
+location + aum + marital,3,4.6,0.4,102.0,"firm client book (1,000)",coarse
+aum + holdings + marital,3,4.1000000000000005,0.8999999999999999,133.0,"firm client book (1,000)",coarse
+aum + marital + dependents,3,2.3,0.3,167.0,"firm client book (1,000)",coarse
+age + aum + dependents,3,1.7000000000000002,0.4,55.0,"firm client book (1,000)",coarse
+age + location + occupation + dependents,4,99.0,37.3,2.0,"firm client book (1,000)",coarse
+age + location + occupation + marital,4,96.0,37.3,2.0,"firm client book (1,000)",coarse
+age + location + occupation + holdings,4,95.7,36.5,2.0,"firm client book (1,000)",coarse
+age + occupation + holdings + dependents,4,92.80000000000001,30.5,3.0,"firm client book (1,000)",coarse
+age + occupation + marital + dependents,4,92.30000000000001,26.900000000000002,3.0,"firm client book (1,000)",coarse
+age + occupation + holdings + marital,4,91.7,31.4,2.0,"firm client book (1,000)",coarse
+location + occupation + marital + dependents,4,88.8,19.0,3.0,"firm client book (1,000)",coarse
+location + occupation + holdings + dependents,4,85.9,22.900000000000002,3.0,"firm client book (1,000)",coarse
+location + occupation + holdings + marital,4,83.8,24.3,3.0,"firm client book (1,000)",coarse
+age + location + occupation + aum,4,82.8,16.0,4.0,"firm client book (1,000)",coarse
+occupation + holdings + marital + dependents,4,78.2,18.8,4.0,"firm client book (1,000)",coarse
+age + occupation + aum + dependents,4,77.5,12.5,5.0,"firm client book (1,000)",coarse
+age + occupation + aum + marital,4,73.0,14.799999999999999,5.0,"firm client book (1,000)",coarse
+age + occupation + aum + holdings,4,72.39999999999999,13.4,5.0,"firm client book (1,000)",coarse
+location + occupation + aum + dependents,4,66.2,7.9,7.0,"firm client book (1,000)",coarse
+age + location + holdings + dependents,4,65.9,9.2,7.0,"firm client book (1,000)",coarse
+location + occupation + aum + marital,4,64.5,9.700000000000001,6.0,"firm client book (1,000)",coarse
+location + occupation + aum + holdings,4,64.1,11.0,7.0,"firm client book (1,000)",coarse
+age + location + holdings + marital,4,59.8,9.6,8.0,"firm client book (1,000)",coarse
+age + location + marital + dependents,4,58.699999999999996,5.6000000000000005,8.0,"firm client book (1,000)",coarse
+occupation + aum + holdings + marital,4,56.00000000000001,11.1,8.0,"firm client book (1,000)",coarse
+occupation + aum + marital + dependents,4,53.0,8.4,9.0,"firm client book (1,000)",coarse
+occupation + aum + holdings + dependents,4,52.1,9.700000000000001,9.0,"firm client book (1,000)",coarse
+age + holdings + marital + dependents,4,42.6,7.7,11.0,"firm client book (1,000)",coarse
+location + holdings + marital + dependents,4,30.8,5.0,16.0,"firm client book (1,000)",coarse
+age + location + aum + marital,4,30.4,2.9000000000000004,15.0,"firm client book (1,000)",coarse
+age + location + aum + dependents,4,27.700000000000003,1.9,15.0,"firm client book (1,000)",coarse
+age + location + aum + holdings,4,25.4,3.5000000000000004,17.0,"firm client book (1,000)",coarse
+age + aum + holdings + marital,4,22.900000000000002,4.2,26.0,"firm client book (1,000)",coarse
+age + aum + holdings + dependents,4,22.400000000000002,2.7,19.0,"firm client book (1,000)",coarse
+age + aum + marital + dependents,4,20.200000000000003,1.6,21.0,"firm client book (1,000)",coarse
+location + aum + holdings + marital,4,18.8,2.6,35.0,"firm client book (1,000)",coarse
+aum + holdings + marital + dependents,4,18.6,2.4,59.0,"firm client book (1,000)",coarse
+location + aum + holdings + dependents,4,16.900000000000002,3.0,38.0,"firm client book (1,000)",coarse
+location + aum + marital + dependents,4,16.0,1.3,44.0,"firm client book (1,000)",coarse
+age + location + occupation + holdings + dependents,5,100.0,61.0,1.0,"firm client book (1,000)",coarse
+age + location + occupation + marital + dependents,5,100.0,58.099999999999994,1.0,"firm client book (1,000)",coarse
+age + location + occupation + aum + dependents,5,99.0,39.6,2.0,"firm client book (1,000)",coarse
+age + occupation + holdings + marital + dependents,5,97.89999999999999,50.5,1.0,"firm client book (1,000)",coarse
+age + location + occupation + holdings + marital,5,97.6,60.8,1.0,"firm client book (1,000)",coarse
+age + location + occupation + aum + marital,5,96.0,40.0,2.0,"firm client book (1,000)",coarse
+location + occupation + holdings + marital + dependents,5,96.0,44.2,2.0,"firm client book (1,000)",coarse
+age + location + occupation + aum + holdings,5,95.7,39.1,2.0,"firm client book (1,000)",coarse
+age + occupation + aum + marital + dependents,5,94.39999999999999,30.099999999999998,2.0,"firm client book (1,000)",coarse
+age + occupation + aum + holdings + dependents,5,92.9,32.800000000000004,2.0,"firm client book (1,000)",coarse
+age + occupation + aum + holdings + marital,5,92.80000000000001,33.6,2.0,"firm client book (1,000)",coarse
+location + occupation + aum + marital + dependents,5,89.2,22.3,3.0,"firm client book (1,000)",coarse
+age + location + holdings + marital + dependents,5,88.6,21.9,3.0,"firm client book (1,000)",coarse
+location + occupation + aum + holdings + dependents,5,88.3,26.5,3.0,"firm client book (1,000)",coarse
+location + occupation + aum + holdings + marital,5,84.2,27.6,3.0,"firm client book (1,000)",coarse
+occupation + aum + holdings + marital + dependents,5,80.2,21.2,4.0,"firm client book (1,000)",coarse
+age + location + aum + holdings + dependents,5,68.4,11.600000000000001,7.0,"firm client book (1,000)",coarse
+age + location + aum + marital + dependents,5,63.7,7.5,7.0,"firm client book (1,000)",coarse
+age + location + aum + holdings + marital,5,63.3,12.3,7.0,"firm client book (1,000)",coarse
+age + aum + holdings + marital + dependents,5,48.199999999999996,9.4,10.0,"firm client book (1,000)",coarse
+location + aum + holdings + marital + dependents,5,36.4,7.000000000000001,15.0,"firm client book (1,000)",coarse
+age + location + occupation + aum + holdings + dependents,6,100.0,63.4,1.0,"firm client book (1,000)",coarse
+age + location + occupation + aum + marital + dependents,6,100.0,60.9,1.0,"firm client book (1,000)",coarse
+age + location + occupation + holdings + marital + dependents,6,100.0,76.5,1.0,"firm client book (1,000)",coarse
+age + occupation + aum + holdings + marital + dependents,6,97.89999999999999,52.5,1.0,"firm client book (1,000)",coarse
+age + location + occupation + aum + holdings + marital,6,97.6,62.9,1.0,"firm client book (1,000)",coarse
+location + occupation + aum + holdings + marital + dependents,6,96.2,46.9,2.0,"firm client book (1,000)",coarse
+age + location + aum + holdings + marital + dependents,6,89.7,24.8,3.0,"firm client book (1,000)",coarse
+age + location + occupation + aum + holdings + marital + dependents,7,100.0,77.60000000000001,1.0,"firm client book (1,000)",coarse
+occupation,1,45.33333333333333,0.6666666666666667,11.0,one advisor's book (150),coarse
+holdings,1,6.0,2.0,79.0,one advisor's book (150),coarse
+aum,1,4.666666666666667,0.0,143.0,one advisor's book (150),coarse
+age,1,4.0,0.0,27.0,one advisor's book (150),coarse
+dependents,1,2.666666666666667,0.0,79.0,one advisor's book (150),coarse
+marital,1,2.0,0.0,80.0,one advisor's book (150),coarse
+location,1,0.0,0.0,45.0,one advisor's book (150),coarse
+age + occupation,2,100.0,22.666666666666664,3.0,one advisor's book (150),coarse
+occupation + dependents,2,93.33333333333333,8.0,5.0,one advisor's book (150),coarse
+location + occupation,2,92.66666666666666,10.666666666666668,3.0,one advisor's book (150),coarse
+occupation + holdings,2,80.66666666666666,9.333333333333334,4.0,one advisor's book (150),coarse
+occupation + marital,2,78.0,12.666666666666668,4.0,one advisor's book (150),coarse
+age + location,2,65.33333333333333,1.3333333333333335,8.0,one advisor's book (150),coarse
+occupation + aum,2,47.333333333333336,3.3333333333333335,11.0,one advisor's book (150),coarse
+age + holdings,2,46.0,5.333333333333334,12.0,one advisor's book (150),coarse
+age + marital,2,42.0,4.666666666666667,10.0,one advisor's book (150),coarse
+age + dependents,2,39.33333333333333,1.3333333333333335,13.0,one advisor's book (150),coarse
+location + marital,2,30.666666666666664,1.3333333333333335,16.5,one advisor's book (150),coarse
+holdings + marital,2,28.000000000000004,2.666666666666667,19.0,one advisor's book (150),coarse
+holdings + dependents,2,26.666666666666668,3.3333333333333335,27.0,one advisor's book (150),coarse
+location + dependents,2,21.333333333333336,0.6666666666666667,21.0,one advisor's book (150),coarse
+location + holdings,2,17.333333333333336,3.3333333333333335,15.0,one advisor's book (150),coarse
+aum + holdings,2,10.0,3.3333333333333335,78.0,one advisor's book (150),coarse
+age + aum,2,8.666666666666668,0.0,25.0,one advisor's book (150),coarse
+aum + dependents,2,7.333333333333333,0.6666666666666667,50.0,one advisor's book (150),coarse
+aum + marital,2,6.666666666666667,0.6666666666666667,79.0,one advisor's book (150),coarse
+marital + dependents,2,6.666666666666667,1.3333333333333335,24.0,one advisor's book (150),coarse
+location + aum,2,4.666666666666667,0.6666666666666667,41.0,one advisor's book (150),coarse
+age + location + occupation,3,100.0,56.00000000000001,1.0,one advisor's book (150),coarse
+age + location + marital,3,100.0,18.0,3.0,one advisor's book (150),coarse
+age + occupation + aum,3,100.0,26.0,3.0,one advisor's book (150),coarse
+age + occupation + holdings,3,100.0,46.666666666666664,2.0,one advisor's book (150),coarse
+age + occupation + marital,3,100.0,52.0,1.0,one advisor's book (150),coarse
+age + occupation + dependents,3,100.0,49.333333333333336,2.0,one advisor's book (150),coarse
+location + occupation + aum,3,100.0,13.333333333333334,3.0,one advisor's book (150),coarse
+location + occupation + holdings,3,100.0,38.0,2.0,one advisor's book (150),coarse
+location + occupation + marital,3,100.0,38.666666666666664,2.0,one advisor's book (150),coarse
+location + occupation + dependents,3,100.0,38.666666666666664,2.0,one advisor's book (150),coarse
+occupation + holdings + dependents,3,100.0,35.333333333333336,2.0,one advisor's book (150),coarse
+occupation + aum + dependents,3,93.33333333333333,10.666666666666668,5.0,one advisor's book (150),coarse
+occupation + marital + dependents,3,93.33333333333333,27.333333333333332,2.0,one advisor's book (150),coarse
+age + marital + dependents,3,92.66666666666666,10.0,5.0,one advisor's book (150),coarse
+occupation + holdings + marital,3,92.66666666666666,37.333333333333336,2.0,one advisor's book (150),coarse
+age + location + holdings,3,92.0,14.000000000000002,3.0,one advisor's book (150),coarse
+age + holdings + marital,3,92.0,20.0,5.0,one advisor's book (150),coarse
+age + location + dependents,3,91.33333333333333,16.666666666666664,3.0,one advisor's book (150),coarse
+age + holdings + dependents,3,84.0,15.333333333333332,4.0,one advisor's book (150),coarse
+occupation + aum + holdings,3,81.33333333333333,16.0,4.0,one advisor's book (150),coarse
+occupation + aum + marital,3,78.0,15.333333333333332,4.0,one advisor's book (150),coarse
+location + holdings + dependents,3,72.0,9.333333333333334,6.0,one advisor's book (150),coarse
+age + location + aum,3,66.66666666666666,3.3333333333333335,7.0,one advisor's book (150),coarse
+location + marital + dependents,3,64.66666666666666,6.0,9.0,one advisor's book (150),coarse
+location + holdings + marital,3,54.0,10.666666666666668,9.0,one advisor's book (150),coarse
+age + aum + holdings,3,50.0,6.666666666666667,9.5,one advisor's book (150),coarse
+age + aum + marital,3,49.333333333333336,6.666666666666667,10.0,one advisor's book (150),coarse
+holdings + marital + dependents,3,44.666666666666664,6.666666666666667,10.0,one advisor's book (150),coarse
+age + aum + dependents,3,43.333333333333336,2.666666666666667,11.0,one advisor's book (150),coarse
+location + aum + marital,3,33.33333333333333,3.3333333333333335,15.0,one advisor's book (150),coarse
+aum + holdings + dependents,3,30.0,5.333333333333334,23.0,one advisor's book (150),coarse
+aum + holdings + marital,3,29.333333333333332,4.666666666666667,18.0,one advisor's book (150),coarse
+location + aum + dependents,3,25.333333333333336,2.0,15.0,one advisor's book (150),coarse
+location + aum + holdings,3,21.333333333333336,5.333333333333334,15.0,one advisor's book (150),coarse
+aum + marital + dependents,3,11.333333333333332,2.0,24.0,one advisor's book (150),coarse
+age + location + occupation + aum,4,100.0,57.99999999999999,1.0,one advisor's book (150),coarse
+age + location + occupation + holdings,4,100.0,71.33333333333334,1.0,one advisor's book (150),coarse
+age + location + occupation + marital,4,100.0,71.33333333333334,1.0,one advisor's book (150),coarse
+age + location + occupation + dependents,4,100.0,75.33333333333333,1.0,one advisor's book (150),coarse
+age + location + aum + marital,4,100.0,22.0,3.0,one advisor's book (150),coarse
+age + location + holdings + marital,4,100.0,44.0,2.0,one advisor's book (150),coarse
+age + location + holdings + dependents,4,100.0,38.666666666666664,2.0,one advisor's book (150),coarse
+age + location + marital + dependents,4,100.0,44.0,2.0,one advisor's book (150),coarse
+age + occupation + aum + holdings,4,100.0,51.33333333333333,1.0,one advisor's book (150),coarse
+age + occupation + aum + marital,4,100.0,56.00000000000001,1.0,one advisor's book (150),coarse
+age + occupation + aum + dependents,4,100.0,51.33333333333333,1.0,one advisor's book (150),coarse
+age + occupation + holdings + marital,4,100.0,74.66666666666667,1.0,one advisor's book (150),coarse
+age + occupation + holdings + dependents,4,100.0,68.66666666666667,1.0,one advisor's book (150),coarse
+age + occupation + marital + dependents,4,100.0,70.66666666666667,1.0,one advisor's book (150),coarse
+age + holdings + marital + dependents,4,100.0,32.0,2.0,one advisor's book (150),coarse
+location + occupation + aum + holdings,4,100.0,42.66666666666667,2.0,one advisor's book (150),coarse
+location + occupation + aum + marital,4,100.0,41.333333333333336,2.0,one advisor's book (150),coarse
+location + occupation + aum + dependents,4,100.0,40.0,2.0,one advisor's book (150),coarse
+location + occupation + holdings + marital,4,100.0,64.66666666666666,1.0,one advisor's book (150),coarse
+location + occupation + holdings + dependents,4,100.0,66.66666666666666,1.0,one advisor's book (150),coarse
+location + occupation + marital + dependents,4,100.0,57.99999999999999,1.0,one advisor's book (150),coarse
+occupation + aum + holdings + dependents,4,100.0,38.0,2.0,one advisor's book (150),coarse
+occupation + holdings + marital + dependents,4,100.0,60.66666666666667,1.0,one advisor's book (150),coarse
+location + holdings + marital + dependents,4,93.33333333333333,18.666666666666668,3.0,one advisor's book (150),coarse
+occupation + aum + marital + dependents,4,93.33333333333333,29.333333333333332,2.0,one advisor's book (150),coarse
+age + aum + marital + dependents,4,92.66666666666666,12.666666666666668,5.0,one advisor's book (150),coarse
+occupation + aum + holdings + marital,4,92.66666666666666,38.666666666666664,2.0,one advisor's book (150),coarse
+age + location + aum + holdings,4,92.0,16.666666666666664,3.0,one advisor's book (150),coarse
+age + aum + holdings + marital,4,92.0,22.666666666666664,5.0,one advisor's book (150),coarse
+age + location + aum + dependents,4,91.33333333333333,19.333333333333332,3.0,one advisor's book (150),coarse
+age + aum + holdings + dependents,4,91.33333333333333,18.0,4.0,one advisor's book (150),coarse
+location + aum + holdings + dependents,4,72.66666666666667,12.666666666666668,6.0,one advisor's book (150),coarse
+location + aum + holdings + marital,4,67.33333333333333,14.666666666666666,9.0,one advisor's book (150),coarse
+location + aum + marital + dependents,4,66.66666666666666,7.333333333333333,9.0,one advisor's book (150),coarse
+aum + holdings + marital + dependents,4,45.33333333333333,8.666666666666668,10.0,one advisor's book (150),coarse
+age + location + occupation + aum + holdings,5,100.0,73.33333333333333,1.0,one advisor's book (150),coarse
+age + location + occupation + aum + marital,5,100.0,74.0,1.0,one advisor's book (150),coarse
+age + location + occupation + aum + dependents,5,100.0,77.33333333333333,1.0,one advisor's book (150),coarse
+age + location + occupation + holdings + marital,5,100.0,82.66666666666667,1.0,one advisor's book (150),coarse
+age + location + occupation + holdings + dependents,5,100.0,84.66666666666667,1.0,one advisor's book (150),coarse
+age + location + occupation + marital + dependents,5,100.0,85.33333333333334,1.0,one advisor's book (150),coarse
+age + location + aum + holdings + marital,5,100.0,49.333333333333336,2.0,one advisor's book (150),coarse
+age + location + aum + holdings + dependents,5,100.0,42.0,2.0,one advisor's book (150),coarse
+age + location + aum + marital + dependents,5,100.0,47.333333333333336,2.0,one advisor's book (150),coarse
+age + location + holdings + marital + dependents,5,100.0,68.0,1.0,one advisor's book (150),coarse
+age + occupation + aum + holdings + marital,5,100.0,76.0,1.0,one advisor's book (150),coarse
+age + occupation + aum + holdings + dependents,5,100.0,72.66666666666667,1.0,one advisor's book (150),coarse
+age + occupation + aum + marital + dependents,5,100.0,73.33333333333333,1.0,one advisor's book (150),coarse
+age + occupation + holdings + marital + dependents,5,100.0,86.66666666666667,1.0,one advisor's book (150),coarse
+age + aum + holdings + marital + dependents,5,100.0,35.333333333333336,2.0,one advisor's book (150),coarse
+location + occupation + aum + holdings + marital,5,100.0,66.0,1.0,one advisor's book (150),coarse
+location + occupation + aum + holdings + dependents,5,100.0,70.0,1.0,one advisor's book (150),coarse
+location + occupation + aum + marital + dependents,5,100.0,60.0,1.0,one advisor's book (150),coarse
+location + occupation + holdings + marital + dependents,5,100.0,82.66666666666667,1.0,one advisor's book (150),coarse
+location + aum + holdings + marital + dependents,5,100.0,23.333333333333332,3.0,one advisor's book (150),coarse
+occupation + aum + holdings + marital + dependents,5,100.0,62.0,1.0,one advisor's book (150),coarse
+age + location + occupation + aum + holdings + marital,6,100.0,84.0,1.0,one advisor's book (150),coarse
+age + location + occupation + aum + holdings + dependents,6,100.0,87.33333333333333,1.0,one advisor's book (150),coarse
+age + location + occupation + aum + marital + dependents,6,100.0,88.0,1.0,one advisor's book (150),coarse
+age + location + occupation + holdings + marital + dependents,6,100.0,92.0,1.0,one advisor's book (150),coarse
+age + location + aum + holdings + marital + dependents,6,100.0,72.0,1.0,one advisor's book (150),coarse
+age + occupation + aum + holdings + marital + dependents,6,100.0,88.0,1.0,one advisor's book (150),coarse
+location + occupation + aum + holdings + marital + dependents,6,100.0,84.0,1.0,one advisor's book (150),coarse
+age + location + occupation + aum + holdings + marital + dependents,7,100.0,93.33333333333333,1.0,one advisor's book (150),coarse

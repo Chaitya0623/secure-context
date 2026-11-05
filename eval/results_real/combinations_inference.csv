@@ -1,0 +1,111 @@
+known,inferred,uncertainty_removed
+marital,hidden: marital status,1.0
+hidden: occupation group,occupation,1.0
+occupation,hidden: occupation group,1.0
+aum,hidden: asset bucket,1.0
+hidden: asset bucket,aum,1.0
+hidden: state,location,1.0
+hidden: marital status,marital,1.0
+location,hidden: state,0.7604390083277253
+hidden: income band,aum,0.2805777823992332
+hidden: income band,hidden: asset bucket,0.2805777823992332
+holdings,aum,0.18000500667297217
+holdings,hidden: asset bucket,0.18000500667297217
+hidden: occupation group,hidden: income band,0.13655656501630126
+occupation,hidden: income band,0.13655656501630126
+age,hidden: marital status,0.12938448605643538
+age,marital,0.12938448605643538
+hidden: income band,holdings,0.09495019346955463
+hidden: occupation group,age,0.0848962559392261
+occupation,age,0.0848962559392261
+holdings,hidden: income band,0.08252333064173163
+hidden: marital status,age,0.07807951132594412
+marital,age,0.07807951132594412
+occupation,hidden: asset bucket,0.06883886672888936
+occupation,aum,0.06883886672888936
+hidden: occupation group,aum,0.06883886672888936
+hidden: occupation group,hidden: asset bucket,0.06883886672888936
+age,occupation,0.061762996287476425
+age,hidden: occupation group,0.061762996287476425
+hidden: income band,occupation,0.05441774481707452
+hidden: income band,hidden: occupation group,0.05441774481707452
+aum,hidden: income band,0.04893609416943933
+hidden: asset bucket,hidden: income band,0.04893609416943933
+occupation,holdings,0.04711757132348798
+hidden: occupation group,holdings,0.04711757132348798
+age,hidden: asset bucket,0.04200859670231003
+age,aum,0.04200859670231003
+aum,holdings,0.03612265937093227
+hidden: asset bucket,holdings,0.03612265937093227
+hidden: occupation group,hidden: marital status,0.034204093803795514
+occupation,hidden: marital status,0.034204093803795514
+hidden: occupation group,marital,0.034204093803795514
+occupation,marital,0.034204093803795514
+marital,hidden: asset bucket,0.018855697739373945
+marital,aum,0.018855697739373945
+hidden: marital status,hidden: asset bucket,0.018855697739373945
+hidden: marital status,aum,0.018855697739373945
+age,hidden: income band,0.016371902937794103
+holdings,occupation,0.01631893250992333
+holdings,hidden: occupation group,0.01631893250992333
+marital,hidden: occupation group,0.015016640690818964
+hidden: marital status,hidden: occupation group,0.015016640690818964
+marital,occupation,0.015016640690818964
+hidden: marital status,occupation,0.015016640690818964
+hidden: marital status,hidden: income band,0.013774752975459924
+marital,hidden: income band,0.013774752975459924
+hidden: income band,hidden: marital status,0.012503081862269306
+hidden: income band,marital,0.012503081862269306
+age,holdings,0.011174087496846525
+hidden: income band,age,0.008967828579020847
+holdings,age,0.005319625979919825
+marital,holdings,0.004915732490026281
+hidden: marital status,holdings,0.004915732490026281
+hidden: asset bucket,occupation,0.004784512491768699
+aum,occupation,0.004784512491768699
+hidden: asset bucket,hidden: occupation group,0.004784512491768699
+aum,hidden: occupation group,0.004784512491768699
+hidden: occupation group,hidden: state,0.004506965595208146
+occupation,hidden: state,0.004506965595208146
+aum,age,0.004013306568292796
+hidden: asset bucket,age,0.004013306568292796
+holdings,marital,0.003877951650266042
+holdings,hidden: marital status,0.003877951650266042
+hidden: state,hidden: income band,0.003832305205844432
+hidden: occupation group,location,0.003742003988332508
+occupation,location,0.003742003988332508
+hidden: state,marital,0.0033485036998229358
+hidden: state,hidden: marital status,0.0033485036998229358
+location,hidden: income band,0.0030333195698055413
+hidden: asset bucket,marital,0.0029850519102124864
+aum,marital,0.0029850519102124864
+aum,hidden: marital status,0.0029850519102124864
+hidden: asset bucket,hidden: marital status,0.0029850519102124864
+hidden: state,hidden: occupation group,0.002877024928899568
+hidden: state,occupation,0.002877024928899568
+location,marital,0.0027965772268320533
+location,hidden: marital status,0.0027965772268320533
+hidden: marital status,location,0.0025292848828824825
+marital,location,0.0025292848828824825
+hidden: income band,location,0.0024901319116154464
+hidden: income band,hidden: state,0.002392371735490824
+hidden: marital status,hidden: state,0.0023029584447678193
+marital,hidden: state,0.0023029584447678193
+age,hidden: state,0.0020302627363200797
+location,hidden: occupation group,0.0018164691024077468
+location,occupation,0.0018164691024077468
+hidden: state,age,0.0017814424903435397
+hidden: state,aum,0.001479141591614801
+hidden: state,hidden: asset bucket,0.001479141591614801
+age,location,0.0008464880550761604
+hidden: state,holdings,0.0007225170809387016
+location,hidden: asset bucket,0.000705886505734475
+location,aum,0.000705886505734475
+location,age,0.0005648131300105791
+location,holdings,0.0005543539256472028
+holdings,location,0.00039552342334823933
+holdings,hidden: state,0.00039201039746534095
+hidden: asset bucket,hidden: state,0.00016104763354340732
+aum,hidden: state,0.00016104763354340732
+hidden: asset bucket,location,0.00010106833039709155
+aum,location,0.00010106833039709155
