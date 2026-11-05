@@ -141,6 +141,24 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 .footer-nav{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
 .check{display:flex;gap:8px;align-items:center;font-size:13px}
 
+/* top-level views */
+.views{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.views button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 14px;cursor:pointer;color:var(--muted);font-weight:500;white-space:nowrap}
+.views button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:12px;min-width:0}
+.card p,.card li{max-width:90ch}
+.card ol,.card ul{margin:0;padding-left:20px;display:grid;gap:6px}
+.card a{color:var(--accent)}
+.stage{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 12px;align-items:start}
+.stage .dot{width:30px;height:30px;font-size:12px;border-color:var(--accent);color:var(--accent)}
+.card code{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
+.card h3{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.card h3 .mono,.card h3 .pill{text-transform:none;letter-spacing:0;font-weight:500}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px;align-items:start}
+figure{margin:0;display:grid;gap:6px}
+figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
+figcaption{font-size:12px;color:var(--muted)}
+
 @media (max-width: 900px){
   .split{grid-template-columns:minmax(0,1fr)}
   .ex-grid{grid-template-columns:minmax(0,1fr)}
@@ -157,6 +175,16 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
     </div>
     <span class="badge">All clients and population records are synthetic</span>
   </header>
+
+  <nav class="views" role="tablist" aria-label="Views">
+    <button role="tab" data-view="walk" aria-selected="true">Walkthrough</button>
+    <button role="tab" data-view="pipeline" aria-selected="false">Pipeline (in code)</button>
+    <button role="tab" data-view="data" aria-selected="false">Data</button>
+    <button role="tab" data-view="results" aria-selected="false">Results</button>
+    <button role="tab" data-view="status" aria-selected="false">Status &amp; next steps</button>
+  </nav>
+
+  <div class="view" id="view-walk" style="display:grid;gap:18px">
 
   <section class="controls" aria-label="Scenario">
     <div class="ctl"><label for="clientSel">Client</label>
@@ -186,6 +214,228 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   <div class="footer-nav muted">
     <span>Detection here runs in the browser with patterns and a name dictionary standing in for Presidio + GLiNER. Tokens use real HMAC-SHA256. The LLM step is simulated from a template so the page runs offline.</span>
   </div>
+  </div>
+  <!-- ===== Pipeline as implemented ===== -->
+  <div class="view" id="view-pipeline" style="display:none;gap:18px">
+    <section class="card">
+      <h2>The pipeline as the code runs it</h2>
+      <p class="muted">The walkthrough shows the idea on a made-up client. This is what <code class="mono">secure_context/</code> actually does. It runs in two phases: once when a client is loaded, then on every advisor request.</p>
+    </section>
+
+    <section class="card">
+      <h3>Phase A · once, when a client record is loaded <span class="mono muted">vault.py: SplitStorage.ingest</span></h3>
+      <div class="stage"><span class="dot">1</span><div><b>Store identity in the vault.</b> Name, DOB, SSN, account, email, phone and address go into an SQLite identity vault under a random <code>vault_id</code>. SSN, account, routing number and DOB are encrypted with AES-256-GCM.</div></div>
+      <div class="stage"><span class="dot">2</span><div><b>Give the financial profile its own random key.</b> A new random <code>ctx_id</code> is created. The only link <code>ctx_id → vault_id</code> is stored inside the vault, so the context store holds no identity column.</div></div>
+      <div class="stage"><span class="dot">3</span><div><b>Detect PII in the advisor note.</b> The default detector is <b>regex + the CRM dictionary</b> (the client's own known names, emails and accounts), then coreference ("Mr. Okafor" → "Daniel Okafor"). Presidio and GLiNER/Groq can be added but are not on by default. <span class="mono muted">detect.py: default_detector, resolve_coreference</span></div></div>
+      <div class="stage"><span class="dot">4</span><div><b>Tokenize and store.</b> Detected values are replaced with storage tokens; the token map goes to the vault. The context store keeps the profile, holdings and the tokenized note. <span class="mono muted">tokens.py: dehydrate</span></div></div>
+    </section>
+
+    <section class="card">
+      <h3>Phase B · on every advisor request <span class="mono muted">pipeline.py: Pipeline.run(client, task, mode)</span></h3>
+      <div class="stage"><span class="dot">5</span><div><b>Start a session.</b> A fresh random 32-byte key. Storage tokens in the note are swapped for session tokens <code>&lt;TYPE_hmac6&gt;</code>, so tokens differ in every session. <span class="mono muted">vault.py: session_notes</span></div></div>
+      <div class="stage"><span class="dot">6</span><div><b>Choose how much detail to send</b>, per field (exact, generalized, or dropped), by mode:
+        <ul>
+          <li><b>full</b>: everything, including name and SSN (baseline only)</li>
+          <li><b>masked</b>: tokens for identifiers, every other field exact</li>
+          <li><b>default</b>: the task's fixed policy from <code>policy.py: TASKS</code></li>
+          <li><b>adaptive</b>: tries every level combination and keeps the most useful one whose <b>cumulative k ≥ 10</b>, counting everything already sent about this client (<code>privacy.py: choose_policy, KEngine, ExposureLedger</code>). If nothing qualifies, the request is <b>refused</b> and the model is never called.</li>
+        </ul></div></div>
+      <div class="stage"><span class="dot">7</span><div><b>Build the prompt</b> from the chosen fields and the session-tokenized note or summary. <span class="mono muted">tasks.py: build_prompt</span></div></div>
+      <div class="stage"><span class="dot">8</span><div><b>Call the model.</b> Default is a <b>simulated</b> model; Groq, NVIDIA, Anthropic, OpenAI and Hugging Face backends exist. <span class="mono muted">llm.py: get_backend</span></div></div>
+      <div class="stage"><span class="dot">9</span><div><b>Rehydrate.</b> Session tokens in the answer are replaced with real values from the session map. A malformed token is repaired only if exactly one known token matches; anything else is flagged unresolved. <span class="mono muted">tokens.py: rehydrate</span></div></div>
+      <div class="stage"><span class="dot">10</span><div><b>Record exposure.</b> The ledger stores the most detailed level sent per field. The request trace keeps k for this request, cumulative k, task utility, coverage and per-stage timings. <span class="mono muted">pipeline.py: Trace</span></div></div>
+    </section>
+
+    <section class="card">
+      <h3>Phase C · evaluation (offline, not part of a request)</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Script</th><th>What it measures</th><th>Needs</th></tr></thead><tbody>
+        <tr><td class="mono">eval/run_real.py</td><td>All main experiments on public data: identifiability per task and mode, exposure across 12 requests, attacks, PII detection, strategy extraction, transactions, latency</td><td>Nothing (sample data) or the full download</td></tr>
+        <tr><td class="mono">eval/run_combinations.py</td><td>Which field combinations identify clients; the household gap</td><td>Nothing</td></tr>
+        <tr><td class="mono">eval/run_counterfactual.py</td><td>Which fields each task's answer actually depends on</td><td>Simulator: nothing. Real model: Groq key</td></tr>
+        <tr><td class="mono">eval/llm_eval.py</td><td>Answer quality judged by an AI model; an AI attacker guessing hidden details</td><td>API key</td></tr>
+        <tr><td class="mono">eval/run_all.py</td><td>The same experiments on a fully synthetic 50,000-person world</td><td>Nothing</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="card">
+      <h3>Things to check together</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Point</th><th>What the code does today</th><th>Why it matters</th></tr></thead><tbody>
+        <tr><td>Household not counted in k</td><td>The meeting brief sends marital status and dependents, but they are not a quasi-identifier in <code class="mono">policy.FIELDS</code>, so k and the adaptive search ignore them</td><td>Firm-book identifiability for meeting briefs goes from 6.4% to 48% once counted</td></tr>
+        <tr><td>Default detector is rules only</td><td>Regex + CRM dictionary. Presidio and GLiNER are optional</td><td>Rules catch known clients well but only 6% of identifiers in messy notes</td></tr>
+        <tr><td>Model is simulated by default</td><td>No saved results from a real model yet</td><td>Usefulness numbers come from a rule-based score</td></tr>
+        <tr><td>Ledger assumes every request is linkable</td><td>All requests about a client are merged</td><td>Conservative: real exposure is likely lower</td></tr>
+        <tr><td>k is measured against Census</td><td>Adaptive search uses the Census directory</td><td>Inside the firm's own book the same context identifies far more clients</td></tr>
+        <tr><td>No transcripts</td><td>Only short generated advisor notes are tokenized</td><td>Meeting transcripts were the Meeting 1 demo and the riskiest free text</td></tr>
+      </tbody></table></div>
+    </section>
+  </div>
+
+  <!-- ===== Data ===== -->
+  <div class="view" id="view-data" style="display:none;gap:18px">
+    <section class="card">
+      <h2>Data</h2>
+      <p class="muted">No LPL data. All five sources are public; names, SSNs, accounts and contact details are always generated. None of them are chats: they are tables (one row per person) plus short documents and request sentences.</p>
+      <div class="tbl-wrap"><table><thead><tr><th>Dataset</th><th>What it is</th><th class="num">Size</th><th>Used for</th></tr></thead><tbody>
+        <tr><td><a href="https://www.census.gov/programs-surveys/acs/microdata.html">Census ACS PUMS 2023</a></td><td>Real, anonymized people: age, state, local area, occupation, income, marital status (NY, NJ, CA, TX, FL, IL)</td><td class="num">978,284</td><td>The attacker's directory for crowd size k</td></tr>
+        <tr><td><a href="https://www.federalreserve.gov/econres/scf_2022.htm">Fed Survey of Consumer Finances 2022</a></td><td>Real households' wealth and investment mix</td><td class="num">22,975</td><td>Gives each Census person realistic assets and holdings (statistical match)</td></tr>
+        <tr><td><a href="https://hf.co/datasets/Finance-Agentic-AI/Financial-Advisory-Clients">Financial-Advisory-Clients</a></td><td>Synthetic advisory clients: age, income, marital status, dependents, portfolio, goal, horizon, risk, topics discussed</td><td class="num">5,000</td><td>The client book (1,000 sampled)</td></tr>
+        <tr><td><a href="https://hf.co/datasets/bitext/Bitext-wealth-management-llm-chatbot-training-dataset">Bitext Wealth Management</a></td><td>Single customer request sentences with 24 intent labels</td><td class="num">23,806</td><td>Which tasks need which context; the request mix for repeated-request tests</td></tr>
+        <tr><td><a href="https://hf.co/datasets/gretelai/synthetic_pii_finance_multilingual">Gretel synthetic PII finance</a></td><td>Fake financial documents with labelled PII spans</td><td class="num">2,891</td><td>The PII detection benchmark (the only third-party benchmark)</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <div class="grid2">
+      <section class="card">
+        <h3>How the client book is built</h3>
+        <ol>
+          <li>Take Census adults.</li>
+          <li>Give each one assets and a portfolio mix from an SCF household with similar age, income and occupation.</li>
+          <li>Sample 1,000 Financial-Advisory clients and place each on a Census person with the same age and marital status and similar income. The client takes that person's real location and occupation.</li>
+          <li>Generate a fake name, SSN, account, email and address, and an advisor note from the client's topics and products.</li>
+        </ol>
+        <p class="muted">This is an experimental combination of sources, not a join of the same real people.</p>
+      </section>
+      <section class="card">
+        <h3>Three crowds an attacker can compare against</h3>
+        <div class="tbl-wrap"><table><thead><tr><th>Crowd</th><th>Who has this view</th></tr></thead><tbody>
+          <tr><td>Census directory (978K)</td><td>An outsider who knows nothing about the person's financial firm</td></tr>
+          <tr><td>Firm client book (1,000)</td><td>Anyone who knows the person is an LPL client: a vendor, an employee, the AI provider</td></tr>
+          <tr><td>One advisor's book (150)</td><td>Anyone who knows which advisor the person uses, including the assistant serving that advisor. Here: a random 150 of the 1,000</td></tr>
+        </tbody></table></div>
+      </section>
+    </div>
+
+    <section class="card">
+      <h3>Known gaps in the data</h3>
+      <ul>
+        <li><b>Clients are not wealthy enough.</b> Median portfolio is about $197K; only 3.9% have $1M or more. Wealthier clients are rarer and easier to identify, so real LPL risk is probably higher.</li>
+        <li><b>No chats or meeting transcripts.</b> Free-text tests use short generated notes and Gretel documents.</li>
+        <li><b>Advisor books are random draws.</b> Real books cluster by region and profession.</li>
+        <li><b>Wealth is statistically matched</b> to Census people, not real for that person.</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- ===== Results ===== -->
+  <div class="view" id="view-results" style="display:none;gap:18px">
+    <section class="card">
+      <h2>Results so far</h2>
+      <p class="muted">Crowd size k = how many people match everything the AI saw. k &lt; 10 counts as identifiable. Sources: <span class="mono">eval/results_real/</span>, <span class="mono">eval/results_counterfactual/</span>, <span class="mono">docs/</span>.</p>
+      <div class="legend"><span class="pill ok">Measured on public data</span><span class="pill warn">Simulator only</span><span class="pill bad">Not run yet</span></div>
+    </section>
+
+    <section class="card">
+      <h3>1 · Masking vs. task policy vs. adaptive <span class="pill ok">Measured · 1,000 clients vs. 978K Census</span></h3>
+      <div class="tbl-wrap"><table><thead><tr><th></th><th class="num">Masking only</th><th class="num">Task policy</th><th class="num">Adaptive + ledger</th></tr></thead><tbody>
+        <tr><td>Clients unique after one request</td><td class="num">96.4%</td><td class="num">0% to 3.5%</td><td class="num">0%</td></tr>
+        <tr><td>Clients with k &lt; 10 after 12 requests</td><td class="num">n/a</td><td class="num">15.9%</td><td class="num">0%</td></tr>
+        <tr><td>Task utility after 12 requests (rule-based)</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">0.99</td></tr>
+      </tbody></table></div>
+      <ul>
+        <li>58% of real wealth-management requests need no client data at all.</li>
+        <li>Against one advisor's 150-client book, 83% of clients are identifiable from an income-plan request.</li>
+        <li>One exact transaction singles out 99% of clients; monthly aggregates are much safer.</li>
+        <li>Split storage plus HMAC tokens blocked every key-based attack; a plain SHA-256 of the SSN was cracked in about 14 CPU-minutes.</li>
+        <li>Strategy extraction: binding queries to the advisor's own clients plus coarse answers kept every planted rule at chance after 2,000 queries.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h3>2 · PII detection <span class="pill ok">Measured · rules only</span> <span class="pill bad">Model-based not run</span></h3>
+      <div class="tbl-wrap"><table><thead><tr><th>Detector (2,891 Gretel documents)</th><th class="num">Identifiers caught</th><th class="num">Precision</th><th class="num">Docs with a leak</th></tr></thead><tbody>
+        <tr><td>Regex</td><td class="num">11%</td><td class="num">46%</td><td class="num">75%</td></tr>
+        <tr><td>Presidio</td><td class="num">43%</td><td class="num">38%</td><td class="num">68%</td></tr>
+        <tr><td>Regex + Presidio</td><td class="num">46%</td><td class="num">37%</td><td class="num">67%</td></tr>
+        <tr><td>GLiNER / Groq LLM detector</td><td class="num" colspan="3">pending: needs an API key</td></tr>
+      </tbody></table></div>
+      <p class="muted">Addresses are caught only 9% of the time. On our own notes the CRM dictionary catches 100% of identifiers in expected formats but 6% in messy notes (56% with Presidio).</p>
+    </section>
+
+    <section class="card">
+      <h3>3 · Fields that are safe alone but identify together <span class="pill ok">Measured · 150K Census sample</span></h3>
+      <div class="grid2">
+        <div class="tbl-wrap"><table><thead><tr><th>Coarse fields combined (worst case)</th><th class="num">Census</th><th class="num">Firm book</th><th class="num">Advisor book</th></tr></thead><tbody>
+          <tr><td>1</td><td class="num">0.4%</td><td class="num">0.8%</td><td class="num">45%</td></tr>
+          <tr><td>2</td><td class="num">0.7%</td><td class="num">36%</td><td class="num">100%</td></tr>
+          <tr><td>3</td><td class="num">1.1%</td><td class="num">79%</td><td class="num">100%</td></tr>
+          <tr><td>All</td><td class="num">20%</td><td class="num">100%</td><td class="num">100%</td></tr>
+        </tbody></table></div>
+        <div class="tbl-wrap"><table><thead><tr><th>Riskiest pairs in the firm book</th><th class="num">k &lt; 10</th></tr></thead><tbody>
+          <tr><td>Age band + occupation group</td><td class="num">36%</td></tr>
+          <tr><td>Region + occupation group</td><td class="num">23%</td></tr>
+          <tr><td>Occupation + marital status</td><td class="num">20%</td></tr>
+          <tr><td>Occupation + holdings mix</td><td class="num">20%</td></tr>
+        </tbody></table></div>
+      </div>
+      <div class="grid2">
+        <figure><img src="../eval/figures_real/combinations_by_size.png" alt="Share of clients identifiable versus number of coarse fields combined, for Census, firm book and advisor book"><figcaption>Each field is safe alone; together they identify.</figcaption></figure>
+        <figure><img src="../eval/figures_real/combinations_network.png" alt="Network of field pairs, edges showing the share of clients identifiable within the firm's book"><figcaption>Occupation is the hub of the dangerous pairs.</figcaption></figure>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>4 · The household gap <span class="pill ok">Measured</span></h3>
+      <div class="grid2">
+        <div class="tbl-wrap"><table><thead><tr><th>Meeting brief: household sent as</th><th class="num">Census</th><th class="num">Firm book</th><th class="num">Advisor book</th></tr></thead><tbody>
+          <tr><td>Not counted (today's k engine)</td><td class="num">0.5%</td><td class="num">6.4%</td><td class="num">50%</td></tr>
+          <tr><td><b>As sent: marital + dependents</b></td><td class="num">n/a</td><td class="num"><b>48%</b></td><td class="num"><b>100%</b></td></tr>
+          <tr><td>Marital status only</td><td class="num">1.5%</td><td class="num">23%</td><td class="num">92%</td></tr>
+          <tr><td>"Has dependents" flag only</td><td class="num">n/a</td><td class="num">15%</td><td class="num">77%</td></tr>
+        </tbody></table></div>
+        <figure><img src="../eval/figures_real/combinations_household_gap.png" alt="Bar chart of the meeting brief's identifiable share under each household variant"><figcaption>Census has no dependents field, so those rows are book-only.</figcaption></figure>
+      </div>
+      <p class="note warn">The adaptive policy's "0%" relies on the same engine, so it has the same blind spot. Proposed fix: make household a quasi-identifier with a coarser "has dependents" level, then rerun.</p>
+    </section>
+
+    <section class="card">
+      <h3>5 · What each task actually needs (counterfactual test) <span class="pill warn">Simulator only</span></h3>
+      <p>Ask for the same task twice, changing one field (coarser, swapped or dropped), and see whether the answer changes. If it doesn't, the field isn't needed.</p>
+      <ul>
+        <li>Measured needs match the hand-written policies on <b>32 of 33</b> task-field pairs.</li>
+        <li>The one disagreement: the concentration check never uses assets, yet the policy sends an asset bucket. Candidate to drop.</li>
+        <li>These are simulator results, which check the test itself. A real-model run needs a Groq key.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h3>6 · Not run yet <span class="pill bad">Needs an API key</span></h3>
+      <ul>
+        <li>Answer quality judged by an AI model: the "same usefulness" claim is rule-based today.</li>
+        <li>An AI attacker guessing hidden details.</li>
+        <li>Model-based PII detection (GLiNER, Groq).</li>
+        <li>The counterfactual test on a real model.</li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- ===== Status ===== -->
+  <div class="view" id="view-status" style="display:none;gap:18px">
+    <section class="card">
+      <h2>Status</h2>
+      <div class="tbl-wrap"><table><thead><tr><th>Part</th><th>Status</th></tr></thead><tbody>
+        <tr><td>Split storage, HMAC tokens, rehydration</td><td><span class="pill ok">Built and tested</span></td></tr>
+        <tr><td>Task policies, adaptive search, exposure ledger</td><td><span class="pill ok">Built</span> <span class="pill warn">Household not counted</span></td></tr>
+        <tr><td>PII detection</td><td><span class="pill ok">Rules built</span> <span class="pill bad">Model detectors not evaluated</span></td></tr>
+        <tr><td>Privacy evaluation on public data</td><td><span class="pill ok">Done</span></td></tr>
+        <tr><td>Combination risk and counterfactual needs</td><td><span class="pill ok">Done</span> <span class="pill warn">Counterfactual on simulator only</span></td></tr>
+        <tr><td>Real-model answer quality</td><td><span class="pill bad">Not run</span></td></tr>
+        <tr><td>Meeting transcripts</td><td><span class="pill bad">No data yet</span></td></tr>
+      </tbody></table></div>
+    </section>
+    <section class="card">
+      <h3>Next steps, in priority order</h3>
+      <ol>
+        <li><b>Fix the household gap</b> in the k engine and rerun the main evaluation; agree on the new headline numbers.</li>
+        <li><b>Run the model-based evaluations</b> with a Groq or NVIDIA key: answer quality, AI attacker, GLiNER/Groq detection, counterfactual on a real model.</li>
+        <li><b>Build labelled meeting transcripts</b> for the meeting-prep demo; test detection on them and count what the text mentions toward k.</li>
+        <li><b>Run on the full Census download</b> (about 250 MB) for the combination results.</li>
+        <li><b>Fix the wealth skew</b>: weight toward high-net-worth clients, or ask LPL for aggregate statistics.</li>
+        <li><b>Turn findings into safeguards</b>: a deny list of dangerous field pairs, and a check that a large crowd doesn't all share a hidden value.</li>
+        <li><b>Ask LPL</b> for per-advisor aggregate counts, a few redacted transcripts, and how often advisors type client details into requests.</li>
+      </ol>
+    </section>
+  </div>
+
 </div>
 
 <script>
@@ -603,6 +853,7 @@ function render4(c){
     <div class="meter"><span class="lbl">Fields sent</span><span class="v">${shown.length}/${FIELDS.length}</span><span class="s">${qiSent(S.levels,c)} quasi-identifiers</span></div></div>
   <div class="block"><h3>Client ${tokHTML(tk('PERSON',c.id.name))}</h3>${shown.length?kv(shown):'<p class="muted">Nothing selected.</p>'}</div>
   ${S.levels.notes==='exact'&&Object.keys(c.notesLeak).length?'<p class="note warn">Tokenized notes still reveal details (underlined), so k counts them as exact even if the field above is generalized.</p>':''}
+  ${S.levels.household==='exact'?'<p class="note warn">Household (marital status and dependents) is sent but not counted in k, here or in the Python engine. Inside the firm\'s own client book, counting it raises the identifiable share a lot. See Results.</p>':''}
   <p class="muted">k = how many of ${POP_N.toLocaleString()} synthetic people match everything sent. k = 1 means the person is unique.</p>`;
   return[L,R]}
 function render5(c){
@@ -665,6 +916,14 @@ document.addEventListener('click',e=>{
   if(e.target.id==='resetPolicy'){S.levels={...TASKS[S.task].defaults};render()}
   if(e.target.id==='maskOnly'){S.levels={...ALL_EXACT};render()}});
 document.addEventListener('change',e=>{if(e.target.id==='mangle'){S.mangle=e.target.checked;render()}});
+function showView(v){
+  if(!document.getElementById('view-'+v))v='walk';
+  document.querySelectorAll('.view').forEach(el=>{el.style.display=el.id==='view-'+v?'grid':'none'});
+  document.querySelectorAll('.views button').forEach(b=>b.setAttribute('aria-selected',b.dataset.view===v));
+}
+document.querySelectorAll('.views button').forEach(b=>b.addEventListener('click',()=>{history.replaceState(null,'','#'+b.dataset.view);showView(b.dataset.view)}));
+window.addEventListener('hashchange',()=>showView(location.hash.slice(1)||'walk'));
+showView(location.hash.slice(1)||'walk');
 buildTokens().then(render);
 </script>
 
