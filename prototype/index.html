@@ -252,6 +252,7 @@ figcaption{font-size:12px;color:var(--muted)}
         <tr><td class="mono">eval/run_real.py</td><td>All main experiments on public data: identifiability per task and mode, exposure across 12 requests, attacks, PII detection, strategy extraction, transactions, latency</td><td>Nothing (sample data) or the full download</td></tr>
         <tr><td class="mono">eval/run_combinations.py</td><td>Which field combinations identify clients; the household gap</td><td>Nothing</td></tr>
         <tr><td class="mono">eval/run_counterfactual.py</td><td>Which fields each task's answer actually depends on</td><td>Simulator: nothing. Real model: Groq key</td></tr>
+        <tr><td class="mono">eval/run_redteam.py</td><td>Red-team stress test: an attacker on the model side tries to extract PII over a multi-turn conversation (elicitation, prompt injection)</td><td>Scripted: nothing. Real models: Groq key</td></tr>
         <tr><td class="mono">eval/llm_eval.py</td><td>Answer quality judged by an AI model; an AI attacker guessing hidden details</td><td>API key</td></tr>
         <tr><td class="mono">eval/run_all.py</td><td>The same experiments on a fully synthetic 50,000-person world</td><td>Nothing</td></tr>
       </tbody></table></div>
@@ -265,6 +266,8 @@ figcaption{font-size:12px;color:var(--muted)}
         <tr><td>Model is simulated by default</td><td>No saved results from a real model yet</td><td>Usefulness numbers come from a rule-based score</td></tr>
         <tr><td>Ledger assumes every request is linkable</td><td>All requests about a client are merged</td><td>Conservative: real exposure is likely lower</td></tr>
         <tr><td>k is measured against Census</td><td>Adaptive search uses the Census directory</td><td>Inside the firm's own book the same context identifies far more clients</td></tr>
+        <tr><td>Dictionary match is exact and case-sensitive</td><td>The query sanitizer only catches names spelled exactly as in the CRM; towns are never caught</td><td>In the red-team test, lowercase names, nicknames and towns cross the boundary</td></tr>
+        <tr><td>Rehydration fills tokens inside links</td><td>The rehydrator also repairs loose tokens like <code>PERSON_abc123</code>, wherever they appear</td><td>A prompt injection can make the model put the client token in a link; the advisor's view then carries the real name</td></tr>
         <tr><td>No transcripts</td><td>Only short generated advisor notes are tokenized</td><td>Meeting transcripts were the Meeting 1 demo and the riskiest free text</td></tr>
       </tbody></table></div>
     </section>
@@ -398,12 +401,34 @@ figcaption{font-size:12px;color:var(--muted)}
     </section>
 
     <section class="card">
-      <h3>6 · Not run yet <span class="pill bad">Needs an API key</span></h3>
+      <h3>6 · Red-team stress test <span class="pill warn">Scripted agents · 50 clients</span></h3>
+      <p>An attacker on the model side tries to extract PII over a 6-turn conversation that runs through every real step. <b>honest</b>: normal assistant. <b>elicit</b>: the assistant secretly asks for identifying details. <b>inject</b>: a pasted email tells the AI to put the client reference in a link.</p>
+      <div class="tbl-wrap"><table><thead><tr><th></th><th class="num">honest</th><th class="num">elicit</th><th class="num">inject</th></tr></thead><tbody>
+        <tr><td>Sessions where a client value crossed the boundary</td><td class="num">78%</td><td class="num">94%</td><td class="num">90%</td></tr>
+        <tr><td>Sanitizer catch rate (typed values stopped)</td><td class="num">72%</td><td class="num">55%</td><td class="num">61%</td></tr>
+        <tr><td>Attacker learns the town</td><td class="num">18%</td><td class="num"><b>76%</b></td><td class="num">36%</td></tr>
+        <tr><td>Attacker learns the name</td><td class="num">12%</td><td class="num"><b>30%</b></td><td class="num">20%</td></tr>
+        <tr><td>Attacker learns net worth within 25%</td><td class="num">68%</td><td class="num">70%</td><td class="num">74%</td></tr>
+        <tr><td>Sessions with a link carrying real data</td><td class="num">0%</td><td class="num">0%</td><td class="num"><b>100%</b></td></tr>
+        <tr><td>Same, with the link guard</td><td class="num">0%</td><td class="num">0%</td><td class="num">0%</td></tr>
+      </tbody></table></div>
+      <ul>
+        <li><b>Elicitation works on the advisor, not the model:</b> the model never sees raw data, but good questions get the advisor to type it.</li>
+        <li><b>Injection + rehydration leaks:</b> the rehydrator fills the real name into a planted link. Removing token-bearing links before rehydration blocked every case.</li>
+        <li><b>The query sanitizer is the weak step:</b> lowercase names, nicknames, typos and towns get through. Exactly typed names, email, phone, employer and family are always caught.</li>
+        <li><b>Exact assets are sent by design</b> for income plans; k stays ≥ 10, but the attacker learns net worth in about 70% of sessions.</li>
+      </ul>
+      <p class="muted">Scripted agents test the pipeline, not real model behavior; the scripted injected model always obeys. Run <span class="mono">eval/run_redteam.py --backend groq</span> for real models. Full write-up: <span class="mono">docs/REDTEAM.md</span>.</p>
+    </section>
+
+    <section class="card">
+      <h3>7 · Not run yet <span class="pill bad">Needs an API key</span></h3>
       <ul>
         <li>Answer quality judged by an AI model: the "same usefulness" claim is rule-based today.</li>
         <li>An AI attacker guessing hidden details.</li>
         <li>Model-based PII detection (GLiNER, Groq).</li>
         <li>The counterfactual test on a real model.</li>
+        <li>The red-team test with real models playing advisor, assistant and attacker.</li>
       </ul>
     </section>
   </div>
@@ -418,6 +443,7 @@ figcaption{font-size:12px;color:var(--muted)}
         <tr><td>PII detection</td><td><span class="pill ok">Rules built</span> <span class="pill bad">Model detectors not evaluated</span></td></tr>
         <tr><td>Privacy evaluation on public data</td><td><span class="pill ok">Done</span></td></tr>
         <tr><td>Combination risk and counterfactual needs</td><td><span class="pill ok">Done</span> <span class="pill warn">Counterfactual on simulator only</span></td></tr>
+        <tr><td>Red-team stress test (multi-turn, elicitation, injection)</td><td><span class="pill ok">Built</span> <span class="pill warn">Scripted agents only</span></td></tr>
         <tr><td>Real-model answer quality</td><td><span class="pill bad">Not run</span></td></tr>
         <tr><td>Meeting transcripts</td><td><span class="pill bad">No data yet</span></td></tr>
       </tbody></table></div>
@@ -426,7 +452,8 @@ figcaption{font-size:12px;color:var(--muted)}
       <h3>Next steps, in priority order</h3>
       <ol>
         <li><b>Fix the household gap</b> in the k engine and rerun the main evaluation; agree on the new headline numbers.</li>
-        <li><b>Run the model-based evaluations</b> with a Groq or NVIDIA key: answer quality, AI attacker, GLiNER/Groq detection, counterfactual on a real model.</li>
+        <li><b>Close the red-team gaps:</b> case-insensitive and fuzzy dictionary matching plus towns, the link guard on by default, typed details counted toward k.</li>
+        <li><b>Run the model-based evaluations</b> with a Groq or NVIDIA key: answer quality, AI attacker, GLiNER/Groq detection, counterfactual and red-team on real models.</li>
         <li><b>Build labelled meeting transcripts</b> for the meeting-prep demo; test detection on them and count what the text mentions toward k.</li>
         <li><b>Run on the full Census download</b> (about 250 MB) for the combination results.</li>
         <li><b>Fix the wealth skew</b>: weight toward high-net-worth clients, or ask LPL for aggregate statistics.</li>

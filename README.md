@@ -70,7 +70,7 @@ What could not be measured without LPL data is listed in [docs/FUTURE_WORK.md](d
 * **Split storage with HMAC tokens blocked every key-based attack;** a plain SHA-256 of the SSN was brute-forced.
 * **Strategy protection:** binding queries to the advisor's real clients plus coarse answers kept every planted rule at chance after 2,000 queries.
 
-Full method and numbers: [docs/EVALUATION.md](docs/EVALUATION.md). Which fields each task actually needs, measured with counterfactuals: [docs/COUNTERFACTUAL.md](docs/COUNTERFACTUAL.md). Which fields are harmless alone but identifying together, and two gaps in how k is counted (household, crowd homogeneity): [docs/COMBINATIONS.md](docs/COMBINATIONS.md). Hosted-model results (nvidia/gliner-PII, LLM answers, LLM attacker): `bash scripts/run_with_nvidia.sh`.
+Full method and numbers: [docs/EVALUATION.md](docs/EVALUATION.md). Which fields each task actually needs, measured with counterfactuals: [docs/COUNTERFACTUAL.md](docs/COUNTERFACTUAL.md). Which fields are harmless alone but identifying together, and two gaps in how k is counted (household, crowd homogeneity): [docs/COMBINATIONS.md](docs/COMBINATIONS.md). Red-team stress test, where an attacker tries to extract PII through the whole pipeline over a conversation: [docs/REDTEAM.md](docs/REDTEAM.md). Hosted-model results (nvidia/gliner-PII, LLM answers, LLM attacker): `bash scripts/run_with_nvidia.sh`.
 
 ## Try it
 
@@ -102,11 +102,13 @@ secure_context/
   combinations.py  k for every field combination, minimal identifying sets, inference links, crowd homogeneity
   exposure.py    transaction unicity, advisor queries, reference population, policy side channel, amounts
   counterfactual.py  counterfactual necessity test: which fields each task's answer depends on
+  redteam.py     multi-turn attacker (elicitation, prompt injection) through the full pipeline, with scoring
 scripts/download_data.py  fetches the public datasets
 eval/run_real.py every experiment on the public datasets; writes eval/results_real/ and eval/figures_real/
 eval/run_combinations.py  combination risk and the household gap; writes eval/results_real/combinations_*
 eval/run_all.py  every experiment on the synthetic environment; writes eval/results/ and eval/figures/
 eval/run_counterfactual.py counterfactual necessity test (simulator offline, or a real model with --backend groq)
+eval/run_redteam.py  red-team stress test (scripted offline, or real models with --backend groq)
 eval/llm_eval.py optional: LLM-judged answer quality and an LLM attacker (needs an API key)
 prototype/       static HTML walkthrough
 tests/           pytest suite
