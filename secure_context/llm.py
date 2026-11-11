@@ -1,6 +1,7 @@
 """LLM backends. The pipeline only ever passes dehydrated, minimized text to these.
 
 simulated   offline template answers (default, no key needed)
+gemini      Gemini on Vertex AI (default gemini-3.8-flash), needs GOOGLE_CLOUD_PROJECT and gcloud ADC login
 nvidia      hosted model on build.nvidia.com (default meta/llama-3.1-70b-instruct), needs NVIDIA_API_KEY
 hf-local    open model on this machine (default Qwen/Qwen2.5-1.5B-Instruct), `pip install transformers torch`
 hf-api      Hugging Face Inference Providers (default Qwen/Qwen2.5-7B-Instruct), needs HF_TOKEN
@@ -217,7 +218,87 @@ class GroqLLM:
         raise RuntimeError("Groq rate limit or server errors persisted; rerun later to resume")
 
 
+class GeminiLLM:
+    """Gemini on Vertex AI, with the same per-request disk cache as GroqLLM.
+
+    Auth uses Application Default Credentials through the gcloud CLI
+    (`gcloud auth application-default login`). Set GOOGLE_CLOUD_PROJECT to the
+    billing project; GEMINI_MODEL overrides the default model. Thread safe, so
+    callers can fill the cache in parallel.
+    """
+
+    def __init__(self, model=None, cache_dir=None):
+        import threading
+        from pathlib import Path
+        self.project = os.environ.get("GOOGLE_CLOUD_PROJECT")
+        if not self.project:
+            raise ValueError("Set GOOGLE_CLOUD_PROJECT to the Vertex AI project before running the evaluation")
+        self.location = os.environ.get("GOOGLE_CLOUD_LOCATION", "global")
+        self.model_id = model or os.environ.get("GEMINI_MODEL", "gemini-3.8-flash")
+        self.name = f"gemini:{self.model_id}"
+        host = "aiplatform.googleapis.com" if self.location == "global" else f"{self.location}-aiplatform.googleapis.com"
+        self.url = (f"https://{host}/v1/projects/{self.project}/locations/{self.location}"
+                    f"/publishers/google/models/{self.model_id}:generateContent")
+        self.cache_dir = Path(cache_dir or Path(__file__).resolve().parents[1] / "data/cache/gemini")
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self._lock = threading.Lock()
+        self._token, self._token_time = None, 0.0
+
+    def _auth(self, refresh=False):
+        import subprocess
+        import time
+        with self._lock:
+            if refresh or not self._token or time.time() - self._token_time > 1800:
+                self._token = subprocess.run(["gcloud", "auth", "application-default", "print-access-token"],
+                                             capture_output=True, text=True, check=True).stdout.strip()
+                self._token_time = time.time()
+            return self._token
+
+    def complete(self, system, prompt, **_):
+        import hashlib
+        import json
+        import tempfile
+        import time
+        import requests
+        body = {"systemInstruction": {"parts": [{"text": system}]},
+                "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                "generationConfig": {"temperature": 0.2, "maxOutputTokens": 4096,
+                                     "thinkingConfig": {"thinkingLevel": "low"}}}
+        key = json.dumps({"model": self.model_id, "body": body}, sort_keys=True)
+        path = self.cache_dir / (hashlib.sha256(key.encode()).hexdigest() + ".json")
+        if path.exists():
+            return json.loads(path.read_text())["content"]
+        refresh = False
+        for attempt in range(8):
+            try:
+                r = requests.post(self.url, json=body, timeout=300, headers={
+                    "Authorization": f"Bearer {self._auth(refresh)}", "x-goog-user-project": self.project})
+            except (requests.Timeout, requests.ConnectionError):
+                r = None
+            refresh = r is not None and r.status_code == 401
+            if r is None or r.status_code in (401, 429) or r.status_code >= 500:
+                time.sleep(min(60, 2 ** attempt))
+                continue
+            if not r.ok:
+                raise RuntimeError(f"Gemini HTTP {r.status_code} ({self.model_id}): {r.text[:500]}")
+            cand = (r.json().get("candidates") or [{}])[0]
+            content = "".join(p.get("text", "") for p in cand.get("content", {}).get("parts", [])
+                              if not p.get("thought")).strip()
+            if cand.get("finishReason") != "STOP" or not content:
+                if attempt == 7:
+                    raise RuntimeError(f"Gemini returned an incomplete answer ({cand.get('finishReason')}); not cached")
+                continue
+            with tempfile.NamedTemporaryFile(mode="w", dir=self.cache_dir, delete=False) as f:
+                json.dump({"content": content}, f)
+                temporary = f.name
+            os.replace(temporary, path)
+            return content
+        raise RuntimeError("Gemini rate limit or server errors persisted; rerun to resume")
+
+
 def get_backend(name: str = "simulated", model: str | None = None):
+    if name == "gemini":
+        return GeminiLLM(model)
     if name == "groq":
         return GroqLLM(model)
     if name == "nvidia":
