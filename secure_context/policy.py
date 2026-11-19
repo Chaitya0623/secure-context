@@ -25,7 +25,7 @@ FIELDS = {f.key: f for f in [
     Field("occupation", "Occupation", ("exact", "category", "drop"), qi=True),
     Field("aum", "Assets", ("exact", "bucket", "drop"), qi=True),
     Field("holdings", "Holdings", ("exact", "anonymized", "sectors", "drop"), qi=True),
-    Field("household", "Household", ("exact", "drop")),
+    Field("household", "Household", ("exact", "has_dependents", "drop"), qi=True),
     Field("objective", "Objective", ("exact", "drop")),
     Field("risk", "Risk tolerance", ("exact", "drop")),
     Field("horizon", "Time horizon", ("exact", "drop")),
@@ -127,6 +127,20 @@ def liquidity_bucket(amount: int, text: str) -> str:
     return f"{amt} {when}"
 
 
+def household_parts(household: str) -> tuple[str, int]:
+    """("Married", 2) from "Married, 2 children", "Married, 2 dependents", "Single, no children" or "Widowed"."""
+    head, _, rest = (household or "").partition(",")
+    digits = "".join(ch for ch in rest if ch.isdigit())
+    return head.strip() or "Unknown", int(digits) if digits else 0
+
+
+def household_text(household: str, level: str) -> str:
+    if level == "exact":
+        return household
+    n = household_parts(household)[1]
+    return "Has dependents" if n else "No dependents"
+
+
 def holdings_text(c: Client, level: str) -> str:
     hs = c.holdings
     if level == "exact":
@@ -163,6 +177,8 @@ def value(c: Client, field: str, level: str, tokenized_notes: str = "") -> str |
         return holdings_text(c, level)
     if field == "liquidity":
         return c.liquidity if level == "exact" else liquidity_bucket(c.liquidity_amount, c.liquidity)
+    if field == "household":
+        return household_text(c.household, level)
     if field == "notes":
         return tokenized_notes if level == "tokenized" else c.summary
     return getattr(c, field)

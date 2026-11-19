@@ -59,7 +59,9 @@ The most common minimal sets in the book are `age + occupation` (36% of clients)
 
 Files: `combinations_risk.csv` (all subsets), `combinations_pairs.csv`, `combinations_minimal_sets.csv`, `combinations_by_size.csv`.
 
-## 2. Gap: the household field isn't counted in k
+## 2. Gap: the household field isn't counted in k (fixed)
+
+**Status:** fixed. `household` is now a quasi-identifier with levels `exact` / `has_dependents` / `drop`. `KEngine` matches it on whatever the reference population records (Census: marital status; the firm's book: marital status and dependents), and `run_real.py` was rerun. Meeting brief, firm book: 6.4% to 50.4% with k < 10; one advisor's book: 36% to 100%. The adaptive policy still holds 0% against Census, now choosing "has dependents" where needed, at the same utility (0.999). The table below is the original analysis.
 
 The meeting-brief policy sends `household="exact"`, which renders as "Married, 2 dependents". But `household` is not marked as a quasi-identifier in `policy.FIELDS`, so `KEngine` (and with it the adaptive policy and the exposure ledger) ignores it. Census has marital status. The firm also knows dependents, and any insider or a vendor serving the firm has the book.
 

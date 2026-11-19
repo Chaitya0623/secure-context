@@ -58,9 +58,13 @@ def test_null_control_is_clean(probe_needs, book):
 def test_simulator_matches_what_its_code_reads(book):
     raw = cf.run(SimulatedLLM(), book[:30], CORE_TASKS, pool=book)
     needs = cf.measured_needs(raw)
-    for task in ("meeting_prep", "income_plan"):
-        t = needs[needs.task == task]
-        assert t.agree.all(), t[~t.agree]
+    t = needs[needs.task == "income_plan"]
+    assert t.agree.all(), t[~t.agree]
+    m = needs[needs.task == "meeting_prep"].set_index("field")
+    # the simulated agenda only checks that a household item is present, so the coarser
+    # "has dependents" level is enough for it, though policy.py asks for the exact household
+    assert m.loc["household", "measured_need"] == "has_dependents" and TASKS["meeting_prep"]["needs"]["household"] == "exact"
+    assert m.drop("household").agree.all(), m[~m.agree]
     c = needs[needs.task == "concentration"].set_index("field")
     # the simulated concentration answer never mentions assets, though policy.py lists them as needed
     assert c.loc["aum", "measured_need"] == "drop" and TASKS["concentration"]["needs"]["aum"] == "bucket"

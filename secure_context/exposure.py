@@ -148,9 +148,13 @@ def reference_population_k(directory: pd.DataFrame, clients: list[Client], level
                            book_sizes=(150,), seed: int = 0):
     """k against the general directory vs. against the firm's own client book (and one advisor's book)."""
     from dataclasses import replace
+    from .policy import household_parts
     general = KEngine(directory)
     idx = [c.person_idx for c in clients]
     book = directory.loc[idx].reset_index(drop=True)
+    parts = [household_parts(c.household) for c in clients]  # the firm knows every client's household
+    book["marital"] = [m for m, _ in parts]
+    book["dependents"] = [n for _, n in parts]
     book_engine = KEngine(book)
     remap = [replace(c, person_idx=i) for i, c in enumerate(clients)]
     rng = np.random.default_rng(seed)

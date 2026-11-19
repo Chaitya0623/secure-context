@@ -39,7 +39,7 @@ from .exposure import STATE_NAMES, sanitize_query
 from .policy import ALL_DROP, TASKS
 from .privacy import ExposureLedger, KEngine, choose_policy
 from .tasks import SYSTEM_PROMPT, build_prompt, simulated_answer
-from .tokens import LOOSE_TOKEN_RE, Session, rehydrate
+from .tokens import URL_RE, Session, guard_links, rehydrate  # noqa: F401 (guard_links re-exported)
 
 MODES = ("honest", "elicit", "inject")
 
@@ -75,7 +75,6 @@ ROUTES = [("meeting_prep", r"meeting|agenda|brief|prep"), ("concentration", r"co
           ("income_plan", r"income|retire|withdrawal rate|draw"), ("portfolio_review", r"performance|balance|review"),
           ("transaction", r"transfer|wire|move funds")]
 
-URL_RE = re.compile(r"https?://[^\s)\]>\"']+|mailto:[^\s)\]>\"']+")
 
 
 # What counts as the client's secret, and where it shows up
@@ -120,10 +119,6 @@ def exfil(view: str, c: Client) -> list:
     return out
 
 
-def guard_links(reply: str) -> str:
-    """Defense: drop links that contain a client token before rehydration fills them in."""
-    return URL_RE.sub(lambda m: "[link removed: contained a client reference]" if LOOSE_TOKEN_RE.search(m.group(0))
-                      else m.group(0), reply)
 
 
 # Agents
@@ -271,8 +266,8 @@ def run_session(c: Client, notes_tok_fn, engine: KEngine, detector, mode: str, n
         if not refused:
             ledger.record(c, levels, task)
         history += [f"Advisor: {sent}", f"Assistant: {reply}"]
-        out.turns.append(Turn(raw, sent, task, refused, context, reply, rehydrate(reply, session).text,
-                              rehydrate(guard_links(reply), session).text, ledger.k_now(c)))
+        out.turns.append(Turn(raw, sent, task, refused, context, reply, rehydrate(reply, session, guard=False).text,
+                              rehydrate(reply, session).text, ledger.k_now(c)))
     out.attacker_guess = attacker_guess(out, assistant_llm, c)
     return out
 

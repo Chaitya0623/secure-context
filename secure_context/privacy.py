@@ -33,7 +33,7 @@ class KEngine:
     Levels are nested (exact age implies the band, city implies state and region,
     exact holdings imply the sector mix), so for each client every directory row
     gets a small match signature: the most detailed level it agrees on, per field.
-    A histogram of signatures (at most 432 cells) answers any policy instantly,
+    A histogram of signatures (at most 1,296 cells) answers any policy instantly,
     which keeps the per-client policy search fast on a million-row directory.
     Pass `weights` (e.g. census person weights) to estimate population counts.
     """
@@ -58,6 +58,7 @@ class KEngine:
             ("holdings", "exact"): _codes([p.top_ticker, p.top_weight // 5] + sect),
             ("holdings", "anonymized"): _codes([p.top_group, p.top_single, p.top_weight // 5] + sect),
             ("holdings", "sectors"): _codes(sect),
+            **self._household_codes(p),
         }
         self.fields = QI_FIELDS
         self.nlev = [len(FIELDS[f].levels) for f in self.fields]
@@ -65,6 +66,17 @@ class KEngine:
         grid = np.array(list(itertools.product(*[range(n) for n in reversed(self.nlev)])))[:, ::-1]
         self._sig_levels = grid[np.argsort(grid @ self.mult)]  # row s holds the level index per field
         self._hist = {}
+
+    @staticmethod
+    def _household_codes(p: pd.DataFrame) -> dict:
+        """Household matches on whatever the reference population records: Census has marital
+        status but not dependents; the firm's own book has both. A column the population lacks
+        cannot narrow the crowd, so it contributes a constant code."""
+        const = np.zeros(len(p), dtype=np.int32)
+        exact = [p[col] for col in ("marital", "dependents") if col in p]
+        has_dep = [p["dependents"].astype(float) > 0] if "dependents" in p else []
+        return {("household", "exact"): _codes(exact) if exact else const,
+                ("household", "has_dependents"): _codes(has_dep) if has_dep else const}
 
     @staticmethod
     def effective(levels: dict, c: Client) -> dict:

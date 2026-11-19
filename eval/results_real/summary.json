@@ -170,8 +170,8 @@
     {
       "task": "meeting_prep",
       "mode": "masked",
-      "pct_unique": 0.964,
-      "pct_k_lt_10": 0.999,
+      "pct_unique": 0.981,
+      "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
       "refused": 0.0
@@ -179,9 +179,9 @@
     {
       "task": "meeting_prep",
       "mode": "default",
-      "pct_unique": 0.004,
-      "pct_k_lt_10": 0.006,
-      "median_k": 42993.0,
+      "pct_unique": 0.006,
+      "pct_k_lt_10": 0.007,
+      "median_k": 15135.0,
       "mean_utility": 1.0,
       "refused": 0.0
     },
@@ -190,15 +190,15 @@
       "mode": "adaptive",
       "pct_unique": 0.0,
       "pct_k_lt_10": 0.0,
-      "median_k": 58980.0,
-      "mean_utility": 0.9993333333333333,
+      "median_k": 15135.0,
+      "mean_utility": 0.9992708333333332,
       "refused": 0.0
     },
     {
       "task": "concentration",
       "mode": "masked",
-      "pct_unique": 0.964,
-      "pct_k_lt_10": 0.999,
+      "pct_unique": 0.981,
+      "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
       "refused": 0.0
@@ -224,8 +224,8 @@
     {
       "task": "portfolio_review",
       "mode": "masked",
-      "pct_unique": 0.964,
-      "pct_k_lt_10": 0.999,
+      "pct_unique": 0.981,
+      "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
       "refused": 0.0
@@ -251,8 +251,8 @@
     {
       "task": "transaction",
       "mode": "masked",
-      "pct_unique": 0.964,
-      "pct_k_lt_10": 0.999,
+      "pct_unique": 0.981,
+      "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
       "refused": 0.0
@@ -278,8 +278,8 @@
     {
       "task": "general",
       "mode": "masked",
-      "pct_unique": 0.964,
-      "pct_k_lt_10": 0.999,
+      "pct_unique": 0.981,
+      "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
       "refused": 0.0
@@ -305,8 +305,8 @@
     {
       "task": "income_plan",
       "mode": "masked",
-      "pct_unique": 0.964,
-      "pct_k_lt_10": 0.999,
+      "pct_unique": 0.981,
+      "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
       "refused": 0.0
@@ -360,9 +360,9 @@
     {
       "mode": "default",
       "request": 12,
-      "pct_k_lt_10": 0.159,
-      "pct_unique": 0.089,
-      "median_k": 216.0,
+      "pct_k_lt_10": 0.208,
+      "pct_unique": 0.106,
+      "median_k": 120.5,
       "mean_utility": 1.0,
       "refusal_rate": 0.0
     },
@@ -371,8 +371,8 @@
       "request": 12,
       "pct_k_lt_10": 0.0,
       "pct_unique": 0.0,
-      "median_k": 880.0,
-      "mean_utility": 0.9939450429756311,
+      "median_k": 566.5,
+      "mean_utility": 0.9926040116356757,
       "refusal_rate": 0.0
     }
   ],
@@ -380,9 +380,9 @@
     {
       "mode": "default",
       "request": 12,
-      "pct_k_lt_10": 0.224,
-      "pct_unique": 0.121,
-      "median_k": 76.5,
+      "pct_k_lt_10": 0.386,
+      "pct_unique": 0.186,
+      "median_k": 24.0,
       "mean_utility": 1.0,
       "refusal_rate": 0.0
     },
@@ -391,8 +391,8 @@
       "request": 12,
       "pct_k_lt_10": 0.0,
       "pct_unique": 0.0,
-      "median_k": 654.0,
-      "mean_utility": 0.9878116089763207,
+      "median_k": 238.0,
+      "mean_utility": 0.9814128842206581,
       "refusal_rate": 0.0
     }
   ],
@@ -569,20 +569,20 @@
     {
       "task": "meeting_prep",
       "reference": "general population directory",
-      "pct_k_lt_10": 0.006,
-      "median_k": 42993.0
+      "pct_k_lt_10": 0.007,
+      "median_k": 15135.0
     },
     {
       "task": "meeting_prep",
       "reference": "firm client book (1,000)",
-      "pct_k_lt_10": 0.064,
-      "median_k": 56.0
+      "pct_k_lt_10": 0.504,
+      "median_k": 9.0
     },
     {
       "task": "meeting_prep",
       "reference": "one advisor's book (150)",
-      "pct_k_lt_10": 0.36,
-      "median_k": 11.0
+      "pct_k_lt_10": 1.0,
+      "median_k": 2.0
     },
     {
       "task": "concentration",
@@ -624,29 +624,29 @@
   "policy_side_channel": [
     {
       "task": "meeting_prep",
-      "rare_share": 0.006,
-      "auc_policy_predicts_rare": 1.0,
-      "adaptive_utility": 0.9993333333333333,
+      "rare_share": 0.025,
+      "auc_policy_predicts_rare": 0.5722051282051281,
+      "adaptive_utility": 0.9992708333333332,
       "uniform_policy": {
         "age": "band",
         "location": "drop",
         "occupation": "drop",
         "aum": "bucket",
         "holdings": "drop",
-        "household": "exact",
+        "household": "has_dependents",
         "objective": "exact",
         "risk": "exact",
         "horizon": "exact",
         "liquidity": "bucket",
         "notes": "summary"
       },
-      "uniform_utility": 0.8752083333333333,
+      "uniform_utility": 0.8128125,
       "uniform_pct_k_lt_10": 0.0
     },
     {
       "task": "concentration",
       "rare_share": 0.008,
-      "auc_policy_predicts_rare": 0.9138104838709677,
+      "auc_policy_predicts_rare": 0.9138104838709676,
       "adaptive_utility": 0.9965714285714287,
       "uniform_policy": {
         "age": "drop",

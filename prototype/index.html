@@ -261,13 +261,13 @@ figcaption{font-size:12px;color:var(--muted)}
     <section class="card">
       <h3>Things to check together</h3>
       <div class="tbl-wrap"><table><thead><tr><th>Point</th><th>What the code does today</th><th>Why it matters</th></tr></thead><tbody>
-        <tr><td>Household not counted in k</td><td>The meeting brief sends marital status and dependents, but they are not a quasi-identifier in <code class="mono">policy.FIELDS</code>, so k and the adaptive search ignore them</td><td>Firm-book identifiability for meeting briefs goes from 6.4% to 48% once counted</td></tr>
+        <tr><td>Household now counted in k <span class="pill ok">Fixed</span></td><td>Household is a quasi-identifier with an exact, has-dependents or drop level</td><td>Firm-book identifiability for meeting briefs went from 6.4% to 50.4% once counted; the adaptive policy still holds 0% against Census</td></tr>
         <tr><td>Default detector is rules only</td><td>Regex + CRM dictionary. Presidio and GLiNER are optional</td><td>Rules catch known clients well but only 6% of identifiers in messy notes</td></tr>
         <tr><td>Model is simulated by default</td><td>No saved results from a real model yet</td><td>Usefulness numbers come from a rule-based score</td></tr>
         <tr><td>Ledger assumes every request is linkable</td><td>All requests about a client are merged</td><td>Conservative: real exposure is likely lower</td></tr>
         <tr><td>k is measured against Census</td><td>Adaptive search uses the Census directory</td><td>Inside the firm's own book the same context identifies far more clients</td></tr>
         <tr><td>Dictionary match is exact and case-sensitive</td><td>The query sanitizer only catches names spelled exactly as in the CRM; towns are never caught</td><td>In the red-team test, lowercase names, nicknames and towns cross the boundary</td></tr>
-        <tr><td>Rehydration fills tokens inside links</td><td>The rehydrator also repairs loose tokens like <code>PERSON_abc123</code>, wherever they appear</td><td>A prompt injection can make the model put the client token in a link; the advisor's view then carries the real name</td></tr>
+        <tr><td>Rehydration fills tokens inside links <span class="pill ok">Fixed</span></td><td>Links and email addresses that carry a token are now removed before rehydration, in every pipeline run</td><td>A prompt injection could make the model put the client token in a link; the advisor's view then carried the real name</td></tr>
         <tr><td>No transcripts</td><td>Only short generated advisor notes are tokenized</td><td>Meeting transcripts were the Meeting 1 demo and the riskiest free text</td></tr>
       </tbody></table></div>
     </section>
@@ -330,8 +330,8 @@ figcaption{font-size:12px;color:var(--muted)}
     <section class="card">
       <h3>1 · Masking vs. task policy vs. adaptive <span class="pill ok">Measured · 1,000 clients vs. 978K Census</span></h3>
       <div class="tbl-wrap"><table><thead><tr><th></th><th class="num">Masking only</th><th class="num">Task policy</th><th class="num">Adaptive + ledger</th></tr></thead><tbody>
-        <tr><td>Clients unique after one request</td><td class="num">96.4%</td><td class="num">0% to 3.5%</td><td class="num">0%</td></tr>
-        <tr><td>Clients with k &lt; 10 after 12 requests</td><td class="num">n/a</td><td class="num">15.9%</td><td class="num">0%</td></tr>
+        <tr><td>Clients unique after one request</td><td class="num">98.1%</td><td class="num">0% to 3.5%</td><td class="num">0%</td></tr>
+        <tr><td>Clients with k &lt; 10 after 12 requests</td><td class="num">n/a</td><td class="num">20.8%</td><td class="num">0%</td></tr>
         <tr><td>Task utility after 12 requests (rule-based)</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">0.99</td></tr>
       </tbody></table></div>
       <ul>
@@ -387,7 +387,7 @@ figcaption{font-size:12px;color:var(--muted)}
         </tbody></table></div>
         <figure><img src="../eval/figures_real/combinations_household_gap.png" alt="Bar chart of the meeting brief's identifiable share under each household variant"><figcaption>Census has no dependents field, so those rows are book-only.</figcaption></figure>
       </div>
-      <p class="note warn">The adaptive policy's "0%" relies on the same engine, so it has the same blind spot. Proposed fix: make household a quasi-identifier with a coarser "has dependents" level, then rerun.</p>
+      <p class="note warn">The adaptive policy's "0%" relies on the same engine, so it has the same blind spot. Fixed: household is now a quasi-identifier with a coarser "has dependents" level, and the main evaluation was rerun (firm book 6.4% to 50.4%).</p>
     </section>
 
     <section class="card">
@@ -439,7 +439,7 @@ figcaption{font-size:12px;color:var(--muted)}
       <h2>Status</h2>
       <div class="tbl-wrap"><table><thead><tr><th>Part</th><th>Status</th></tr></thead><tbody>
         <tr><td>Split storage, HMAC tokens, rehydration</td><td><span class="pill ok">Built and tested</span></td></tr>
-        <tr><td>Task policies, adaptive search, exposure ledger</td><td><span class="pill ok">Built</span> <span class="pill warn">Household not counted</span></td></tr>
+        <tr><td>Task policies, adaptive search, exposure ledger</td><td><span class="pill ok">Built</span> <span class="pill ok">Household counted</span></td></tr>
         <tr><td>PII detection</td><td><span class="pill ok">Rules built</span> <span class="pill bad">Model detectors not evaluated</span></td></tr>
         <tr><td>Privacy evaluation on public data</td><td><span class="pill ok">Done</span></td></tr>
         <tr><td>Combination risk and counterfactual needs</td><td><span class="pill ok">Done</span> <span class="pill warn">Counterfactual on simulator only</span></td></tr>
@@ -451,7 +451,7 @@ figcaption{font-size:12px;color:var(--muted)}
     <section class="card">
       <h3>Next steps, in priority order</h3>
       <ol>
-        <li><b>Fix the household gap</b> in the k engine and rerun the main evaluation; agree on the new headline numbers.</li>
+        <li><b>Household gap fixed</b> in the k engine and the main evaluation rerun; agree on the new headline numbers (98.1% unique when masked, 20.8% with k &lt; 10 after 12 requests under fixed policies).</li>
         <li><b>Close the red-team gaps:</b> case-insensitive and fuzzy dictionary matching plus towns, the link guard on by default, typed details counted toward k.</li>
         <li><b>Run the model-based evaluations</b> with a Groq or NVIDIA key: answer quality, AI attacker, GLiNER/Groq detection, counterfactual and red-team on real models.</li>
         <li><b>Build labelled meeting transcripts</b> for the meeting-prep demo; test detection on them and count what the text mentions toward k.</li>
