@@ -57,8 +57,29 @@ class Rehydrated:
     unresolved: list
 
 
-def rehydrate(text: str, session: Session, repair: bool = True) -> Rehydrated:
-    """Swap tokens back. Malformed tokens are repaired only when the match is unique."""
+URL_RE = re.compile(r"https?://[^\s)\]>\"']+|mailto:[^\s)\]>\"']+")
+EMAIL_RE = re.compile(r"[\w.+<>-]+@[\w-]+(?:\.[\w-]+)+")
+LINK_REMOVED = "[link removed: contained a client reference]"
+
+
+def guard_links(text: str) -> str:
+    """Drop links and email addresses that contain a client token, before rehydration can fill them in.
+
+    A prompt injection can ask the model to put a token inside a URL; rehydrating it would
+    send the real value to whoever owns that URL as soon as the advisor clicks or the page
+    prefetches it. Tokens in ordinary prose are left alone."""
+    def drop(m):
+        return LINK_REMOVED if LOOSE_TOKEN_RE.search(m.group(0)) else m.group(0)
+    return EMAIL_RE.sub(drop, URL_RE.sub(drop, text))
+
+
+def rehydrate(text: str, session: Session, repair: bool = True, guard: bool = True) -> Rehydrated:
+    """Swap tokens back. Malformed tokens are repaired only when the match is unique.
+
+    guard=True (the default) first removes links and email addresses that carry a token
+    (see guard_links). Pass guard=False only to measure what an unguarded system would leak."""
+    if guard:
+        text = guard_links(text)
     resolved = 0
     repaired, unresolved = [], []
 

@@ -74,14 +74,14 @@ Caught every time when typed exactly: full name, email, phone, employer, spouse 
 ## Findings
 
 1. **Elicitation works on the advisor, not the model.** The model never sees raw data, but a model that asks good questions gets the advisor to type it. Town leaks go from 18% to 76% of sessions, and name leaks from 12% to 30%.
-2. **Prompt injection plus rehydration is a real exfiltration path.** If the model follows a planted instruction and puts the client's token in a link, the rehydrator fills in the real name, because it also repairs loose tokens like `PERSON_abc123`. Every injected session produced such a link with an obedient model. Removing links that contain tokens before rehydration (`guard_links`) blocked all of them.
+2. **Prompt injection plus rehydration is a real exfiltration path.** If the model follows a planted instruction and puts the client's token in a link, the rehydrator fills in the real name, because it also repairs loose tokens like `PERSON_abc123`. Every injected session produced such a link with an obedient model. Removing links that contain tokens before rehydration (`guard_links`) blocked all of them. The guard is now on by default in `tokens.rehydrate`, so the main pipeline uses it too; the stress test passes `guard=False` only to measure the unguarded view.
 3. **The query sanitizer is the weakest step in conversation.** It only knows exact CRM spellings, so lowercase names, nicknames, typos and towns get through.
 4. **Exact assets are sent by design for some tasks.** The k check passes, but the attacker still learns net worth to within 25% in about 70% of sessions. That is a policy choice to revisit, not a bug.
 
 ## Proposed fixes
 
 - **Make dictionary matching case-insensitive and fuzzy** (edit distance 1, first-name prefixes), and add the client's town to the dictionary.
-- **Turn on the link guard by default** in rehydration, and never rehydrate inside URLs, email addresses or markdown links.
+- ~~Turn on the link guard by default~~ **Done:** `rehydrate` drops any URL, markdown link target or email address that carries a token before filling in real values.
 - **Count typed details toward k:** feed what the sanitizer generalizes or misses into the exposure ledger, the way `KEngine.effective` already does for notes.
 - **Bucket exact assets for income plans** unless the advisor confirms they're needed (Dhruth's counterfactual test can measure whether answers change).
 - **Flag elicitation:** warn the advisor when an assistant reply asks for an identifier.

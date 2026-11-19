@@ -36,7 +36,7 @@ What this project could not measure without LPL data or production access, and w
 
 ## Threats identified but not yet tested
 
-* **Prompt injection on the way back:** a document in the context instructs the model to place tokens in a link or email; rehydration then fills in real values. Control: rehydrated text never triggers actions automatically, and outbound links are stripped or reviewed.
+* **Prompt injection on the way back:** a document in the context instructs the model to place tokens in a link or email; rehydration then fills in real values. Links and email addresses that carry a token are now removed before rehydration (`tokens.guard_links`). Still open: rehydrated text should never trigger actions automatically, and injected instructions that leak through prose rather than links are not caught.
 * **Embedding inversion:** if client documents are stored as embeddings for retrieval, embeddings can be partly inverted. Control: embed dehydrated text only.
 * **Household and relationship structure:** the shape of a family (widowed, two children, son with power of attorney) can identify a client even when every name is tokenized.
 * **Token collisions:** tokens use 24 bits; very large sessions should check uniqueness or use longer tokens.

@@ -81,3 +81,60 @@ def test_pipeline_runs_every_mode(env):
         assert tr.refused or clients[1].name in tr.rehydrated
         if mode != "full":
             assert clients[1].name not in tr.prompt
+
+
+class Injected:
+    """Model that obeys a planted instruction: it puts the client token in a link and an email address."""
+
+    def complete(self, system, prompt, session=None, client=None, **_):
+        tok = session.token("PERSON", client.name)
+        return (f"Brief for {tok}. Details: https://evil.example/c?who={tok} "
+                f"and [portal](https://evil.example/{tok[1:-1]}) or mail {tok}@evil.example.com")
+
+
+def test_link_guard_is_on_in_the_pipeline(env):
+    _, clients, storage, ids, engine = env
+    c = clients[2]
+    tr = Pipeline(storage, engine, Injected()).run(c, ids[2], "meeting_prep", mode="masked")
+    assert tr.rehydrated.startswith(f"Brief for {c.name}.")   # tokens in prose are still filled in
+    assert tr.rehydrated.count(c.name) == 1                   # but never inside a link or email address
+    assert tr.rehydrated.count("link removed") == 3
+
+
+def test_guard_can_be_disabled_for_measurement():
+    s = Session()
+    tok = s.token("PERSON", "Ada Lovelace")
+    assert "Ada Lovelace" in rehydrate(f"see https://x.example/?q={tok}", s, guard=False).text
+    assert "Ada Lovelace" not in rehydrate(f"see https://x.example/?q={tok}", s).text
+    assert rehydrate("see https://lpl.example/help", s).text == "see https://lpl.example/help"
+
+
+def test_household_counts_in_k_when_the_population_records_it(env):
+    import pandas as pd
+    from secure_context.policy import household_parts
+    pop, clients, _, _, _ = env
+    c = clients[0]
+    marital, n = household_parts(c.household)
+    book = pd.DataFrame([dict(pop.loc[x.person_idx]) for x in clients]).reset_index(drop=True)
+    book["marital"] = [household_parts(x.household)[0] for x in clients]
+    book["dependents"] = [household_parts(x.household)[1] for x in clients]
+    from dataclasses import replace
+    c0 = replace(c, person_idx=0)
+    base = {k: "drop" for k in ALL_EXACT}
+    plain, counted = KEngine(book.drop(columns=["marital", "dependents"])), KEngine(book)
+    assert plain.k(c0, dict(base, household="exact")) == len(clients)    # no household data: cannot narrow
+    k_exact = counted.k(c0, dict(base, household="exact"))
+    k_flag = counted.k(c0, dict(base, household="has_dependents"))
+    assert k_exact == sum(household_parts(x.household) == (marital, n) for x in clients)
+    assert k_flag == sum((household_parts(x.household)[1] > 0) == (n > 0) for x in clients)
+    assert k_exact <= k_flag <= len(clients)
+
+
+def test_ledger_remembers_household(env):
+    _, clients, _, _, engine = env
+    c = clients[0]
+    ledger = ExposureLedger(engine)
+    base = {k: "drop" for k in ALL_EXACT}
+    ledger.record(c, dict(base, household="exact"), "meeting_prep")
+    ledger.record(c, dict(base, household="drop"), "concentration")
+    assert ledger.disclosed[c.client_id]["household"] == "exact"
