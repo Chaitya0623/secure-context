@@ -4,11 +4,12 @@
     python3 eval/llm_eval.py --backend groq --n 8
 
 Other backends: anthropic (ANTHROPIC_API_KEY + LLM_MODEL), openai (OPENAI_API_KEY + LLM_MODEL),
-hf-api (HF_TOKEN), hf-local (downloads a model).
+hf-api (HF_TOKEN), hf-local (downloads a model), gemini (GOOGLE_CLOUD_PROJECT + gcloud ADC login).
 
-For each client and core task it asks the model four times, with full context, masked context,
-the task policy and the adaptive policy, then has the model grade each answer against the
-full-context one (1 to 5). Separately, the model sees the task-policy context and tries to
+For each client and core task it asks the model five times, with full context, masked context,
+the task policy, the adaptive policy and no client data at all, then has a judge grade each
+answer against the full-context one (1 to 5). --judge-model picks a separate judge (same backend)
+so the answer model does not grade itself. Separately, the model sees the task-policy context and tries to
 guess the client's hidden occupation group, region and age band.
 
 Writes eval/results_real/llm_quality.csv, llm_quality_summary.csv, llm_attacker.csv.
@@ -81,12 +82,14 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--backend", default="groq")
     ap.add_argument("--model", default=None)
+    ap.add_argument("--judge-model", default=None, help="judge model (defaults to the answer model)")
     ap.add_argument("--n", type=int, default=15, help="clients to evaluate")
     args = ap.parse_args()
     llm = get_backend(args.backend, args.model)
+    judge = get_backend(args.backend, args.judge_model) if args.judge_model else llm
     out = ROOT / "eval" / "results_real"
     out.mkdir(parents=True, exist_ok=True)
-    print(f"model: {llm.name}")
+    print(f"model: {llm.name}   judge: {judge.name}")
 
     directory, clients = real_data.load_real_environment(n_clients=max(args.n, 50))
     clients = clients[:args.n]
@@ -95,7 +98,7 @@ def main():
     engine = KEngine(directory)
 
     rows = []
-    for mode in ("full", "masked", "default", "adaptive"):
+    for mode in ("full", "masked", "default", "adaptive", "none"):
         pipe = Pipeline(storage, engine, llm)
         for i, (c, ctx) in enumerate(zip(clients, ctx_ids)):
             for task in CORE_TASKS:
@@ -115,7 +118,7 @@ def main():
         if r.refused:
             scores.append(1)
             continue
-        g = llm.complete("You are a strict, consistent grader.", JUDGE.format(ref=ref[(r.client, r.task)], cand=r.answer))
+        g = judge.complete("You are a strict, consistent grader.", JUDGE.format(ref=ref[(r.client, r.task)], cand=r.answer))
         m = re.search(r"[1-5]", g)
         scores.append(int(m.group(0)) if m else None)
     q["judge_score"] = scores
