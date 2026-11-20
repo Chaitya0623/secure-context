@@ -34,7 +34,8 @@ class Trace:
 
 class Pipeline:
     """mode: 'full' (no protection), 'masked' (tokens, all fields exact), 'default' (task policy),
-    'adaptive' (per-client policy search with cumulative k budget)."""
+    'adaptive' (per-client policy search with cumulative k budget), 'none' (no client data,
+    only the task and session tokens; the no-context baseline)."""
 
     def __init__(self, storage: SplitStorage, engine: KEngine, llm, k_min: int = 10):
         self.storage = storage
@@ -61,6 +62,8 @@ class Pipeline:
         if levels is None:
             if mode in ("full", "masked"):
                 levels = dict(ALL_EXACT)
+            elif mode == "none":
+                levels = {k: "drop" for k in ALL_EXACT}
             elif mode == "default":
                 levels = dict(TASKS[task]["default"])
             else:

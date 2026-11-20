@@ -1,0 +1,19 @@
+kind,context,holdings,n,named,correct,confident_correct,confident_wrong,unparsed
+control,concentration,anonymized,40,0.0,0.0,0.0,0.0,0.0
+control,concentration,exact,40,0.2,0.0,0.0,0.175,0.0
+control,concentration,sectors,40,0.0,0.0,0.0,0.0,0.0
+control,masked,anonymized,40,0.0,0.0,0.0,0.0,0.0
+control,masked,exact,40,0.175,0.0,0.0,0.15,0.0
+control,masked,sectors,40,0.0,0.0,0.0,0.0,0.0
+insider,concentration,anonymized,40,0.0,0.0,0.0,0.0,0.0
+insider,concentration,exact,40,1.0,1.0,1.0,0.0,0.0
+insider,concentration,sectors,40,0.0,0.0,0.0,0.0,0.0
+insider,masked,anonymized,40,0.1,0.025,0.0,0.075,0.0
+insider,masked,exact,40,1.0,1.0,1.0,0.0,0.0
+insider,masked,sectors,40,0.05,0.0,0.0,0.05,0.0
+outside investor,concentration,anonymized,40,0.0,0.0,0.0,0.0,0.0
+outside investor,concentration,exact,40,1.0,0.0,0.0,1.0,0.0
+outside investor,concentration,sectors,40,0.0,0.0,0.0,0.0,0.0
+outside investor,masked,anonymized,40,0.15,0.0,0.0,0.125,0.0
+outside investor,masked,exact,40,0.625,0.0,0.0,0.6,0.0
+outside investor,masked,sectors,40,0.025,0.0,0.0,0.025,0.0

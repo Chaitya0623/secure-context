@@ -1,0 +1,721 @@
+client,kind,context,holdings,guess,confidence,named,correct,confident_correct,named_a_held_stock,confident_wrong
+C0481-I,insider,masked,exact,EXEL,85.0,True,True,True,True,False
+C0481-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0481-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0481-I,insider,concentration,exact,EXEL,85.0,True,True,True,True,False
+C0481-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0481-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4047-I,insider,masked,exact,INCY,85.0,True,True,True,True,False
+C4047-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4047-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4047-I,insider,concentration,exact,INCY,75.0,True,True,True,True,False
+C4047-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4047-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1867-I,insider,masked,exact,NBIX,85.0,True,True,True,True,False
+C1867-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1867-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1867-I,insider,concentration,exact,NBIX,75.0,True,True,True,True,False
+C1867-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1867-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2996-I,insider,masked,exact,HALO,90.0,True,True,True,True,False
+C2996-I,insider,masked,anonymized,BMRN,85.0,True,False,False,False,True
+C2996-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2996-I,insider,concentration,exact,HALO,85.0,True,True,True,True,False
+C2996-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2996-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1272-I,insider,masked,exact,MASI,85.0,True,True,True,True,False
+C1272-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1272-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1272-I,insider,concentration,exact,MASI,85.0,True,True,True,True,False
+C1272-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1272-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3629-I,insider,masked,exact,PODD,90.0,True,True,True,True,False
+C3629-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3629-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3629-I,insider,concentration,exact,PODD,85.0,True,True,True,True,False
+C3629-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3629-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2899-I,insider,masked,exact,GMED,90.0,True,True,True,True,False
+C2899-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2899-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2899-I,insider,concentration,exact,GMED,85.0,True,True,True,True,False
+C2899-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2899-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0703-I,insider,masked,exact,DBX,85.0,True,True,True,True,False
+C0703-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0703-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0703-I,insider,concentration,exact,DBX,85.0,True,True,True,True,False
+C0703-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0703-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3254-I,insider,masked,exact,BOX,85.0,True,True,True,True,False
+C3254-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3254-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3254-I,insider,concentration,exact,BOX,85.0,True,True,True,True,False
+C3254-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3254-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2544-I,insider,masked,exact,PCTY,85.0,True,True,True,True,False
+C2544-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2544-I,insider,masked,sectors,DE,65.0,True,False,False,False,True
+C2544-I,insider,concentration,exact,PCTY,75.0,True,True,True,True,False
+C2544-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2544-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2688-I,insider,masked,exact,QLYS,90.0,True,True,True,True,False
+C2688-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2688-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2688-I,insider,concentration,exact,QLYS,85.0,True,True,True,True,False
+C2688-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2688-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0600-I,insider,masked,exact,MANH,75.0,True,True,True,True,False
+C0600-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0600-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0600-I,insider,concentration,exact,MANH,75.0,True,True,True,True,False
+C0600-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0600-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1038-I,insider,masked,exact,TYL,85.0,True,True,True,True,False
+C1038-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1038-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1038-I,insider,concentration,exact,TYL,75.0,True,True,True,True,False
+C1038-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1038-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3461-I,insider,masked,exact,CIEN,95.0,True,True,True,True,False
+C3461-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3461-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3461-I,insider,concentration,exact,CIEN,75.0,True,True,True,True,False
+C3461-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3461-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2164-I,insider,masked,exact,WAL,85.0,True,True,True,True,False
+C2164-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2164-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2164-I,insider,concentration,exact,WAL,85.0,True,True,True,True,False
+C2164-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2164-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4642-I,insider,masked,exact,SF,85.0,True,True,True,True,False
+C4642-I,insider,masked,anonymized,MA,85.0,True,False,False,False,True
+C4642-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4642-I,insider,concentration,exact,SF,80.0,True,True,True,True,False
+C4642-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4642-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0466-I,insider,masked,exact,EVR,85.0,True,True,True,True,False
+C0466-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0466-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0466-I,insider,concentration,exact,EVR,85.0,True,True,True,True,False
+C0466-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0466-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1631-I,insider,masked,exact,KNSL,85.0,True,True,True,True,False
+C1631-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1631-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1631-I,insider,concentration,exact,KNSL,75.0,True,True,True,True,False
+C1631-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1631-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0071-I,insider,masked,exact,MTDR,85.0,True,True,True,True,False
+C0071-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0071-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0071-I,insider,concentration,exact,MTDR,85.0,True,True,True,True,False
+C0071-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0071-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1576-I,insider,masked,exact,AR,85.0,True,True,True,True,False
+C1576-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1576-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1576-I,insider,concentration,exact,AR,75.0,True,True,True,True,False
+C1576-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1576-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4080-I,insider,masked,exact,RRC,85.0,True,True,True,True,False
+C4080-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4080-I,insider,masked,sectors,XOM,75.0,True,False,False,False,True
+C4080-I,insider,concentration,exact,RRC,85.0,True,True,True,True,False
+C4080-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4080-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0501-I,insider,masked,exact,DECK,85.0,True,True,True,True,False
+C0501-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0501-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0501-I,insider,concentration,exact,DECK,85.0,True,True,True,True,False
+C0501-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0501-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3664-I,insider,masked,exact,CROX,85.0,True,True,True,True,False
+C3664-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3664-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3664-I,insider,concentration,exact,CROX,75.0,True,True,True,True,False
+C3664-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3664-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2103-I,insider,masked,exact,WING,85.0,True,True,True,True,False
+C2103-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2103-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2103-I,insider,concentration,exact,WING,75.0,True,True,True,True,False
+C2103-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2103-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3006-I,insider,masked,exact,FIVE,85.0,True,True,True,True,False
+C3006-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3006-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3006-I,insider,concentration,exact,FIVE,85.0,True,True,True,True,False
+C3006-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3006-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1840-I,insider,masked,exact,YETI,75.0,True,True,True,True,False
+C1840-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1840-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1840-I,insider,concentration,exact,YETI,75.0,True,True,True,True,False
+C1840-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1840-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3705-I,insider,masked,exact,EXEL,85.0,True,True,True,True,False
+C3705-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3705-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3705-I,insider,concentration,exact,EXEL,75.0,True,True,True,True,False
+C3705-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3705-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3106-I,insider,masked,exact,INCY,85.0,True,True,True,True,False
+C3106-I,insider,masked,anonymized,INCY,45.0,True,True,False,True,False
+C3106-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3106-I,insider,concentration,exact,INCY,85.0,True,True,True,True,False
+C3106-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3106-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3437-I,insider,masked,exact,NBIX,85.0,True,True,True,True,False
+C3437-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3437-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3437-I,insider,concentration,exact,NBIX,75.0,True,True,True,True,False
+C3437-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3437-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3833-I,insider,masked,exact,HALO,85.0,True,True,True,True,False
+C3833-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3833-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3833-I,insider,concentration,exact,HALO,85.0,True,True,True,True,False
+C3833-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3833-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0102-I,insider,masked,exact,MASI,85.0,True,True,True,True,False
+C0102-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0102-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0102-I,insider,concentration,exact,MASI,75.0,True,True,True,True,False
+C0102-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0102-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2192-I,insider,masked,exact,PODD,90.0,True,True,True,True,False
+C2192-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2192-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2192-I,insider,concentration,exact,PODD,80.0,True,True,True,True,False
+C2192-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2192-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2089-I,insider,masked,exact,GMED,90.0,True,True,True,True,False
+C2089-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2089-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2089-I,insider,concentration,exact,GMED,85.0,True,True,True,True,False
+C2089-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2089-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0575-I,insider,masked,exact,DBX,75.0,True,True,True,True,False
+C0575-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0575-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0575-I,insider,concentration,exact,DBX,85.0,True,True,True,True,False
+C0575-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0575-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0664-I,insider,masked,exact,BOX,85.0,True,True,True,True,False
+C0664-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0664-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0664-I,insider,concentration,exact,BOX,85.0,True,True,True,True,False
+C0664-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0664-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4961-I,insider,masked,exact,PCTY,90.0,True,True,True,True,False
+C4961-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4961-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4961-I,insider,concentration,exact,PCTY,85.0,True,True,True,True,False
+C4961-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4961-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4397-I,insider,masked,exact,QLYS,85.0,True,True,True,True,False
+C4397-I,insider,masked,anonymized,QCOM,55.0,True,False,False,False,True
+C4397-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4397-I,insider,concentration,exact,QLYS,85.0,True,True,True,True,False
+C4397-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4397-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4580-I,insider,masked,exact,MANH,85.0,True,True,True,True,False
+C4580-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4580-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4580-I,insider,concentration,exact,MANH,85.0,True,True,True,True,False
+C4580-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4580-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2107-I,insider,masked,exact,TYL,85.0,True,True,True,True,False
+C2107-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2107-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2107-I,insider,concentration,exact,TYL,75.0,True,True,True,True,False
+C2107-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2107-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2671-I,insider,masked,exact,CIEN,90.0,True,True,True,True,False
+C2671-I,insider,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2671-I,insider,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2671-I,insider,concentration,exact,CIEN,75.0,True,True,True,True,False
+C2671-I,insider,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2671-I,insider,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4827-O,outside investor,masked,exact,UNKNOWN,100.0,False,False,False,False,False
+C4827-O,outside investor,masked,anonymized,UNKNOWN,100.0,False,False,False,False,False
+C4827-O,outside investor,masked,sectors,UNKNOWN,100.0,False,False,False,False,False
+C4827-O,outside investor,concentration,exact,EXEL,70.0,True,False,False,True,True
+C4827-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4827-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4555-O,outside investor,masked,exact,INCY,45.0,True,False,False,True,False
+C4555-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4555-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4555-O,outside investor,concentration,exact,INCY,75.0,True,False,False,True,True
+C4555-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4555-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2067-O,outside investor,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C2067-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2067-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2067-O,outside investor,concentration,exact,NBIX,75.0,True,False,False,True,True
+C2067-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2067-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4270-O,outside investor,masked,exact,UNKNOWN,100.0,False,False,False,False,False
+C4270-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4270-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4270-O,outside investor,concentration,exact,HALO,75.0,True,False,False,True,True
+C4270-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4270-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1569-O,outside investor,masked,exact,UNKNOWN,100.0,False,False,False,False,False
+C1569-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1569-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1569-O,outside investor,concentration,exact,MASI,85.0,True,False,False,True,True
+C1569-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1569-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0795-O,outside investor,masked,exact,PODD,75.0,True,False,False,True,True
+C0795-O,outside investor,masked,anonymized,REGN,75.0,True,False,False,False,True
+C0795-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0795-O,outside investor,concentration,exact,PODD,85.0,True,False,False,True,True
+C0795-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0795-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4531-O,outside investor,masked,exact,GMED,75.0,True,False,False,True,True
+C4531-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4531-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4531-O,outside investor,concentration,exact,GMED,85.0,True,False,False,True,True
+C4531-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4531-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0744-O,outside investor,masked,exact,DBX,85.0,True,False,False,True,True
+C0744-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0744-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0744-O,outside investor,concentration,exact,DBX,85.0,True,False,False,True,True
+C0744-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0744-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0257-O,outside investor,masked,exact,BOX,85.0,True,False,False,True,True
+C0257-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0257-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0257-O,outside investor,concentration,exact,BOX,80.0,True,False,False,True,True
+C0257-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0257-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4794-O,outside investor,masked,exact,PCTY,85.0,True,False,False,True,True
+C4794-O,outside investor,masked,anonymized,TXN,75.0,True,False,False,False,True
+C4794-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4794-O,outside investor,concentration,exact,PCTY,85.0,True,False,False,True,True
+C4794-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4794-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1912-O,outside investor,masked,exact,UNKNOWN,100.0,False,False,False,False,False
+C1912-O,outside investor,masked,anonymized,UNKNOWN,100.0,False,False,False,False,False
+C1912-O,outside investor,masked,sectors,UNKNOWN,100.0,False,False,False,False,False
+C1912-O,outside investor,concentration,exact,QLYS,85.0,True,False,False,True,True
+C1912-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1912-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1607-O,outside investor,masked,exact,MANH,75.0,True,False,False,True,True
+C1607-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1607-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1607-O,outside investor,concentration,exact,MANH,85.0,True,False,False,True,True
+C1607-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1607-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1526-O,outside investor,masked,exact,TYL,85.0,True,False,False,True,True
+C1526-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1526-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1526-O,outside investor,concentration,exact,TYL,85.0,True,False,False,True,True
+C1526-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1526-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1709-O,outside investor,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C1709-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1709-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1709-O,outside investor,concentration,exact,CIEN,75.0,True,False,False,True,True
+C1709-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1709-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3857-O,outside investor,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C3857-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3857-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3857-O,outside investor,concentration,exact,WAL,85.0,True,False,False,True,True
+C3857-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3857-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3152-O,outside investor,masked,exact,SF,75.0,True,False,False,True,True
+C3152-O,outside investor,masked,anonymized,RJF,45.0,True,False,False,False,False
+C3152-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3152-O,outside investor,concentration,exact,SF,85.0,True,False,False,True,True
+C3152-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3152-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1308-O,outside investor,masked,exact,EVR,85.0,True,False,False,True,True
+C1308-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1308-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1308-O,outside investor,concentration,exact,EVR,85.0,True,False,False,True,True
+C1308-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1308-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1166-O,outside investor,masked,exact,KNSL,65.0,True,False,False,True,True
+C1166-O,outside investor,masked,anonymized,ALL,75.0,True,False,False,False,True
+C1166-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1166-O,outside investor,concentration,exact,KNSL,85.0,True,False,False,True,True
+C1166-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1166-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0779-O,outside investor,masked,exact,UNKNOWN,100.0,False,False,False,False,False
+C0779-O,outside investor,masked,anonymized,UNKNOWN,100.0,False,False,False,False,False
+C0779-O,outside investor,masked,sectors,UNKNOWN,100.0,False,False,False,False,False
+C0779-O,outside investor,concentration,exact,MTDR,75.0,True,False,False,True,True
+C0779-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0779-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0367-O,outside investor,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0367-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0367-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0367-O,outside investor,concentration,exact,AR,65.0,True,False,False,True,True
+C0367-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0367-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4014-O,outside investor,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4014-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4014-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4014-O,outside investor,concentration,exact,RRC,75.0,True,False,False,True,True
+C4014-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4014-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2897-O,outside investor,masked,exact,DECK,85.0,True,False,False,True,True
+C2897-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2897-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2897-O,outside investor,concentration,exact,DECK,85.0,True,False,False,True,True
+C2897-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2897-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2861-O,outside investor,masked,exact,CROX,85.0,True,False,False,True,True
+C2861-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2861-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2861-O,outside investor,concentration,exact,CROX,75.0,True,False,False,True,True
+C2861-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2861-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0184-O,outside investor,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0184-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0184-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0184-O,outside investor,concentration,exact,WING,75.0,True,False,False,True,True
+C0184-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0184-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0668-O,outside investor,masked,exact,FIVE,85.0,True,False,False,True,True
+C0668-O,outside investor,masked,anonymized,CPB,75.0,True,False,False,False,True
+C0668-O,outside investor,masked,sectors,CPB,65.0,True,False,False,False,True
+C0668-O,outside investor,concentration,exact,FIVE,75.0,True,False,False,True,True
+C0668-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0668-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1766-O,outside investor,masked,exact,YETI,90.0,True,False,False,True,True
+C1766-O,outside investor,masked,anonymized,PEP,65.0,True,False,False,False,True
+C1766-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1766-O,outside investor,concentration,exact,YETI,85.0,True,False,False,True,True
+C1766-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1766-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0317-O,outside investor,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0317-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0317-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0317-O,outside investor,concentration,exact,EXEL,85.0,True,False,False,True,True
+C0317-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0317-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4908-O,outside investor,masked,exact,INCY,85.0,True,False,False,True,True
+C4908-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4908-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4908-O,outside investor,concentration,exact,INCY,75.0,True,False,False,True,True
+C4908-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4908-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3721-O,outside investor,masked,exact,UNKNOWN,100.0,False,False,False,False,False
+C3721-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3721-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3721-O,outside investor,concentration,exact,NBIX,75.0,True,False,False,True,True
+C3721-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3721-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4273-O,outside investor,masked,exact,HALO,85.0,True,False,False,True,True
+C4273-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4273-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4273-O,outside investor,concentration,exact,HALO,85.0,True,False,False,True,True
+C4273-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4273-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2815-O,outside investor,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C2815-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2815-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2815-O,outside investor,concentration,exact,MASI,85.0,True,False,False,True,True
+C2815-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2815-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0350-O,outside investor,masked,exact,PODD,75.0,True,False,False,True,True
+C0350-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0350-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0350-O,outside investor,concentration,exact,PODD,75.0,True,False,False,True,True
+C0350-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0350-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1034-O,outside investor,masked,exact,GMED,75.0,True,False,False,True,True
+C1034-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1034-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1034-O,outside investor,concentration,exact,GMED,85.0,True,False,False,True,True
+C1034-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1034-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2277-O,outside investor,masked,exact,DBX,65.0,True,False,False,True,True
+C2277-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2277-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2277-O,outside investor,concentration,exact,DBX,85.0,True,False,False,True,True
+C2277-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2277-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2995-O,outside investor,masked,exact,BOX,75.0,True,False,False,True,True
+C2995-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2995-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2995-O,outside investor,concentration,exact,BOX,80.0,True,False,False,True,True
+C2995-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2995-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1033-O,outside investor,masked,exact,PCTY,75.0,True,False,False,True,True
+C1033-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1033-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1033-O,outside investor,concentration,exact,PCTY,85.0,True,False,False,True,True
+C1033-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1033-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2743-O,outside investor,masked,exact,QLYS,80.0,True,False,False,True,True
+C2743-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2743-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2743-O,outside investor,concentration,exact,QLYS,85.0,True,False,False,True,True
+C2743-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2743-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0366-O,outside investor,masked,exact,MANH,75.0,True,False,False,True,True
+C0366-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0366-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0366-O,outside investor,concentration,exact,MANH,75.0,True,False,False,True,True
+C0366-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0366-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4158-O,outside investor,masked,exact,TYL,75.0,True,False,False,True,True
+C4158-O,outside investor,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4158-O,outside investor,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4158-O,outside investor,concentration,exact,TYL,75.0,True,False,False,True,True
+C4158-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4158-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2878-O,outside investor,masked,exact,UNKNOWN,95.0,False,False,False,False,False
+C2878-O,outside investor,masked,anonymized,UNKNOWN,100.0,False,False,False,False,False
+C2878-O,outside investor,masked,sectors,UNKNOWN,100.0,False,False,False,False,False
+C2878-O,outside investor,concentration,exact,CIEN,85.0,True,False,False,True,True
+C2878-O,outside investor,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2878-O,outside investor,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0223,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0223,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0223,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0223,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C0223,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0223,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4177,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4177,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4177,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4177,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4177,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4177,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1133,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C1133,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1133,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1133,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C1133,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1133,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1094,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C1094,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1094,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1094,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C1094,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1094,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2901,control,masked,exact,GS,60.0,True,False,False,True,True
+C2901,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2901,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2901,control,concentration,exact,GS,45.0,True,False,False,True,False
+C2901,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2901,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4412,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4412,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4412,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4412,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4412,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4412,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1839,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C1839,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1839,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1839,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C1839,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1839,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1323,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C1323,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1323,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1323,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C1323,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1323,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1115,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C1115,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1115,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1115,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C1115,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1115,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3219,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C3219,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3219,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3219,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C3219,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3219,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4724,control,masked,exact,UNKNOWN,100.0,False,False,False,False,False
+C4724,control,masked,anonymized,UNKNOWN,100.0,False,False,False,False,False
+C4724,control,masked,sectors,UNKNOWN,100.0,False,False,False,False,False
+C4724,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4724,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4724,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4592,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4592,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4592,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4592,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4592,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4592,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3555,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C3555,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3555,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3555,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C3555,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3555,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4328,control,masked,exact,GS,45.0,True,False,False,True,False
+C4328,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4328,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4328,control,concentration,exact,GS,60.0,True,False,False,True,True
+C4328,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4328,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3749,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C3749,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3749,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3749,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C3749,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3749,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3943,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C3943,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3943,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3943,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C3943,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3943,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0342,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0342,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0342,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0342,control,concentration,exact,CRM,75.0,True,False,False,True,True
+C0342,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0342,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0619,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0619,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0619,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0619,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C0619,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0619,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4887,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4887,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4887,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4887,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4887,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4887,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3163,control,masked,exact,HD,55.0,True,False,False,True,True
+C3163,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3163,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3163,control,concentration,exact,HD,75.0,True,False,False,True,True
+C3163,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3163,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2883,control,masked,exact,ISRG,85.0,True,False,False,True,True
+C2883,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2883,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2883,control,concentration,exact,ISRG,75.0,True,False,False,True,True
+C2883,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2883,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0277,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0277,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0277,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0277,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C0277,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0277,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4587,control,masked,exact,AMZN,55.0,True,False,False,True,True
+C4587,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4587,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4587,control,concentration,exact,AMZN,75.0,True,False,False,True,True
+C4587,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4587,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0890,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0890,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0890,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0890,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C0890,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0890,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4232,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4232,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4232,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4232,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4232,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4232,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4963,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4963,control,masked,anonymized,UNKNOWN,100.0,False,False,False,False,False
+C4963,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4963,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4963,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4963,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0531,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0531,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0531,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0531,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C0531,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0531,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4816,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4816,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4816,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4816,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4816,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4816,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1705,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C1705,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1705,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1705,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C1705,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1705,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C3997,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C3997,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3997,control,masked,sectors,UNKNOWN,100.0,False,False,False,False,False
+C3997,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C3997,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C3997,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0612,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0612,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0612,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0612,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C0612,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0612,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2603,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C2603,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2603,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2603,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C2603,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2603,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1572,control,masked,exact,NKE,65.0,True,False,False,True,True
+C1572,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1572,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C1572,control,concentration,exact,NKE,85.0,True,False,False,True,True
+C1572,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C1572,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2364,control,masked,exact,UNH,55.0,True,False,False,True,True
+C2364,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2364,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2364,control,concentration,exact,UNH,60.0,True,False,False,True,True
+C2364,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2364,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4393,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4393,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4393,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4393,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4393,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4393,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0121,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0121,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0121,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0121,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C0121,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0121,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2265,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C2265,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2265,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2265,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C2265,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2265,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2298,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C2298,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2298,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C2298,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C2298,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C2298,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4096,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C4096,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4096,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C4096,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C4096,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C4096,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0388,control,masked,exact,UNKNOWN,0.0,False,False,False,False,False
+C0388,control,masked,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0388,control,masked,sectors,UNKNOWN,0.0,False,False,False,False,False
+C0388,control,concentration,exact,UNKNOWN,0.0,False,False,False,False,False
+C0388,control,concentration,anonymized,UNKNOWN,0.0,False,False,False,False,False
+C0388,control,concentration,sectors,UNKNOWN,0.0,False,False,False,False,False

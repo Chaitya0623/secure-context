@@ -100,7 +100,58 @@ With real client books, binding queries to the advisor's own clients is the stro
 
 ### 9. Real-model answers and the LLM attacker
 
-pending: `scripts/run_with_nvidia.sh` (hosted Llama 3.1 70B answers 15 clients x 3 tasks x 4 sharing modes, grades each against the full-context answer, and tries to guess hidden attributes).
+Run on Gemini on Vertex AI (2026-11-20): 30 clients x 3 tasks x 5 sharing modes. `gemini-3.8-flash` answers and plays the attacker; a separate model, `gemini-3.1-pro-preview`, grades each answer 1 to 5 against the full-context answer, so no model grades its own output. Command: `GOOGLE_CLOUD_PROJECT=<project> python3 eval/llm_eval.py --backend gemini --n 30 --judge-model gemini-3.1-pro-preview`. Files: `eval/results_real/llm_*.csv`.
+
+**Answer quality vs. the full-context answer** (5 = same advice; 95% bootstrap intervals over 90 client-task pairs):
+
+| Sharing mode | Meeting brief | Concentration | Income plan | All tasks |
+|---|---|---|---|---|
+| Full context (reference) | 5 | 5 | 5 | 5 |
+| Masked (tokens, all fields exact) | 4.70 | 4.80 | 4.80 | 4.77 (4.64 to 4.88) |
+| Task policy | 2.83 | 2.67 | 3.73 | 3.08 (2.91 to 3.26) |
+| Adaptive policy | 2.83 | 2.53 | 3.87 | 3.08 (2.88 to 3.29) |
+| No client data (baseline) | 1.00 | 1.00 | 2.40 | 1.47 (1.29 to 1.66) |
+
+* Masking names, accounts and identifiers costs little: 73 of 90 answers were graded identical, and none scored below 2.
+* Minimizing the fields costs about 1.7 points. Most minimized answers score 3 ("same direction, missing specifics").
+* The minimized context is doing real work: the task policy beats the no-data baseline by 1.61 points on matched pairs (95% interval 1.47 to 1.74; better in 84 of 90, never worse). Without client data the model can only give generic advice, which the judge scores 1 on meeting briefs and concentration checks.
+* Adaptive vs. task policy: +0.00 on matched pairs (95% interval -0.12 to +0.12; better in 10, same in 69, worse in 11). With a separate judge and 30 clients, the adaptive policy's extra detail does not measurably improve answers; its value is the larger crowd it keeps when requests add up (section 2).
+* No requests were refused, no tokens failed to rehydrate, and the client's name reached the model only in full-context mode.
+
+**LLM attacker** (sees the task-policy context, guesses hidden attributes; majority-guess baseline in brackets):
+
+| Task | Occupation group [0.29] | Region [0.39] | Age band [0.19] |
+|---|---|---|---|
+| Meeting brief | 0.37 | 0.40 | 1.00 |
+| Concentration | 0.13 | 0.13 | 0.07 |
+| Income plan | 0.23 | 0.23 | 1.00 |
+
+Age band is recovered every time where the policy sends age (band or exact), so that hit is by design. Meeting-brief notes let the model edge past the baseline on occupation (0.37 vs 0.29) and match it on region. The concentration and income-plan contexts leak nothing beyond the baseline.
+
+Changes from the earlier 15-client run (same model as answerer and grader): minimized scores fell by about 0.1 to 0.3, and the small adaptive advantage (+0.13) disappeared. A stricter, separate judge and the larger sample are the likely causes; we did not run the two setups side by side to separate them.
+
+Caveats: full context is the reference by construction; the judge is from the same model family as the answerer; 30 clients is still modest; the grader has not been calibrated against advisors (see FUTURE_WORK.md item 6).
+
+### 10. Can the model tell where a client works from their holdings?
+
+PII detection does not cover investment patterns. A client with a large stake in one mid-cap stock is often an executive or early employee there, and insiders' holdings are public in SEC Form 4 filings. We planted the answer: 40 "insider" clients from the public-data book were given a 15 to 35% position in a mid-cap company, that company's state and a management occupation. 40 "outside investors" got the same kind of position but kept their own job and state, and 40 ordinary clients were left as they are. No name, employer or notes were sent. `gemini-3.8-flash` was asked which public company each client works for (2026-11-20). Command: `python3 eval/pattern_attack.py --n-insiders 40 --n-investors 40 --n-controls 40`. Files: `eval/results_real/pattern_attack*.csv`.
+
+**Share of clients for whom the model named the employer correctly / named a wrong company with confidence of 50 or more:**
+
+| Context sent | Holdings level | Insiders: correct | Outside investors: wrong guess | Ordinary clients: wrong guess |
+|---|---|---|---|---|
+| Masked (everything exact but identifiers) | exact tickers | 100% | 60% | 15% |
+| Masked | anonymized (single stock + sector) | 2.5% | 12.5% | 0% |
+| Masked | sectors | 0% | 2.5% | 0% |
+| Concentration task policy | exact tickers | 100% | 100% | 18% |
+| Concentration task policy | anonymized (the current default) | 0% | 0% | 0% |
+| Concentration task policy | sectors | 0% | 0% | 0% |
+
+* **The ticker is the leak.** Whenever the ticker of a concentrated mid-cap position is sent, the model names that company as the employer, for every insider, even with no occupation or location in the context.
+* **It cannot tell insiders from outside investors by the position alone.** With only the concentration context it named the held company for 100% of both groups. Occupation and state help it separate them a little (it named the company for 62.5% of outside investors in masked mode). In real books, how often such a guess is right depends on how many concentrated holders are employees, which we cannot measure here.
+* **The current task policies already block it.** No task sends exact tickers by default; the anonymized level ("single stock, Healthcare, 22%") brought correct guesses to 0 to 2.5%. The risk is in masked or full-context modes, and in any policy that follows the counterfactual result that some answers improve with exact holdings.
+
+Caveats: the ground truth is planted, the mid-cap list is ours, and one model was tested. The test shows what the context makes possible, not how often real clients would be identified.
 
 ## Results on synthetic data
 
