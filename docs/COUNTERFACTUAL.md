@@ -29,6 +29,8 @@ Swapped values come from other clients in the same book, so each counterfactual 
 python3 eval/run_counterfactual.py                         # simulator, 50 clients, seconds, no key
 export GROQ_API_KEY=...
 python3 eval/run_counterfactual.py --backend groq --n 10   # real model, about 1,900 calls, resumable
+export GOOGLE_CLOUD_PROJECT=secure-context-llm              # Gemini on Vertex AI (gcloud ADC login)
+python3 eval/run_counterfactual.py --backend gemini --n 10 # default model gemini-3.8-flash, cached in data/cache/gemini/
 ```
 
 Options:
@@ -58,6 +60,24 @@ The simulator's dependencies are known from its code, so the simulator run check
 * **Age for income estimates:** age band changes only 30% of answers. The simulator's withdrawal rate floors at 3% below age 55, so exact age only matters for older clients.
 
 `tests/test_counterfactual.py` also checks the test against a probe model with planted dependencies (age decade and risk only). The test must recover "age: band, risk: exact, everything else: drop."
+
+## What the Gemini run shows
+
+`gemini-3.8-flash` on Vertex AI answers and `gemini-3.1-pro-preview` judges, 30 clients, three core tasks, 2026-11-20 (`eval/results_counterfactual/gemini/`). Command: `python3 eval/run_counterfactual.py --backend gemini --n 30 --judge-model gemini-3.1-pro-preview`. All 2,790 judgments parsed.
+
+| | 10 clients, Flash judges itself (2026-11-06) | 30 clients, Pro judges (2026-11-20) |
+|---|---|---|
+| Null control (meeting brief / concentration / income plan) | 0% / 0% / 20% | 0% / 3% / 17% |
+| Measured needs that match `policy.py` | 18 of 33 | 13 of 33 |
+| Income plan median k, hand-coded vs. measured policy | 909 vs. 18 | 909 vs. 58 |
+
+* **Null control:** the income plan answer still moves 17% of the time when only session tokens change, so its tolerance rises to 27% and its measured needs are the least reliable.
+* **The model uses more exact data than the policy sends, in every task.** Assets and liquidity are needed exactly, not as buckets (removal changed 73 to 100% of answers). Exact holdings matter for the meeting brief and concentration check (sectors or anonymized holdings changed 10 to 43%). This held with the stronger judge.
+* **Removing a field and changing its value still behave differently.** For the meeting brief, removing objective, risk or horizon changed 0% of answers, yet swapping in another client's value changed 97 to 100%. Concentration risk shows the same pattern (removal 7%, swap 97%). The model fills in a default when a field is missing, so those "drop" verdicts should not be trusted: keep objective, risk and horizon.
+* **Concentration is the clean case.** Age, location, occupation and household are unused (removal 0%, swap 3 to 20%), which matches the policy.
+* **Privacy cost, largest for the meeting brief.** Sending what the model measurably uses drops the meeting brief median k from 42,986 to 2, with 76% of clients below k = 10 and 49% unique. Concentration falls from 113,934 to 4,565 (7% below 10); income plan from 909 to 58 (20.5% below 10). The meeting brief is where answer quality and privacy conflict most.
+
+The quality eval (EVALUATION.md section 9) is the other half of this trade: it measures how much worse answers get under the task policy, while this test measures which fields the answers lean on.
 
 ## Before trusting real-model results
 

@@ -1,0 +1,13 @@
+task,mode,judge_score,k_median,unresolved,name_leaked
+concentration,adaptive,3.3333333333333335,650225.0,0.0,0.0
+concentration,default,3.1333333333333333,113932.0,0.0,0.0
+concentration,full,5.0,1.0,0.0,1.0
+concentration,masked,5.0,1.0,0.0,0.0
+income_plan,adaptive,3.6,1640.0,0.0,0.0
+income_plan,default,3.6,911.0,0.0,0.0
+income_plan,full,5.0,1.0,0.0,1.0
+income_plan,masked,4.866666666666666,1.0,0.0,0.0
+meeting_prep,adaptive,3.1333333333333333,58980.0,0.0,0.0
+meeting_prep,default,2.933333333333333,58980.0,0.0,0.0
+meeting_prep,full,5.0,1.0,0.0,1.0
+meeting_prep,masked,4.866666666666666,1.0,0.0,0.0
