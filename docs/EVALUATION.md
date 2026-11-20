@@ -100,33 +100,37 @@ With real client books, binding queries to the advisor's own clients is the stro
 
 ### 9. Real-model answers and the LLM attacker
 
-Run on Gemini (`gemini-3.8-flash` on Vertex AI, 2026-11-06): 15 clients x 3 tasks x 4 sharing modes. The same model answers, grades each answer 1 to 5 against the full-context answer, and plays the attacker. Command: `GOOGLE_CLOUD_PROJECT=<project> python3 eval/llm_eval.py --backend gemini --n 15`. Files: `eval/results_real/llm_*.csv`.
+Run on Gemini on Vertex AI (2026-11-20): 30 clients x 3 tasks x 5 sharing modes. `gemini-3.8-flash` answers and plays the attacker; a separate model, `gemini-3.1-pro-preview`, grades each answer 1 to 5 against the full-context answer, so no model grades its own output. Command: `GOOGLE_CLOUD_PROJECT=<project> python3 eval/llm_eval.py --backend gemini --n 30 --judge-model gemini-3.1-pro-preview`. Files: `eval/results_real/llm_*.csv`.
 
-**Answer quality vs. the full-context answer** (5 = same advice; 95% bootstrap intervals over 45 client-task pairs):
+**Answer quality vs. the full-context answer** (5 = same advice; 95% bootstrap intervals over 90 client-task pairs):
 
 | Sharing mode | Meeting brief | Concentration | Income plan | All tasks |
 |---|---|---|---|---|
 | Full context (reference) | 5 | 5 | 5 | 5 |
-| Masked (tokens, all fields exact) | 4.87 | 5.00 | 4.87 | 4.91 (4.82 to 4.98) |
-| Task policy | 2.93 | 3.13 | 3.60 | 3.22 (2.98 to 3.47) |
-| Adaptive policy | 3.13 | 3.33 | 3.60 | 3.36 (3.09 to 3.60) |
+| Masked (tokens, all fields exact) | 4.70 | 4.80 | 4.80 | 4.77 (4.64 to 4.88) |
+| Task policy | 2.83 | 2.67 | 3.73 | 3.08 (2.91 to 3.26) |
+| Adaptive policy | 2.83 | 2.53 | 3.87 | 3.08 (2.88 to 3.29) |
+| No client data (baseline) | 1.00 | 1.00 | 2.40 | 1.47 (1.29 to 1.66) |
 
-* Masking names, accounts and identifiers costs almost nothing: 41 of 45 answers were graded identical.
-* Minimizing the fields costs about 1.6 points. Most minimized answers score 3 ("same direction, missing specifics"), not 1 or 2.
-* Adaptive vs. task policy: +0.13 on matched pairs (95% interval -0.09 to +0.33; better in 12, same in 27, worse in 6). The adaptive policy sends more detail when the crowd is large enough, but the gain is not statistically clear at this sample size.
+* Masking names, accounts and identifiers costs little: 73 of 90 answers were graded identical, and none scored below 2.
+* Minimizing the fields costs about 1.7 points. Most minimized answers score 3 ("same direction, missing specifics").
+* The minimized context is doing real work: the task policy beats the no-data baseline by 1.61 points on matched pairs (95% interval 1.47 to 1.74; better in 84 of 90, never worse). Without client data the model can only give generic advice, which the judge scores 1 on meeting briefs and concentration checks.
+* Adaptive vs. task policy: +0.00 on matched pairs (95% interval -0.12 to +0.12; better in 10, same in 69, worse in 11). With a separate judge and 30 clients, the adaptive policy's extra detail does not measurably improve answers; its value is the larger crowd it keeps when requests add up (section 2).
 * No requests were refused, no tokens failed to rehydrate, and the client's name reached the model only in full-context mode.
 
 **LLM attacker** (sees the task-policy context, guesses hidden attributes; majority-guess baseline in brackets):
 
 | Task | Occupation group [0.29] | Region [0.39] | Age band [0.19] |
 |---|---|---|---|
-| Meeting brief | 0.47 | 0.47 | 1.00 |
-| Concentration | 0.20 | 0.13 | 0.07 |
-| Income plan | 0.33 | 0.27 | 1.00 |
+| Meeting brief | 0.37 | 0.40 | 1.00 |
+| Concentration | 0.13 | 0.13 | 0.07 |
+| Income plan | 0.23 | 0.23 | 1.00 |
 
-Age band is recovered every time where the policy sends age (band or exact), so that hit is by design. Meeting-brief notes let the model beat the baseline on occupation (0.47 vs 0.29) and slightly on region. The concentration context leaks nothing beyond the baseline.
+Age band is recovered every time where the policy sends age (band or exact), so that hit is by design. Meeting-brief notes let the model edge past the baseline on occupation (0.37 vs 0.29) and match it on region. The concentration and income-plan contexts leak nothing beyond the baseline.
 
-Caveats: one model plays answerer, grader and attacker, so the grader may favor its own style; full context is the reference by construction; 15 clients is small. Re-run with a different judge (`--model` sets both) before quoting the numbers externally.
+Changes from the earlier 15-client run (same model as answerer and grader): minimized scores fell by about 0.1 to 0.3, and the small adaptive advantage (+0.13) disappeared. A stricter, separate judge and the larger sample are the likely causes; we did not run the two setups side by side to separate them.
+
+Caveats: full context is the reference by construction; the judge is from the same model family as the answerer; 30 clients is still modest; the grader has not been calibrated against advisors (see FUTURE_WORK.md item 6).
 
 ## Results on synthetic data
 
