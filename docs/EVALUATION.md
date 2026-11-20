@@ -132,6 +132,27 @@ Changes from the earlier 15-client run (same model as answerer and grader): mini
 
 Caveats: full context is the reference by construction; the judge is from the same model family as the answerer; 30 clients is still modest; the grader has not been calibrated against advisors (see FUTURE_WORK.md item 6).
 
+### 10. Can the model tell where a client works from their holdings?
+
+PII detection does not cover investment patterns. A client with a large stake in one mid-cap stock is often an executive or early employee there, and insiders' holdings are public in SEC Form 4 filings. We planted the answer: 40 "insider" clients from the public-data book were given a 15 to 35% position in a mid-cap company, that company's state and a management occupation. 40 "outside investors" got the same kind of position but kept their own job and state, and 40 ordinary clients were left as they are. No name, employer or notes were sent. `gemini-3.8-flash` was asked which public company each client works for (2026-11-20). Command: `python3 eval/pattern_attack.py --n-insiders 40 --n-investors 40 --n-controls 40`. Files: `eval/results_real/pattern_attack*.csv`.
+
+**Share of clients for whom the model named the employer correctly / named a wrong company with confidence of 50 or more:**
+
+| Context sent | Holdings level | Insiders: correct | Outside investors: wrong guess | Ordinary clients: wrong guess |
+|---|---|---|---|---|
+| Masked (everything exact but identifiers) | exact tickers | 100% | 60% | 15% |
+| Masked | anonymized (single stock + sector) | 2.5% | 12.5% | 0% |
+| Masked | sectors | 0% | 2.5% | 0% |
+| Concentration task policy | exact tickers | 100% | 100% | 18% |
+| Concentration task policy | anonymized (the current default) | 0% | 0% | 0% |
+| Concentration task policy | sectors | 0% | 0% | 0% |
+
+* **The ticker is the leak.** Whenever the ticker of a concentrated mid-cap position is sent, the model names that company as the employer, for every insider, even with no occupation or location in the context.
+* **It cannot tell insiders from outside investors by the position alone.** With only the concentration context it named the held company for 100% of both groups. Occupation and state help it separate them a little (it named the company for 62.5% of outside investors in masked mode). In real books, how often such a guess is right depends on how many concentrated holders are employees, which we cannot measure here.
+* **The current task policies already block it.** No task sends exact tickers by default; the anonymized level ("single stock, Healthcare, 22%") brought correct guesses to 0 to 2.5%. The risk is in masked or full-context modes, and in any policy that follows the counterfactual result that some answers improve with exact holdings.
+
+Caveats: the ground truth is planted, the mid-cap list is ours, and one model was tested. The test shows what the context makes possible, not how often real clients would be identified.
+
 ## Results on synthetic data
 
 See `eval/results/`. The synthetic world was built to stress the system (wealthier clients, more concentrated positions, a 50,000-person directory), so its numbers are harsher, but the conclusions match: masking alone leaves every client unique, fixed task policies compound to 68% unique after 12 requests, and the adaptive policy with a ledger holds k of 10 or more at about 0.88 utility.
