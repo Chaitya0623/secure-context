@@ -29,6 +29,8 @@ Swapped values come from other clients in the same book, so each counterfactual 
 python3 eval/run_counterfactual.py                         # simulator, 50 clients, seconds, no key
 export GROQ_API_KEY=...
 python3 eval/run_counterfactual.py --backend groq --n 10   # real model, about 1,900 calls, resumable
+export GOOGLE_CLOUD_PROJECT=secure-context-llm              # Gemini on Vertex AI (gcloud ADC login)
+python3 eval/run_counterfactual.py --backend gemini --n 10 # default model gemini-3.8-flash, cached in data/cache/gemini/
 ```
 
 Options:
@@ -58,6 +60,18 @@ The simulator's dependencies are known from its code, so the simulator run check
 * **Age for income estimates:** age band changes only 30% of answers. The simulator's withdrawal rate floors at 3% below age 55, so exact age only matters for older clients.
 
 `tests/test_counterfactual.py` also checks the test against a probe model with planted dependencies (age decade and risk only). The test must recover "age: band, risk: exact, everything else: drop."
+
+## What the Gemini run shows
+
+`gemini-3.8-flash` on Vertex AI answers and judges, 10 clients, three core tasks, 2026-11-06 (`eval/results_counterfactual/gemini/`).
+
+* **Null control:** 0% for meeting brief and concentration, 20% for income plan. The income plan answer moves even when only session tokens change, so its tolerance rises to 30% and its measured needs are looser.
+* **Agreement:** 18 of 33 task-field pairs match `policy.py` (the simulator matched 32).
+* **Removing a field and changing its value behave differently.** Risk and horizon measure as "drop" for the meeting brief and concentration (removing them changed 0% of answers) yet swapping in another client's value changed 80 to 100%. The model fills in a default when a field is missing, but uses the value when it is there. Because the measured need reads only the removal results, those "drop" verdicts should not be trusted: keep risk and horizon.
+* **Real gaps in the hand-coded policy:** assets (AUM) and liquidity are needed exactly, not as buckets (removal changed 70 to 100% of answers in every task). Income plans also use holdings and household.
+* **Privacy cost:** the measured policies send more exact numbers, so crowds shrink sharply (income plan median k from 909 to 18, with 37% of clients below k = 10). The utility gain from exact AUM has to be weighed against that.
+
+With 10 clients each rate moves in steps of 10%, so treat single-cell differences as noise. The next step is more clients (`--n 30`) and a separate judge model (`--judge-model`).
 
 ## Before trusting real-model results
 

@@ -1,0 +1,251 @@
+client,context,answer,model_pick,model_conf,parsed,model_correct,model_confident_correct,model_said_none,script_correct,identical_lines,lines
+C0481,"masked, all exact",8,8.0,98.0,True,True,True,False,True,7,10
+C0481,"concentration, exact tickers",8,8.0,95.0,True,True,True,False,True,3,4
+C0481,concentration policy (anonymized),8,8.0,92.0,True,True,True,False,True,3,4
+C0481,"concentration, sectors",8,8.0,92.0,True,True,True,False,True,3,4
+C0481,meeting brief policy,8,8.0,98.0,True,True,True,False,True,7,8
+C4047,"masked, all exact",2,2.0,100.0,True,True,True,False,True,6,10
+C4047,"concentration, exact tickers",2,2.0,95.0,True,True,True,False,True,3,4
+C4047,concentration policy (anonymized),2,2.0,100.0,True,True,True,False,True,3,4
+C4047,"concentration, sectors",2,2.0,95.0,True,True,True,False,True,4,4
+C4047,meeting brief policy,2,2.0,100.0,True,True,True,False,True,8,8
+C1867,"masked, all exact",4,4.0,100.0,True,True,True,False,True,8,10
+C1867,"concentration, exact tickers",4,4.0,98.0,True,True,True,False,True,3,4
+C1867,concentration policy (anonymized),4,4.0,100.0,True,True,True,False,True,3,4
+C1867,"concentration, sectors",4,4.0,100.0,True,True,True,False,True,4,4
+C1867,meeting brief policy,4,4.0,100.0,True,True,True,False,True,8,8
+C2996,"masked, all exact",8,8.0,98.0,True,True,True,False,True,7,10
+C2996,"concentration, exact tickers",8,8.0,98.0,True,True,True,False,True,3,4
+C2996,concentration policy (anonymized),8,8.0,98.0,True,True,True,False,True,3,4
+C2996,"concentration, sectors",8,8.0,98.0,True,True,True,False,True,3,4
+C2996,meeting brief policy,8,8.0,98.0,True,True,True,False,True,7,8
+C1272,"masked, all exact",9,9.0,100.0,True,True,True,False,True,8,10
+C1272,"concentration, exact tickers",9,9.0,95.0,True,True,True,False,True,3,4
+C1272,concentration policy (anonymized),9,9.0,95.0,True,True,True,False,True,3,4
+C1272,"concentration, sectors",9,9.0,95.0,True,True,True,False,True,3,4
+C1272,meeting brief policy,9,9.0,98.0,True,True,True,False,True,7,8
+C3629,"masked, all exact",1,1.0,100.0,True,True,True,False,True,8,10
+C3629,"concentration, exact tickers",1,1.0,95.0,True,True,True,False,False,3,4
+C3629,concentration policy (anonymized),1,1.0,98.0,True,True,True,False,False,3,4
+C3629,"concentration, sectors",1,1.0,98.0,True,True,True,False,True,3,4
+C3629,meeting brief policy,1,1.0,98.0,True,True,True,False,True,7,8
+C2899,"masked, all exact",0,0.0,100.0,True,True,True,False,True,8,10
+C2899,"concentration, exact tickers",0,0.0,98.0,True,True,True,False,True,3,4
+C2899,concentration policy (anonymized),0,0.0,98.0,True,True,True,False,True,3,4
+C2899,"concentration, sectors",0,0.0,98.0,True,True,True,False,True,3,4
+C2899,meeting brief policy,0,0.0,98.0,True,True,True,False,True,7,8
+C0703,"masked, all exact",4,4.0,100.0,True,True,True,False,True,6,10
+C0703,"concentration, exact tickers",4,4.0,98.0,True,True,True,False,True,3,4
+C0703,concentration policy (anonymized),4,4.0,98.0,True,True,True,False,True,3,4
+C0703,"concentration, sectors",4,4.0,95.0,True,True,True,False,True,3,4
+C0703,meeting brief policy,4,4.0,95.0,True,True,True,False,True,6,8
+C3254,"masked, all exact",6,6.0,100.0,True,True,True,False,True,7,10
+C3254,"concentration, exact tickers",6,6.0,95.0,True,True,True,False,True,3,4
+C3254,concentration policy (anonymized),6,6.0,98.0,True,True,True,False,True,3,4
+C3254,"concentration, sectors",6,6.0,98.0,True,True,True,False,True,4,4
+C3254,meeting brief policy,6,6.0,95.0,True,True,True,False,True,7,8
+C2544,"masked, all exact",5,5.0,100.0,True,True,True,False,True,8,10
+C2544,"concentration, exact tickers",5,5.0,98.0,True,True,True,False,True,3,4
+C2544,concentration policy (anonymized),5,5.0,98.0,True,True,True,False,True,3,4
+C2544,"concentration, sectors",5,5.0,98.0,True,True,True,False,True,3,4
+C2544,meeting brief policy,5,5.0,100.0,True,True,True,False,True,7,8
+C2688,"masked, all exact",0,0.0,99.0,True,True,True,False,True,7,10
+C2688,"concentration, exact tickers",0,0.0,98.0,True,True,True,False,True,3,4
+C2688,concentration policy (anonymized),0,0.0,98.0,True,True,True,False,True,3,4
+C2688,"concentration, sectors",0,0.0,98.0,True,True,True,False,True,3,4
+C2688,meeting brief policy,0,0.0,98.0,True,True,True,False,True,7,8
+C0600,"masked, all exact",2,2.0,98.0,True,True,True,False,True,8,10
+C0600,"concentration, exact tickers",2,,95.0,True,False,False,True,True,3,4
+C0600,concentration policy (anonymized),2,,95.0,True,False,False,True,True,3,4
+C0600,"concentration, sectors",2,,0.0,True,False,False,True,True,4,4
+C0600,meeting brief policy,2,2.0,100.0,True,True,True,False,True,8,8
+C1038,"masked, all exact",5,5.0,100.0,True,True,True,False,True,8,10
+C1038,"concentration, exact tickers",5,0.0,85.0,True,False,False,False,False,3,4
+C1038,concentration policy (anonymized),5,,85.0,True,False,False,True,False,3,4
+C1038,"concentration, sectors",5,0.0,90.0,True,False,False,False,False,4,4
+C1038,meeting brief policy,5,5.0,100.0,True,True,True,False,True,8,8
+C3461,"masked, all exact",6,6.0,100.0,True,True,True,False,True,8,10
+C3461,"concentration, exact tickers",6,6.0,95.0,True,True,True,False,True,3,4
+C3461,concentration policy (anonymized),6,6.0,98.0,True,True,True,False,True,3,4
+C3461,"concentration, sectors",6,6.0,98.0,True,True,True,False,True,4,4
+C3461,meeting brief policy,6,6.0,100.0,True,True,True,False,True,8,8
+C2164,"masked, all exact",0,0.0,100.0,True,True,True,False,True,7,10
+C2164,"concentration, exact tickers",0,0.0,98.0,True,True,True,False,False,3,4
+C2164,concentration policy (anonymized),0,0.0,95.0,True,True,True,False,False,3,4
+C2164,"concentration, sectors",0,0.0,98.0,True,True,True,False,True,3,4
+C2164,meeting brief policy,0,0.0,98.0,True,True,True,False,True,7,8
+C4642,"masked, all exact",1,1.0,100.0,True,True,True,False,True,8,10
+C4642,"concentration, exact tickers",1,,90.0,True,False,False,True,False,3,4
+C4642,concentration policy (anonymized),1,,95.0,True,False,False,True,False,3,4
+C4642,"concentration, sectors",1,,0.0,True,False,False,True,False,4,4
+C4642,meeting brief policy,1,1.0,100.0,True,True,True,False,True,8,8
+C0466,"masked, all exact",9,9.0,100.0,True,True,True,False,True,6,10
+C0466,"concentration, exact tickers",9,9.0,95.0,True,True,True,False,True,3,4
+C0466,concentration policy (anonymized),9,9.0,98.0,True,True,True,False,True,3,4
+C0466,"concentration, sectors",9,9.0,95.0,True,True,True,False,True,3,4
+C0466,meeting brief policy,9,9.0,98.0,True,True,True,False,True,7,8
+C1631,"masked, all exact",0,0.0,100.0,True,True,True,False,True,7,10
+C1631,"concentration, exact tickers",0,0.0,100.0,True,True,True,False,True,3,4
+C1631,concentration policy (anonymized),0,0.0,98.0,True,True,True,False,True,3,4
+C1631,"concentration, sectors",0,0.0,98.0,True,True,True,False,True,4,4
+C1631,meeting brief policy,0,0.0,100.0,True,True,True,False,True,8,8
+C0071,"masked, all exact",4,4.0,98.0,True,True,True,False,True,7,10
+C0071,"concentration, exact tickers",4,4.0,95.0,True,True,True,False,True,3,4
+C0071,concentration policy (anonymized),4,4.0,98.0,True,True,True,False,True,3,4
+C0071,"concentration, sectors",4,4.0,95.0,True,True,True,False,True,3,4
+C0071,meeting brief policy,4,4.0,98.0,True,True,True,False,True,7,8
+C1576,"masked, all exact",5,5.0,100.0,True,True,True,False,True,7,10
+C1576,"concentration, exact tickers",5,,90.0,True,False,False,True,True,3,4
+C1576,concentration policy (anonymized),5,,85.0,True,False,False,True,True,3,4
+C1576,"concentration, sectors",5,,90.0,True,False,False,True,True,4,4
+C1576,meeting brief policy,5,5.0,100.0,True,True,True,False,True,8,8
+C4080,"masked, all exact",7,7.0,100.0,True,True,True,False,True,8,10
+C4080,"concentration, exact tickers",7,7.0,98.0,True,True,True,False,True,3,4
+C4080,concentration policy (anonymized),7,7.0,98.0,True,True,True,False,True,3,4
+C4080,"concentration, sectors",7,7.0,98.0,True,True,True,False,True,3,4
+C4080,meeting brief policy,7,7.0,98.0,True,True,True,False,True,7,8
+C0501,"masked, all exact",1,1.0,100.0,True,True,True,False,True,7,10
+C0501,"concentration, exact tickers",1,1.0,98.0,True,True,True,False,True,3,4
+C0501,concentration policy (anonymized),1,1.0,98.0,True,True,True,False,True,3,4
+C0501,"concentration, sectors",1,1.0,98.0,True,True,True,False,True,3,4
+C0501,meeting brief policy,1,1.0,98.0,True,True,True,False,True,7,8
+C3664,"masked, all exact",6,6.0,100.0,True,True,True,False,True,7,10
+C3664,"concentration, exact tickers",6,6.0,100.0,True,True,True,False,True,3,4
+C3664,concentration policy (anonymized),6,6.0,100.0,True,True,True,False,True,3,4
+C3664,"concentration, sectors",6,6.0,100.0,True,True,True,False,True,4,4
+C3664,meeting brief policy,6,6.0,100.0,True,True,True,False,True,8,8
+C2103,"masked, all exact",6,6.0,100.0,True,True,True,False,True,8,10
+C2103,"concentration, exact tickers",6,6.0,98.0,True,True,True,False,True,3,4
+C2103,concentration policy (anonymized),6,6.0,100.0,True,True,True,False,True,3,4
+C2103,"concentration, sectors",6,6.0,98.0,True,True,True,False,True,4,4
+C2103,meeting brief policy,6,6.0,100.0,True,True,True,False,True,8,8
+C3006,"masked, all exact",8,8.0,100.0,True,True,True,False,True,8,10
+C3006,"concentration, exact tickers",8,8.0,98.0,True,True,True,False,True,3,4
+C3006,concentration policy (anonymized),8,8.0,95.0,True,True,True,False,True,3,4
+C3006,"concentration, sectors",8,8.0,98.0,True,True,True,False,True,4,4
+C3006,meeting brief policy,8,8.0,100.0,True,True,True,False,True,8,8
+C1840,"masked, all exact",9,9.0,99.0,True,True,True,False,True,7,10
+C1840,"concentration, exact tickers",9,9.0,100.0,True,True,True,False,True,3,4
+C1840,concentration policy (anonymized),9,9.0,100.0,True,True,True,False,True,3,4
+C1840,"concentration, sectors",9,9.0,95.0,True,True,True,False,True,4,4
+C1840,meeting brief policy,9,9.0,100.0,True,True,True,False,True,8,8
+C3705,"masked, all exact",0,0.0,100.0,True,True,True,False,True,8,10
+C3705,"concentration, exact tickers",0,0.0,95.0,True,True,True,False,True,3,4
+C3705,concentration policy (anonymized),0,0.0,98.0,True,True,True,False,True,3,4
+C3705,"concentration, sectors",0,0.0,95.0,True,True,True,False,True,3,4
+C3705,meeting brief policy,0,0.0,98.0,True,True,True,False,True,7,8
+C3106,"masked, all exact",1,1.0,100.0,True,True,True,False,True,8,10
+C3106,"concentration, exact tickers",1,,40.0,True,False,False,True,True,3,4
+C3106,concentration policy (anonymized),1,,50.0,True,False,False,True,True,3,4
+C3106,"concentration, sectors",1,,85.0,True,False,False,True,True,4,4
+C3106,meeting brief policy,1,1.0,100.0,True,True,True,False,True,8,8
+C3437,"masked, all exact",4,4.0,100.0,True,True,True,False,True,8,10
+C3437,"concentration, exact tickers",4,4.0,95.0,True,True,True,False,True,3,4
+C3437,concentration policy (anonymized),4,4.0,95.0,True,True,True,False,True,3,4
+C3437,"concentration, sectors",4,4.0,95.0,True,True,True,False,True,3,4
+C3437,meeting brief policy,4,4.0,95.0,True,True,True,False,True,7,8
+C3833,"masked, all exact",5,5.0,100.0,True,True,True,False,True,7,10
+C3833,"concentration, exact tickers",5,5.0,95.0,True,True,True,False,True,3,4
+C3833,concentration policy (anonymized),5,5.0,95.0,True,True,True,False,True,3,4
+C3833,"concentration, sectors",5,5.0,98.0,True,True,True,False,True,3,4
+C3833,meeting brief policy,5,5.0,98.0,True,True,True,False,True,7,8
+C0102,"masked, all exact",5,5.0,100.0,True,True,True,False,True,8,10
+C0102,"concentration, exact tickers",5,5.0,95.0,True,True,True,False,True,3,4
+C0102,concentration policy (anonymized),5,5.0,95.0,True,True,True,False,True,3,4
+C0102,"concentration, sectors",5,5.0,92.0,True,True,True,False,True,3,4
+C0102,meeting brief policy,5,5.0,95.0,True,True,True,False,True,7,8
+C2192,"masked, all exact",1,1.0,100.0,True,True,True,False,True,8,10
+C2192,"concentration, exact tickers",1,1.0,98.0,True,True,True,False,False,3,4
+C2192,concentration policy (anonymized),1,1.0,98.0,True,True,True,False,False,3,4
+C2192,"concentration, sectors",1,1.0,98.0,True,True,True,False,True,3,4
+C2192,meeting brief policy,1,1.0,98.0,True,True,True,False,True,7,8
+C2089,"masked, all exact",3,3.0,98.0,True,True,True,False,True,7,10
+C2089,"concentration, exact tickers",3,,95.0,True,False,False,True,False,3,4
+C2089,concentration policy (anonymized),3,,95.0,True,False,False,True,False,3,4
+C2089,"concentration, sectors",3,,90.0,True,False,False,True,False,4,4
+C2089,meeting brief policy,3,3.0,100.0,True,True,True,False,True,8,8
+C0575,"masked, all exact",7,7.0,100.0,True,True,True,False,True,7,10
+C0575,"concentration, exact tickers",7,7.0,92.0,True,True,True,False,True,3,4
+C0575,concentration policy (anonymized),7,7.0,95.0,True,True,True,False,True,3,4
+C0575,"concentration, sectors",7,7.0,92.0,True,True,True,False,True,3,4
+C0575,meeting brief policy,7,7.0,98.0,True,True,True,False,True,7,8
+C0664,"masked, all exact",0,0.0,100.0,True,True,True,False,True,6,10
+C0664,"concentration, exact tickers",0,0.0,95.0,True,True,True,False,True,3,4
+C0664,concentration policy (anonymized),0,0.0,95.0,True,True,True,False,True,3,4
+C0664,"concentration, sectors",0,0.0,95.0,True,True,True,False,True,3,4
+C0664,meeting brief policy,0,0.0,98.0,True,True,True,False,True,7,8
+C4961,"masked, all exact",5,5.0,100.0,True,True,True,False,True,8,10
+C4961,"concentration, exact tickers",5,5.0,98.0,True,True,True,False,True,3,4
+C4961,concentration policy (anonymized),5,5.0,95.0,True,True,True,False,True,3,4
+C4961,"concentration, sectors",5,5.0,95.0,True,True,True,False,True,4,4
+C4961,meeting brief policy,5,5.0,100.0,True,True,True,False,True,8,8
+C4397,"masked, all exact",6,6.0,100.0,True,True,True,False,True,8,10
+C4397,"concentration, exact tickers",6,6.0,100.0,True,True,True,False,True,3,4
+C4397,concentration policy (anonymized),6,6.0,100.0,True,True,True,False,True,3,4
+C4397,"concentration, sectors",6,6.0,98.0,True,True,True,False,True,4,4
+C4397,meeting brief policy,6,6.0,100.0,True,True,True,False,True,8,8
+C4580,"masked, all exact",3,3.0,98.0,True,True,True,False,True,7,10
+C4580,"concentration, exact tickers",3,3.0,98.0,True,True,True,False,True,3,4
+C4580,concentration policy (anonymized),3,3.0,95.0,True,True,True,False,True,3,4
+C4580,"concentration, sectors",3,3.0,95.0,True,True,True,False,True,3,4
+C4580,meeting brief policy,3,3.0,98.0,True,True,True,False,True,7,8
+C2107,"masked, all exact",0,0.0,100.0,True,True,True,False,True,7,10
+C2107,"concentration, exact tickers",0,0.0,95.0,True,True,True,False,True,3,4
+C2107,concentration policy (anonymized),0,0.0,98.0,True,True,True,False,True,3,4
+C2107,"concentration, sectors",0,0.0,98.0,True,True,True,False,True,4,4
+C2107,meeting brief policy,0,0.0,100.0,True,True,True,False,True,8,8
+C2671,"masked, all exact",3,3.0,98.0,True,True,True,False,True,7,10
+C2671,"concentration, exact tickers",3,3.0,95.0,True,True,True,False,True,3,4
+C2671,concentration policy (anonymized),3,3.0,95.0,True,True,True,False,True,3,4
+C2671,"concentration, sectors",3,3.0,95.0,True,True,True,False,True,3,4
+C2671,meeting brief policy,3,3.0,98.0,True,True,True,False,True,7,8
+C4827,"masked, all exact",6,6.0,98.0,True,True,True,False,True,7,10
+C4827,"concentration, exact tickers",6,6.0,98.0,True,True,True,False,True,3,4
+C4827,concentration policy (anonymized),6,6.0,98.0,True,True,True,False,True,3,4
+C4827,"concentration, sectors",6,6.0,98.0,True,True,True,False,True,3,4
+C4827,meeting brief policy,6,6.0,98.0,True,True,True,False,True,7,8
+C4555,"masked, all exact",5,5.0,100.0,True,True,True,False,True,8,10
+C4555,"concentration, exact tickers",5,5.0,100.0,True,True,True,False,True,3,4
+C4555,concentration policy (anonymized),5,5.0,98.0,True,True,True,False,True,3,4
+C4555,"concentration, sectors",5,5.0,95.0,True,True,True,False,True,4,4
+C4555,meeting brief policy,5,5.0,100.0,True,True,True,False,True,8,8
+C2067,"masked, all exact",7,7.0,100.0,True,True,True,False,True,8,10
+C2067,"concentration, exact tickers",7,7.0,95.0,True,True,True,False,True,3,4
+C2067,concentration policy (anonymized),7,7.0,98.0,True,True,True,False,True,3,4
+C2067,"concentration, sectors",7,7.0,95.0,True,True,True,False,True,4,4
+C2067,meeting brief policy,7,7.0,100.0,True,True,True,False,True,8,8
+C4270,"masked, all exact",2,2.0,100.0,True,True,True,False,True,8,10
+C4270,"concentration, exact tickers",2,2.0,95.0,True,True,True,False,True,3,4
+C4270,concentration policy (anonymized),2,2.0,98.0,True,True,True,False,True,3,4
+C4270,"concentration, sectors",2,2.0,100.0,True,True,True,False,True,4,4
+C4270,meeting brief policy,2,2.0,100.0,True,True,True,False,True,8,8
+C1569,"masked, all exact",2,2.0,100.0,True,True,True,False,True,8,10
+C1569,"concentration, exact tickers",2,2.0,98.0,True,True,True,False,True,3,4
+C1569,concentration policy (anonymized),2,2.0,98.0,True,True,True,False,True,3,4
+C1569,"concentration, sectors",2,2.0,98.0,True,True,True,False,True,3,4
+C1569,meeting brief policy,2,2.0,99.0,True,True,True,False,True,7,8
+C0795,"masked, all exact",9,9.0,100.0,True,True,True,False,True,7,10
+C0795,"concentration, exact tickers",9,9.0,98.0,True,True,True,False,True,3,4
+C0795,concentration policy (anonymized),9,9.0,98.0,True,True,True,False,True,3,4
+C0795,"concentration, sectors",9,9.0,95.0,True,True,True,False,True,3,4
+C0795,meeting brief policy,9,9.0,98.0,True,True,True,False,True,7,8
+C4531,"masked, all exact",4,4.0,98.0,True,True,True,False,True,6,10
+C4531,"concentration, exact tickers",4,4.0,95.0,True,True,True,False,True,3,4
+C4531,concentration policy (anonymized),4,4.0,98.0,True,True,True,False,True,3,4
+C4531,"concentration, sectors",4,4.0,95.0,True,True,True,False,True,3,4
+C4531,meeting brief policy,4,4.0,98.0,True,True,True,False,True,7,8
+C0744,"masked, all exact",5,5.0,100.0,True,True,True,False,True,7,10
+C0744,"concentration, exact tickers",5,5.0,95.0,True,True,True,False,True,3,4
+C0744,concentration policy (anonymized),5,5.0,95.0,True,True,True,False,True,3,4
+C0744,"concentration, sectors",5,5.0,92.0,True,True,True,False,True,3,4
+C0744,meeting brief policy,5,5.0,98.0,True,True,True,False,True,7,8
+C0257,"masked, all exact",6,6.0,100.0,True,True,True,False,True,6,10
+C0257,"concentration, exact tickers",6,6.0,98.0,True,True,True,False,True,3,4
+C0257,concentration policy (anonymized),6,6.0,98.0,True,True,True,False,True,3,4
+C0257,"concentration, sectors",6,6.0,98.0,True,True,True,False,True,3,4
+C0257,meeting brief policy,6,6.0,98.0,True,True,True,False,True,7,8
+C4794,"masked, all exact",7,7.0,100.0,True,True,True,False,True,8,10
+C4794,"concentration, exact tickers",7,7.0,98.0,True,True,True,False,True,3,4
+C4794,concentration policy (anonymized),7,7.0,98.0,True,True,True,False,True,3,4
+C4794,"concentration, sectors",7,7.0,95.0,True,True,True,False,True,3,4
+C4794,meeting brief policy,7,7.0,98.0,True,True,True,False,True,7,8

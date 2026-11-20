@@ -1,0 +1,6 @@
+context,n,model_correct,model_confident_correct,model_said_none,script_correct,unparsed,chance
+"masked, all exact",50,1.0,1.0,0.0,1.0,0.0,0.1
+"concentration, exact tickers",50,0.88,0.88,0.1,0.88,0.0,0.1
+concentration policy (anonymized),50,0.88,0.88,0.12,0.88,0.0,0.1
+"concentration, sectors",50,0.88,0.88,0.1,0.94,0.0,0.1
+meeting brief policy,50,1.0,1.0,0.0,1.0,0.0,0.1
