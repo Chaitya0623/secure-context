@@ -235,9 +235,38 @@ def load_advisory(path=None) -> pd.DataFrame:
     return df.dropna(subset=["annual_income_usd", "investment_portfolio_usd"]).reset_index(drop=True)
 
 
-def build_clients(directory: pd.DataFrame, adv: pd.DataFrame, n: int = 1000, seed: int = 11) -> list[Client]:
-    """Place each advisory client on a matching directory person and generate identity + note."""
+def _wealth_matched_mix(scf: pd.DataFrame, rng: np.random.Generator):
+    """Portfolio mix from an SCF household of similar age and similar financial assets.
+
+    The directory person is matched on age and income, so their SCF donor can hold far less
+    than the client's advisory portfolio (often only a checking account, which reads as 100%
+    cash). The client keeps that person's identity but takes a mix from a household with
+    0.5x to 2x the client's assets.
+    """
+    fin, w, cell = scf.fin_m.values, scf.w.values, scf.age_cell.values
+    cols = ["sh_cash", "sh_stock", "sh_eqfund", "sh_bond"]
+    shares = scf[cols].values
+
+    def pick(age: int, aum: float):
+        if aum <= 0:
+            return None
+        near = (fin >= aum * .5) & (fin <= aum * 2)
+        for m in (near & (cell == _age_cell(age)), near):
+            pool = np.flatnonzero(m)
+            if len(pool) >= 20:
+                i = rng.choice(pool, p=w[pool] / w[pool].sum())
+                return dict(zip(cols, shares[i]))
+        return None
+    return pick
+
+
+def build_clients(directory: pd.DataFrame, adv: pd.DataFrame, n: int = 1000, seed: int = 11,
+                  scf: pd.DataFrame | None = None) -> list[Client]:
+    """Place each advisory client on a matching directory person and generate identity + note.
+
+    With `scf`, the portfolio mix comes from a household with similar assets (see _wealth_matched_mix)."""
     rng = random.Random(seed)
+    mix = _wealth_matched_mix(scf, np.random.default_rng(seed + 1)) if scf is not None else None
     fk = Faker("en_US")
     fk.seed_instance(seed)
     adv = adv.sample(n=min(n, len(adv)), random_state=seed).reset_index(drop=True)
@@ -260,6 +289,12 @@ def build_clients(directory: pd.DataFrame, adv: pd.DataFrame, n: int = 1000, see
         used.add(int(row.person_idx))
         aum = float(r.investment_portfolio_usd) / 1e6
         directory.loc[row.person_idx, "aum"] = round(aum, 3)  # the client is this person
+        shares = mix(age, aum) if mix else None
+        if shares:
+            row = row.copy()
+            for key, v in shares.items():
+                row[key] = v
+                directory.at[row.person_idx, key] = v
         holdings = _holdings_for(row)
 
         female = rng.random() < .5
@@ -358,6 +393,7 @@ def load_real_environment(n_clients: int = 1000, seed: int = 7, max_directory: i
     acs = load_acs()
     if max_directory and len(acs) > max_directory:
         acs = acs.sample(n=max_directory, random_state=seed).reset_index(drop=True)
-    directory = build_directory(acs, load_scf(), seed)
-    clients = build_clients(directory, load_advisory(), n_clients, seed + 4)
+    scf = load_scf()
+    directory = build_directory(acs, scf, seed)
+    clients = build_clients(directory, load_advisory(), n_clients, seed + 4, scf=scf)
     return directory, clients

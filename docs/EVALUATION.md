@@ -2,7 +2,7 @@
 
 Two environments run the same experiments:
 
-* **Public data (primary):** `python3 eval/run_real.py`, results in `eval/results_real/`. Census ACS PUMS 2023 (978,284 adults in NY, NJ, CA, TX, FL, IL) is the attacker's directory; each person gets wealth and a portfolio mix from a Fed SCF 2022 household in the same age, income and occupation cell; 1,000 clients come from Financial-Advisory-Clients (4,825 usable rows) and are placed on matching Census people; request types come from Bitext (23,806 requests, 24 intents); PII detection is also benchmarked on 2,891 Gretel financial documents.
+* **Public data (primary):** `python3 eval/run_real.py`, results in `eval/results_real/`. Census ACS PUMS 2023 (978,284 adults in NY, NJ, CA, TX, FL, IL) is the attacker's directory; each person gets wealth and a portfolio mix from a Fed SCF 2022 household in the same age, income and occupation cell; 1,000 clients come from Financial-Advisory-Clients (4,825 usable rows) and are placed on matching Census people, and each client's portfolio mix comes from an SCF household of similar age holding 0.5 to 2 times the client's assets; request types come from Bitext (23,806 requests, 24 intents); PII detection is also benchmarked on 2,891 Gretel financial documents.
 * **Synthetic (secondary):** `python3 eval/run_all.py`, results in `eval/results/`, a fully generated 50,000-person world kept for tests.
 
 Crowd size **k** is the number of directory people who match everything a context reveals; k = 1 means the client is unique. The privacy floor is k of 10 or more. Names, SSNs, accounts and contact details are always generated.
