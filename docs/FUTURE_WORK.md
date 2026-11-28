@@ -45,4 +45,4 @@ What this project could not measure without LPL data or production access, and w
 ## Ready to run now (needs only compute or an API key)
 
 * GLiNER detectors: `python3 eval/run_real.py --gliner nvidia/gliner-PII`
-* LLM-judged quality and the LLM attacker: `python3 eval/llm_eval.py --backend anthropic --n 30`
+* LLM-judged quality and the LLM attacker: `python3 eval/llm_eval.py --backend gemini --n 30 --judge-model gemini-3.1-pro-preview`
