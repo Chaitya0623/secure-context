@@ -1,0 +1,11 @@
+book_size,context,script_correct,chance
+200,"masked, all exact",1.0,0.005
+200,"concentration, exact tickers",0.35,0.005
+200,concentration policy (anonymized),0.35,0.005
+200,"concentration, sectors",0.51,0.005
+200,meeting brief policy,0.98,0.005
+1000,"masked, all exact",1.0,0.001
+1000,"concentration, exact tickers",0.165,0.001
+1000,concentration policy (anonymized),0.165,0.001
+1000,"concentration, sectors",0.355,0.001
+1000,meeting brief policy,0.95,0.001
