@@ -63,15 +63,21 @@ The simulator's dependencies are known from its code, so the simulator run check
 
 ## What the Gemini run shows
 
-`gemini-3.8-flash` on Vertex AI answers and judges, 10 clients, three core tasks, 2026-11-06 (`eval/results_counterfactual/gemini/`).
+`gemini-3.8-flash` on Vertex AI answers and `gemini-3.1-pro-preview` judges, 30 clients, three core tasks, 2026-11-20 (`eval/results_counterfactual/gemini/`). Command: `python3 eval/run_counterfactual.py --backend gemini --n 30 --judge-model gemini-3.1-pro-preview`. All 2,790 judgments parsed.
 
-* **Null control:** 0% for meeting brief and concentration, 20% for income plan. The income plan answer moves even when only session tokens change, so its tolerance rises to 30% and its measured needs are looser.
-* **Agreement:** 18 of 33 task-field pairs match `policy.py` (the simulator matched 32).
-* **Removing a field and changing its value behave differently.** Risk and horizon measure as "drop" for the meeting brief and concentration (removing them changed 0% of answers) yet swapping in another client's value changed 80 to 100%. The model fills in a default when a field is missing, but uses the value when it is there. Because the measured need reads only the removal results, those "drop" verdicts should not be trusted: keep risk and horizon.
-* **Real gaps in the hand-coded policy:** assets (AUM) and liquidity are needed exactly, not as buckets (removal changed 70 to 100% of answers in every task). Income plans also use holdings and household.
-* **Privacy cost:** the measured policies send more exact numbers, so crowds shrink sharply (income plan median k from 909 to 18, with 37% of clients below k = 10). The utility gain from exact AUM has to be weighed against that.
+| | 10 clients, Flash judges itself (2026-11-06) | 30 clients, Pro judges (2026-11-20) |
+|---|---|---|
+| Null control (meeting brief / concentration / income plan) | 0% / 0% / 20% | 0% / 3% / 17% |
+| Measured needs that match `policy.py` | 18 of 33 | 13 of 33 |
+| Income plan median k, hand-coded vs. measured policy | 909 vs. 18 | 909 vs. 58 |
 
-With 10 clients each rate moves in steps of 10%, so treat single-cell differences as noise. The next step is more clients (`--n 30`) and a separate judge model (`--judge-model`).
+* **Null control:** the income plan answer still moves 17% of the time when only session tokens change, so its tolerance rises to 27% and its measured needs are the least reliable.
+* **The model uses more exact data than the policy sends, in every task.** Assets and liquidity are needed exactly, not as buckets (removal changed 73 to 100% of answers). Exact holdings matter for the meeting brief and concentration check (sectors or anonymized holdings changed 10 to 43%). This held with the stronger judge.
+* **Removing a field and changing its value still behave differently.** For the meeting brief, removing objective, risk or horizon changed 0% of answers, yet swapping in another client's value changed 97 to 100%. Concentration risk shows the same pattern (removal 7%, swap 97%). The model fills in a default when a field is missing, so those "drop" verdicts should not be trusted: keep objective, risk and horizon.
+* **Concentration is the clean case.** Age, location, occupation and household are unused (removal 0%, swap 3 to 20%), which matches the policy.
+* **Privacy cost, largest for the meeting brief.** Sending what the model measurably uses drops the meeting brief median k from 42,986 to 2, with 76% of clients below k = 10 and 49% unique. Concentration falls from 113,934 to 4,565 (7% below 10); income plan from 909 to 58 (20.5% below 10). The meeting brief is where answer quality and privacy conflict most.
+
+The quality eval (EVALUATION.md section 9) is the other half of this trade: it measures how much worse answers get under the task policy, while this test measures which fields the answers lean on.
 
 ## Before trusting real-model results
 
