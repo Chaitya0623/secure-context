@@ -170,7 +170,7 @@
     {
       "task": "meeting_prep",
       "mode": "masked",
-      "pct_unique": 0.971,
+      "pct_unique": 0.982,
       "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
@@ -180,8 +180,8 @@
       "task": "meeting_prep",
       "mode": "default",
       "pct_unique": 0.002,
-      "pct_k_lt_10": 0.002,
-      "median_k": 36086.0,
+      "pct_k_lt_10": 0.006,
+      "median_k": 11085.0,
       "mean_utility": 1.0,
       "refused": 0.0
     },
@@ -190,14 +190,14 @@
       "mode": "adaptive",
       "pct_unique": 0.0,
       "pct_k_lt_10": 0.0,
-      "median_k": 36086.0,
-      "mean_utility": 0.9997777777777779,
+      "median_k": 11085.0,
+      "mean_utility": 0.9995277777777778,
       "refused": 0.0
     },
     {
       "task": "concentration",
       "mode": "masked",
-      "pct_unique": 0.971,
+      "pct_unique": 0.982,
       "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
@@ -224,7 +224,7 @@
     {
       "task": "portfolio_review",
       "mode": "masked",
-      "pct_unique": 0.971,
+      "pct_unique": 0.982,
       "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
@@ -251,7 +251,7 @@
     {
       "task": "transaction",
       "mode": "masked",
-      "pct_unique": 0.971,
+      "pct_unique": 0.982,
       "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
@@ -278,7 +278,7 @@
     {
       "task": "general",
       "mode": "masked",
-      "pct_unique": 0.971,
+      "pct_unique": 0.982,
       "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
@@ -305,7 +305,7 @@
     {
       "task": "income_plan",
       "mode": "masked",
-      "pct_unique": 0.971,
+      "pct_unique": 0.982,
       "pct_k_lt_10": 1.0,
       "median_k": 1.0,
       "mean_utility": 1.0,
@@ -360,9 +360,9 @@
     {
       "mode": "default",
       "request": 12,
-      "pct_k_lt_10": 0.133,
-      "pct_unique": 0.064,
-      "median_k": 280.0,
+      "pct_k_lt_10": 0.173,
+      "pct_unique": 0.08,
+      "median_k": 149.5,
       "mean_utility": 1.0,
       "refusal_rate": 0.0
     },
@@ -371,8 +371,8 @@
       "request": 12,
       "pct_k_lt_10": 0.0,
       "pct_unique": 0.0,
-      "median_k": 1062.0,
-      "mean_utility": 0.995234966363673,
+      "median_k": 627.0,
+      "mean_utility": 0.9940307474504023,
       "refusal_rate": 0.0
     }
   ],
@@ -380,9 +380,9 @@
     {
       "mode": "default",
       "request": 12,
-      "pct_k_lt_10": 0.178,
-      "pct_unique": 0.093,
-      "median_k": 96.0,
+      "pct_k_lt_10": 0.339,
+      "pct_unique": 0.138,
+      "median_k": 27.0,
       "mean_utility": 1.0,
       "refusal_rate": 0.0
     },
@@ -391,8 +391,8 @@
       "request": 12,
       "pct_k_lt_10": 0.0,
       "pct_unique": 0.0,
-      "median_k": 614.0,
-      "mean_utility": 0.9881246232471744,
+      "median_k": 176.0,
+      "mean_utility": 0.9805756468220013,
       "refusal_rate": 0.0
     }
   ],
@@ -440,17 +440,17 @@
     {
       "task": "income_plan",
       "target": "occupation category",
-      "attacker_accuracy": 0.221,
+      "attacker_accuracy": 0.226,
       "majority_baseline": 0.129,
-      "lift": 0.092,
+      "lift": 0.097,
       "n_classes": 24
     },
     {
       "task": "income_plan",
       "target": "region",
-      "attacker_accuracy": 0.362,
+      "attacker_accuracy": 0.363,
       "majority_baseline": 0.376,
-      "lift": -0.014000000000000012,
+      "lift": -0.013000000000000012,
       "n_classes": 4
     }
   ],
@@ -458,17 +458,17 @@
     {
       "representation": "exact date and amount",
       "known_points": 1,
-      "pct_unique": 0.99
+      "pct_unique": 0.9866666666666667
     },
     {
       "representation": "exact date and amount",
       "known_points": 2,
-      "pct_unique": 0.9966666666666667
+      "pct_unique": 1.0
     },
     {
       "representation": "exact date and amount",
       "known_points": 3,
-      "pct_unique": 0.9983333333333333
+      "pct_unique": 1.0
     },
     {
       "representation": "exact date and amount",
@@ -533,27 +533,27 @@
     {
       "representation": "month, type and amount band",
       "known_points": 1,
-      "pct_unique": 0.0033333333333333335
+      "pct_unique": 0.006666666666666667
     },
     {
       "representation": "month, type and amount band",
       "known_points": 2,
-      "pct_unique": 0.02666666666666667
+      "pct_unique": 0.021666666666666667
     },
     {
       "representation": "month, type and amount band",
       "known_points": 3,
-      "pct_unique": 0.12833333333333333
+      "pct_unique": 0.15
     },
     {
       "representation": "month, type and amount band",
       "known_points": 4,
-      "pct_unique": 0.3016666666666667
+      "pct_unique": 0.325
     },
     {
       "representation": "month, type and amount band",
       "known_points": 5,
-      "pct_unique": 0.56
+      "pct_unique": 0.535
     }
   ],
   "advisor_queries": {
@@ -563,26 +563,26 @@
     "pct_unique_from_query_qis": 0.001736111111111111,
     "pct_k_lt_10_from_query_qis": 0.022569444444444444,
     "pct_k_lt_10_after_sanitizing": 0.0,
-    "example_sanitized": "Prep for <PERSON_1a6ffc>, account <ACCOUNT_f8b571>: hw to hire a manager."
+    "example_sanitized": "Prep for <PERSON_36c1a1>, account <ACCOUNT_88029d>: hw to hire a manager."
   },
   "reference_population": [
     {
       "task": "meeting_prep",
       "reference": "general population directory",
-      "pct_k_lt_10": 0.002,
-      "median_k": 36086.0
+      "pct_k_lt_10": 0.006,
+      "median_k": 11085.0
     },
     {
       "task": "meeting_prep",
       "reference": "firm client book (1,000)",
-      "pct_k_lt_10": 0.059,
-      "median_k": 61.0
+      "pct_k_lt_10": 0.591,
+      "median_k": 8.0
     },
     {
       "task": "meeting_prep",
       "reference": "one advisor's book (150)",
-      "pct_k_lt_10": 0.48,
-      "median_k": 10.0
+      "pct_k_lt_10": 1.0,
+      "median_k": 2.0
     },
     {
       "task": "concentration",
@@ -624,23 +624,23 @@
   "policy_side_channel": [
     {
       "task": "meeting_prep",
-      "rare_share": 0.004,
-      "auc_policy_predicts_rare": 0.5998995983935742,
-      "adaptive_utility": 0.9997777777777779,
+      "rare_share": 0.018,
+      "auc_policy_predicts_rare": 0.6440653994116315,
+      "adaptive_utility": 0.9995277777777778,
       "uniform_policy": {
         "age": "band",
         "location": "drop",
         "occupation": "drop",
         "aum": "bucket",
         "holdings": "drop",
-        "household": "exact",
+        "household": "has_dependents",
         "objective": "exact",
         "risk": "exact",
         "horizon": "exact",
         "liquidity": "bucket",
         "notes": "summary"
       },
-      "uniform_utility": 0.8750694444444445,
+      "uniform_utility": 0.8126041666666668,
       "uniform_pct_k_lt_10": 0.0
     },
     {
@@ -793,21 +793,21 @@
     {
       "defense": "noise_cached",
       "queries": 2000,
-      "equity_mae": 2.321610302236855,
+      "equity_mae": 2.3216103022368553,
       "alt_rule_acc": 0.999,
       "collar_rule_acc": 0.9996666666666667
     },
     {
       "defense": "book_bound",
       "queries": 2000,
-      "equity_mae": 6.539479839237287,
+      "equity_mae": 6.537895356563741,
       "alt_rule_acc": 0.56,
       "collar_rule_acc": 0.596
     },
     {
       "defense": "book_bound+coarse",
       "queries": 2000,
-      "equity_mae": 6.939644798229624,
+      "equity_mae": 6.9394699063450895,
       "alt_rule_acc": 0.56,
       "collar_rule_acc": 0.596
     }
@@ -939,10 +939,10 @@
     }
   ],
   "latency_ms_mean": {
-    "detect_ms": 0.251,
-    "rekey_ms": 0.046,
-    "policy_ms": 0.24,
-    "llm_ms": 0.012,
-    "rehydrate_ms": 0.007
+    "detect_ms": 0.215,
+    "rekey_ms": 0.044,
+    "policy_ms": 0.568,
+    "llm_ms": 0.01,
+    "rehydrate_ms": 0.016
   }
 }

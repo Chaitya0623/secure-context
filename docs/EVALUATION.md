@@ -15,14 +15,14 @@ Share of clients with k < 10 after one request (share unique in brackets), again
 
 | Task (share of real requests) | Masking only | Task policy | Adaptive |
 |---|---|---|---|
-| General question (58.4%) | 100% (98.1%) | 0% | 0% |
-| Portfolio review (16.5%) | 100% (98.1%) | 5.6% (3.5%) | 0%, utility 0.99 |
-| Transfer or withdrawal (8.4%) | 100% (98.1%) | 0% | 0% |
-| Retirement income (8.4%) | 100% (98.1%) | 0.3% (0%) | 0%, utility 1.00 |
-| Meeting brief (4.2%) | 100% (98.1%) | 0.7% (0.6%) | 0%, utility 0.999 |
-| Concentration check (4.2%) | 100% (98.1%) | 0.8% (0.6%) | 0%, utility 0.997 |
+| General question (58.4%) | 100% (98.2%) | 0% | 0% |
+| Portfolio review (16.5%) | 100% (98.2%) | 3.3% (2.0%) | 0%, utility 0.994 |
+| Transfer or withdrawal (8.4%) | 100% (98.2%) | 0% | 0% |
+| Retirement income (8.4%) | 100% (98.2%) | 0.3% (0%) | 0%, utility 1.00 |
+| Meeting brief (4.2%) | 100% (98.2%) | 0.6% (0.2%) | 0%, utility 0.9995 |
+| Concentration check (4.2%) | 100% (98.2%) | 0.4% (0.2%) | 0%, utility 0.999 |
 
-With names and accounts tokenized but everything else exact, 98.1% of clients are still unique among almost a million real people. **58% of real wealth-management requests need no client data at all** (Bitext intents such as fees, services, account setup), so the biggest single win is not sending context for them.
+With names and accounts tokenized but everything else exact, 98.2% of clients are still unique among almost a million real people. **58% of real wealth-management requests need no client data at all** (Bitext intents such as fees, services, account setup), so the biggest single win is not sending context for them.
 
 Household (marital status and dependents) counts toward k as of this version. Census records marital status, so it narrows the crowd for the general population; only the firm's own book also knows dependents. Before this change the meeting brief's household line was sent but not counted, which understated identifiability (see [COMBINATIONS.md](COMBINATIONS.md), section 2).
 
@@ -32,11 +32,11 @@ Twelve requests per client drawn from the real Bitext request mix; the ledger as
 
 | After request | Task policy: k < 10 | Task policy: unique | Adaptive + ledger: k < 10 | Adaptive utility |
 |---|---|---|---|---|
-| 1 | 1.2% | 0.7% | 0% | 0.997 |
-| 4 | 6.8% | 3.4% | 0% | 0.996 |
-| 12 | 20.8% | 10.6% | 0% | 0.993 |
+| 1 | 0.7% | 0.4% | 0% | 0.998 |
+| 4 | 6.2% | 3.1% | 0% | 0.995 |
+| 12 | 17.3% | 8.0% | 0% | 0.994 |
 
-With only the three data-heavy tasks (meeting brief, concentration, income plan) the fixed policies reach 38.6% with k < 10 after 12 requests; the ledger holds 0% at utility 0.981. No request was refused in either case.
+With only the three data-heavy tasks (meeting brief, concentration, income plan) the fixed policies reach 33.9% with k < 10 after 12 requests; the ledger holds 0% at utility 0.981. No request was refused in either case.
 
 ### 3. Who the attacker compares against matters most
 
@@ -44,8 +44,8 @@ Same task policies, three reference populations:
 
 | Task | General population (978K) | Firm's client book (1,000) | One advisor's book (150) |
 |---|---|---|---|
-| Meeting brief: k < 10 | 0.7% | 50.4% | 100% |
-| Concentration check: k < 10 | 0.8% | 12.4% | 31.3% |
+| Meeting brief: k < 10 | 0.6% | 59.1% | 100% |
+| Concentration check: k < 10 | 0.4% | 11.3% | 33.3% |
 | Retirement income: k < 10 | 0.3% | 80.7% | 82.7% |
 
 A policy that looks safe against the general population can identify most clients to anyone who already knows they are clients of a given advisor (the advisor's assistant, a vendor serving one branch, an insider). The k floor should be set against the firm's own client base. This is the strongest argument for running minimization inside LPL, not at the model provider.
@@ -65,15 +65,15 @@ By type (regex + Presidio): emails 92%, SSNs 91%, credit cards 98%, IBANs 100%, 
 
 ### 5. Other exposure channels
 
-**Transactions are the most identifying data.** In the client book, one exact transaction (date and amount) singles out 99% of clients. Coarsening helps a lot: with month and an amount band, 5 known transactions single out 12%; adding the transaction type raises that to 55%. Transaction tasks should receive monthly aggregates, not line items.
+**Transactions are the most identifying data.** In the client book, one exact transaction (date and amount) singles out 99% of clients. Coarsening helps a lot: with month and an amount band, 5 known transactions single out 12%; adding the transaction type raises that to 54%. Transaction tasks should receive monthly aggregates, not line items.
 
 **Exact amounts are fingerprints.** Among 4,825 Advisory clients, 89% have a unique exact portfolio value and 99% a unique exact goal target; rounding to $10K brings these to 0.9% and 5.7%, and buckets to 0%. Goal target to $10K plus horizon plus goal type is still unique for 39%.
 
-**Advisor queries.** All 1,000 simulated advisor requests contained a direct identifier (name or account) typed by the advisor; after the query sanitizer none remained, and the share with k < 10 from typed details (age, state, occupation, rough assets) fell from 1.7% to 0%.
+**Advisor queries.** All 1,000 simulated advisor requests contained a direct identifier (name or account) typed by the advisor; after the query sanitizer none remained, and the share with k < 10 from typed details (age, state, occupation, rough assets) fell from 2.3% to 0%.
 
-**Policy side channel.** The adaptive policy's choices predict which clients are rare (AUC 0.66 to 1.00, though rare clients are only 0.6% to 8% of the book). Using one uniform policy per task (the most generalized level any client needed) removes the signal but costs utility: 0.875 for meeting briefs, 0.43 for concentration, 0.59 for income estimates. In practice the generalization level should be chosen per cohort, not per client.
+**Policy side channel.** The adaptive policy's choices predict which clients are rare (AUC 0.64 to 0.78, though rare clients are only 0.5% to 8% of the book). Using one uniform policy per task (the most generalized level any client needed) removes the signal but costs utility: 0.81 for meeting briefs, 0.43 for concentration, 0.59 for income estimates. In practice the generalization level should be chosen per cohort, not per client.
 
-**Attribute inference.** Trained on 20,000 Census people, an attacker guesses the withheld occupation group 19 to 23% of the time against a 13% majority baseline (income and assets carry the signal). Region and age band were not inferable above chance.
+**Attribute inference.** Trained on 20,000 Census people, an attacker guesses the withheld occupation group 14 to 23% of the time against a 13% majority baseline (income and assets carry the signal). Region and age band were not inferable above chance.
 
 ### 6. Split storage and keys
 
@@ -96,9 +96,9 @@ With real client books, binding queries to the advisor's own clients is the stro
 
 ### 8. Differential privacy, rehydration, overhead
 
-* Exact cohort averages let a differencing attack recover a member's equity share exactly; with epsilon of 1 the attack error (41 points) is worse than a blind guess (25 points) while the cohort average moves by 2 points for 50 clients and 0.2 for 500.
+* Exact cohort averages let a differencing attack recover a member's equity share exactly; with epsilon of 1 the attack error (43 points) is worse than a blind guess (23 points) while the cohort average moves by 2 points for 50 clients and 0.2 for 500.
 * Rehydration restored 100% of lowercase, truncated and bracket-less tokens and flagged 100% of invented tokens; none were silently wrong.
-* Per request: detection 0.6 ms, session re-keying 0.15 ms, policy search 0.6 ms, rehydration 0.02 ms (Presidio adds about 40 ms per document).
+* Per request: detection 0.2 ms, session re-keying 0.04 ms, policy search 0.6 ms, rehydration 0.02 ms (Presidio adds about 40 ms per document).
 
 ### 9. Real-model answers and the LLM attacker
 

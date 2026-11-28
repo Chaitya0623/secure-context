@@ -57,13 +57,13 @@ What could not be measured without LPL data is listed in [docs/FUTURE_WORK.md](d
 
 | | Masking only | Task policy | Adaptive + ledger |
 |---|---|---|---|
-| Clients unique after one request | 98.1% | 0% to 3.5% by task | 0% |
-| Clients with k < 10 after 12 real-mix requests | n/a | 20.8% | 0% |
+| Clients unique after one request | 98.2% | 0% to 2.0% by task | 0% |
+| Clients with k < 10 after 12 real-mix requests | n/a | 17.3% | 0% |
 | Task utility after 12 requests | 1.00 | 1.00 | 0.99 |
 
 * **Masking is not enough:** with names and accounts tokenized, 98% of clients are still unique among almost a million real people.
 * **58% of real wealth-management requests need no client data** (Bitext intents), so the cheapest protection is to send nothing for them.
-* **Exposure compounds:** safe-looking single requests leave 21% of clients identifiable after 12; the exposure ledger keeps everyone at k of 10 or more with almost no utility cost.
+* **Exposure compounds:** safe-looking single requests leave 17% of clients identifiable after 12; the exposure ledger keeps everyone at k of 10 or more with almost no utility cost.
 * **The reference population decides everything:** against one advisor's 150-client book, 83% of clients are identifiable from an income-plan request that is safe against the general population. Minimization has to run inside the firm.
 * **Detection leaks on real-world text:** regex plus Presidio catch 46% of direct identifiers in third-party Gretel documents (addresses 9%).
 * **Transactions are the most identifying data:** one exact transaction singles out 99% of clients.

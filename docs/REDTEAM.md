@@ -51,29 +51,29 @@ These come from scripted agents. They test the pipeline against realistic typing
 
 | | honest | elicit | inject |
 |---|---|---|---|
-| Sessions where something crossed | 78% | 94% | 90% |
-| Client values typed per session | 2.6 | 5.5 | 2.8 |
-| Client values crossed per session | 1.3 | 2.4 | 1.8 |
-| Sanitizer catch rate | 72% | 55% | 61% |
+| Sessions where something crossed | 80% | 94% | 92% |
+| Client values typed per session | 2.6 | 5.4 | 2.8 |
+| Client values crossed per session | 1.4 | 2.4 | 1.8 |
+| Sanitizer catch rate | 68% | 56% | 62% |
 | Sessions with a data-carrying link | 0% | 0% | **100%** |
 | Same, with the link guard | 0% | 0% | **0%** |
-| Attacker learns the town | 18% | **76%** | 36% |
+| Attacker learns the town | 16% | **76%** | 36% |
 | Attacker learns the name | 12% | **30%** | 20% |
-| Attacker learns net worth (±25%) | 68% | 70% | 74% |
+| Attacker learns net worth (±25%) | 72% | 66% | 76% |
 
 What got through, and where:
 
 | Client value | Typed (honest) | Crossed (honest) | Step that let it through |
 |---|---|---|---|
-| Town | 18% | 18% | Query sanitizer: towns are not in the CRM dictionary and no rule generalizes them |
-| Name typed lowercase, as a nickname or misspelled | 32–92% | 12–21% | Query sanitizer: the dictionary match is exact and case-sensitive |
-| Exact assets | 20% | 68% | Mostly the context card: income plans need the exact value, and the adaptive policy allowed it because k stayed ≥ 10 |
+| Town | 16% | 16% | Query sanitizer: towns are not in the CRM dictionary and no rule generalizes them |
+| Name typed lowercase, as a nickname or misspelled | 32–94% | 12–27% | Query sanitizer: the dictionary match is exact and case-sensitive |
+| Exact assets | 22% | 72% | Mostly the context card: income plans need the exact value, and the adaptive policy allowed it because k stayed ≥ 10 |
 
 Caught every time when typed exactly: full name, email, phone, employer, spouse and children's names.
 
 ## Findings
 
-1. **Elicitation works on the advisor, not the model.** The model never sees raw data, but a model that asks good questions gets the advisor to type it. Town leaks go from 18% to 76% of sessions, and name leaks from 12% to 30%.
+1. **Elicitation works on the advisor, not the model.** The model never sees raw data, but a model that asks good questions gets the advisor to type it. Town leaks go from 16% to 76% of sessions, and name leaks from 12% to 30%.
 2. **Prompt injection plus rehydration is a real exfiltration path.** If the model follows a planted instruction and puts the client's token in a link, the rehydrator fills in the real name, because it also repairs loose tokens like `PERSON_abc123`. Every injected session produced such a link with an obedient model. Removing links that contain tokens before rehydration (`guard_links`) blocked all of them. The guard is now on by default in `tokens.rehydrate`, so the main pipeline uses it too; the stress test passes `guard=False` only to measure the unguarded view.
 3. **The query sanitizer is the weakest step in conversation.** It only knows exact CRM spellings, so lowercase names, nicknames, typos and towns get through.
 4. **Exact assets are sent by design for some tasks.** The k check passes, but the attacker still learns net worth to within 25% in about 70% of sessions. That is a policy choice to revisit, not a bug.
