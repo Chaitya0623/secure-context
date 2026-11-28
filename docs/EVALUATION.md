@@ -15,14 +15,16 @@ Share of clients with k < 10 after one request (share unique in brackets), again
 
 | Task (share of real requests) | Masking only | Task policy | Adaptive |
 |---|---|---|---|
-| General question (58.4%) | 99.9% (96.4%) | 0% | 0% |
-| Portfolio review (16.5%) | 99.9% (96.4%) | 5.6% (3.5%) | 0%, utility 0.99 |
-| Transfer or withdrawal (8.4%) | 99.9% (96.4%) | 0% | 0% |
-| Retirement income (8.4%) | 99.9% (96.4%) | 0.3% (0%) | 0%, utility 1.00 |
-| Meeting brief (4.2%) | 99.9% (96.4%) | 0.6% (0.4%) | 0%, utility 0.999 |
-| Concentration check (4.2%) | 99.9% (96.4%) | 0.8% (0.6%) | 0%, utility 0.997 |
+| General question (58.4%) | 100% (98.1%) | 0% | 0% |
+| Portfolio review (16.5%) | 100% (98.1%) | 5.6% (3.5%) | 0%, utility 0.99 |
+| Transfer or withdrawal (8.4%) | 100% (98.1%) | 0% | 0% |
+| Retirement income (8.4%) | 100% (98.1%) | 0.3% (0%) | 0%, utility 1.00 |
+| Meeting brief (4.2%) | 100% (98.1%) | 0.7% (0.6%) | 0%, utility 0.999 |
+| Concentration check (4.2%) | 100% (98.1%) | 0.8% (0.6%) | 0%, utility 0.997 |
 
-With names and accounts tokenized but everything else exact, 96.4% of clients are still unique among almost a million real people. **58% of real wealth-management requests need no client data at all** (Bitext intents such as fees, services, account setup), so the biggest single win is not sending context for them.
+With names and accounts tokenized but everything else exact, 98.1% of clients are still unique among almost a million real people. **58% of real wealth-management requests need no client data at all** (Bitext intents such as fees, services, account setup), so the biggest single win is not sending context for them.
+
+Household (marital status and dependents) counts toward k as of this version. Census records marital status, so it narrows the crowd for the general population; only the firm's own book also knows dependents. Before this change the meeting brief's household line was sent but not counted, which understated identifiability (see [COMBINATIONS.md](COMBINATIONS.md), section 2).
 
 ### 2. Exposure accumulates across requests
 
@@ -31,10 +33,10 @@ Twelve requests per client drawn from the real Bitext request mix; the ledger as
 | After request | Task policy: k < 10 | Task policy: unique | Adaptive + ledger: k < 10 | Adaptive utility |
 |---|---|---|---|---|
 | 1 | 1.2% | 0.7% | 0% | 0.997 |
-| 4 | 5.6% | 3.2% | 0% | 0.996 |
-| 12 | 15.9% | 8.9% | 0% | 0.994 |
+| 4 | 6.8% | 3.4% | 0% | 0.996 |
+| 12 | 20.8% | 10.6% | 0% | 0.993 |
 
-With only the three data-heavy tasks (meeting brief, concentration, income plan) the fixed policies reach 22.4% with k < 10 after 12 requests; the ledger holds 0% at utility 0.988. No request was refused in either case.
+With only the three data-heavy tasks (meeting brief, concentration, income plan) the fixed policies reach 38.6% with k < 10 after 12 requests; the ledger holds 0% at utility 0.981. No request was refused in either case.
 
 ### 3. Who the attacker compares against matters most
 
@@ -42,7 +44,7 @@ Same task policies, three reference populations:
 
 | Task | General population (978K) | Firm's client book (1,000) | One advisor's book (150) |
 |---|---|---|---|
-| Meeting brief: k < 10 | 0.6% | 6.4% | 36.0% |
+| Meeting brief: k < 10 | 0.7% | 50.4% | 100% |
 | Concentration check: k < 10 | 0.8% | 12.4% | 31.3% |
 | Retirement income: k < 10 | 0.3% | 80.7% | 82.7% |
 
