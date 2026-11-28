@@ -90,6 +90,19 @@ tr:last-child td{border-bottom:0}
 .crowd i.me{background:var(--bad)}
 .crowd.safe i.me{background:var(--safe)}
 
+/* figures from the evaluation (white background in both themes) */
+.fig{margin:0;display:grid;gap:6px;min-width:0}
+.fig img{width:100%;height:auto;max-height:52vh;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}
+.fig.tall img{max-height:64vh}
+.fig figcaption{font-size:13px;color:var(--muted)}
+/* "how we tested it" strip */
+.how{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px}
+.how b{font-family:var(--f-mono);font-size:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-right:4px}
+.how span{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 12px}
+.how i{color:var(--muted);font-style:normal}
+/* log-scale funnel */
+.funnel .bar{grid-template-columns:minmax(150px,260px) minmax(0,1fr) 90px}
+
 /* chrome */
 .nav{position:fixed;left:0;right:0;bottom:0;display:flex;min-width:0;overflow:hidden;align-items:center;gap:12px;padding:10px clamp(12px,3vw,28px) calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-top:1px solid var(--line);font-size:14px}
 .nav button{font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
@@ -109,7 +122,7 @@ tr:last-child td{border-bottom:0}
 <div class="progress" id="progress"></div>
 <main class="deck" id="deck">
 
-<!-- 1 -->
+
 <section class="slide" data-title="Title">
   <div class="inner">
     <span class="part">p040 · DSI industry project with LPL Financial</span>
@@ -120,7 +133,6 @@ tr:last-child td{border-bottom:0}
   </div>
 </section>
 
-<!-- 2 -->
 <section class="slide" data-title="The problem">
   <div class="inner">
     <span class="part">The problem</span>
@@ -141,14 +153,13 @@ tr:last-child td{border-bottom:0}
   </div>
 </section>
 
-<!-- 3 -->
 <section class="slide" data-title="Hiding names is not enough">
   <div class="inner">
     <span class="part">Why this is hard</span>
     <h2>Removing names and account numbers is not enough</h2>
     <div class="grid2">
       <div style="display:grid;gap:10px">
-        <div class="big">98.1%</div>
+        <div class="big">98.2%</div>
         <p>of clients are still <b>the only person matching</b> what the AI saw, among 978,284 real adults, after names, SSNs and accounts were replaced with codes.</p>
       </div>
       <div class="card">
@@ -161,7 +172,6 @@ tr:last-child td{border-bottom:0}
   </div>
 </section>
 
-<!-- 4 -->
 <section class="slide" data-title="How we measure privacy">
   <div class="inner">
     <span class="part">How we measure privacy</span>
@@ -184,7 +194,20 @@ tr:last-child td{border-bottom:0}
   </div>
 </section>
 
-<!-- 5 -->
+<section class="slide" data-title="How we count the crowd">
+  <div class="inner">
+    <span class="part">How we measure privacy · how we got there</span>
+    <h2>Each detail we send shrinks the crowd; exact details shrink it to one person</h2>
+    <p class="muted">One real client from our test book (39, California, works in computing). We add the details one at a time and count how many of 978,284 Census adults still match. Bar length is on a log scale.</p>
+    <div class="grid2">
+      <div class="bars funnel"><span class="bars-h">Exact details, as masking sends them</span><div class="bar"><span>Everyone (Census)</span><div class="t"><div class="f base" style="width:100.0%"></div></div><span class="v">978,284</span></div><div class="bar"><span>+ exact age: 39</span><div class="t"><div class="f warn" style="width:70.5%"></div></div><span class="v">16,611</span></div><div class="bar"><span>+ local area (Census PUMA)</span><div class="t"><div class="f bad" style="width:15.1%"></div></div><span class="v">8</span></div><div class="bar"><span>+ exact occupation</span><div class="t"><div class="f bad" style="width:0.6%"></div></div><span class="v">1</span></div></div>
+      <div class="bars funnel"><span class="bars-h">Broad details, as our meeting-brief policy sends them</span><div class="bar"><span>Everyone (Census)</span><div class="t"><div class="f base" style="width:100.0%"></div></div><span class="v">978,284</span></div><div class="bar"><span>+ age range: 30–39</span><div class="t"><div class="f ok" style="width:87.3%"></div></div><span class="v">170,555</span></div><div class="bar"><span>+ wealth bracket</span><div class="t"><div class="f ok" style="width:87.3%"></div></div><span class="v">168,948</span></div><div class="bar"><span>+ sector mix of holdings</span><div class="t"><div class="f ok" style="width:75.6%"></div></div><span class="v">33,713</span></div><div class="bar"><span>+ marital status</span><div class="t"><div class="f ok" style="width:67.5%"></div></div><span class="v">11,085</span></div></div>
+    </div>
+    <p class="lead">Across all 1,000 clients: exact age, local area and occupation leave <b>94%</b> identifiable; the four broad details leave <b>0.6%</b>.</p>
+    <p class="src">Computed with the k engine (secure_context/privacy.py) on the full Census directory after the household and portfolio fixes.</p>
+  </div>
+</section>
+
 <section class="slide" data-title="Our approach">
   <div class="inner">
     <span class="part">Our approach</span>
@@ -200,7 +223,6 @@ tr:last-child td{border-bottom:0}
   </div>
 </section>
 
-<!-- 6 -->
 <section class="slide" data-title="One request, end to end">
   <div class="inner">
     <span class="part">Our approach · example</span>
@@ -232,7 +254,6 @@ Goal: income + legacy</div></div>
   </div>
 </section>
 
-<!-- 7 -->
 <section class="slide" data-title="How we tested">
   <div class="inner">
     <span class="part">How we tested</span>
@@ -256,7 +277,6 @@ Goal: income + legacy</div></div>
   </div>
 </section>
 
-<!-- 8 -->
 <section class="slide" data-title="Result: per request">
   <div class="inner">
     <span class="part">Result 1 · does it protect?</span>
@@ -264,7 +284,7 @@ Goal: income + legacy</div></div>
     <div class="bars">
       <span class="bars-h">Clients identifiable (k &lt; 10) after one request, vs. 978K people</span>
       <div class="bar"><span>Masking names only</span><div class="t"><div class="f bad" style="width:100%"></div></div><span class="v">100%</span></div>
-      <div class="bar"><span>Fixed task policy</span><div class="t"><div class="f warn" style="width:5.6%"></div></div><span class="v">0–5.6%</span></div>
+      <div class="bar"><span>Fixed task policy</span><div class="t"><div class="f warn" style="width:3.3%"></div></div><span class="v">0–3.3%</span></div>
       <div class="bar"><span>Adaptive policy (ours)</span><div class="t"><div class="f ok" style="width:0.6%"></div></div><span class="v">0%</span></div>
     </div>
     <div class="grid2">
@@ -275,50 +295,101 @@ Goal: income + legacy</div></div>
   </div>
 </section>
 
-<!-- 9 -->
+<section class="slide" data-title="Why we keep a running tally">
+  <div class="inner">
+    <span class="part">Result 1 · how we got there</span>
+    <h2>Safe requests add up; the running tally stops them from adding up to an identification</h2>
+    <div class="grid2">
+      <figure class="fig"><img src="../eval/figures_real/cumulative_real_mix.png" alt="Line chart: share of clients with cumulative k below 10 over 12 requests. Fixed task policy rises to about 17%; adaptive policy with ledger stays at 0%."><figcaption>Share of clients identifiable from everything sent so far, request by request.</figcaption></figure>
+      <div class="card">
+        <h3>How we tested it</h3>
+        <p>Each client makes 12 requests drawn from the real mix of advisor requests (Bitext). We assume the AI provider can tell the requests are about the same client, and add up everything sent.</p>
+        <p><b>Fixed policies:</b> 0.7% identifiable after one request, <b>17.3%</b> after twelve.</p>
+        <p><b>Adaptive + tally:</b> <b>0%</b> after twelve, at almost no cost to usefulness (0.994 of 1).</p>
+      </div>
+    </div>
+    <p class="src">Source: EVALUATION.md §2. With only the three data-heavy tasks, fixed policies reach 33.9%.</p>
+  </div>
+</section>
+
+<section class="slide" data-title="How the adaptive policy chooses">
+  <div class="inner">
+    <span class="part">Our approach · how we got there</span>
+    <h2>For every request, the adaptive policy picks the most useful option that keeps the crowd at 10 or more</h2>
+    <figure class="fig"><img src="../eval/figures_real/frontier.png" alt="Three scatter plots of privacy against usefulness for every combination of detail levels, one per task; masking-only sits at 100% identifiable, the task defaults near 0%."><figcaption>Each grey dot is one way of sending the task's details (exact, coarse or dropped, per field). Right is riskier; up is more useful. Masking only (red square) is useful but identifies everyone; the task default (orange) keeps nearly everyone hidden.</figcaption></figure>
+    <p class="muted">The policy tries every combination of detail levels for the client in front of it, discards any that would leave fewer than 10 matching people (counting what was sent before), and keeps the most useful one. If none qualifies, the request is refused and nothing is sent.</p>
+  </div>
+</section>
+
 <section class="slide" data-title="Result: who is looking">
   <div class="inner">
     <span class="part">Result 2 · does it protect?</span>
     <h2>But it depends on who is looking: inside the firm, the same brief identifies most clients</h2>
     <div class="bars">
       <span class="bars-h">Meeting brief: clients identifiable (k &lt; 10), by who the attacker compares against</span>
-      <div class="bar"><span>An outsider (978K people)</span><div class="t"><div class="f ok" style="width:0.7%"></div></div><span class="v">0.7%</span></div>
-      <div class="bar"><span>Someone at the firm (1,000 clients)</span><div class="t"><div class="f warn" style="width:50.4%"></div></div><span class="v">50.4%</span></div>
+      <div class="bar"><span>An outsider (978K people)</span><div class="t"><div class="f ok" style="width:0.6%"></div></div><span class="v">0.6%</span></div>
+      <div class="bar"><span>Someone at the firm (1,000 clients)</span><div class="t"><div class="f warn" style="width:59.1%"></div></div><span class="v">59.1%</span></div>
       <div class="bar"><span>Someone serving one advisor (150 clients)</span><div class="t"><div class="f bad" style="width:100%"></div></div><span class="v">100%</span></div>
     </div>
     <p class="lead">An AI assistant serving one advisor, a vendor serving one branch, or an employee only needs to tell apart that advisor's clients. <b>Privacy checks must run inside the firm, against its own client base.</b></p>
-    <p class="src">Source: EVALUATION.md §3, task policy with household counted.</p>
+    <div class="how"><b>How</b><span>Take what the meeting-brief policy sends</span><i>→</i><span>count matches in each of three crowds</span><i>→</i><span>share of clients with fewer than 10 matches</span></div>
+    <p class="src">Source: EVALUATION.md §3, task policy with household counted. The 150-client book is a random draw from the 1,000.</p>
   </div>
 </section>
 
-<!-- 10 -->
-<section class="slide" data-title="Result: combinations">
+<section class="slide" data-title="Combinations: how we tested">
   <div class="inner">
-    <span class="part">Result 3 · does it protect?</span>
+    <span class="part">Result 3 · does it protect? · how we got there</span>
     <h2>Details that are harmless alone identify clients together</h2>
     <div class="grid2">
-      <div class="bars">
-        <span class="bars-h">Within the firm's 1,000 clients: identifiable, worst combination of broad details</span>
-        <div class="bar"><span>Any one detail</span><div class="t"><div class="f ok" style="width:0.8%"></div></div><span class="v">0.8%</span></div>
-        <div class="bar"><span>Two details</span><div class="t"><div class="f warn" style="width:36%"></div></div><span class="v">36%</span></div>
-        <div class="bar"><span>Three details</span><div class="t"><div class="f bad" style="width:79%"></div></div><span class="v">79%</span></div>
-        <div class="bar"><span>Four details</span><div class="t"><div class="f bad" style="width:99%"></div></div><span class="v">99%</span></div>
-      </div>
+      <figure class="fig"><img src="../eval/figures_real/combinations_by_size.png" alt="Line chart: share of clients identifiable against the number of broad details combined, for Census, firm book and one advisor's book."><figcaption>Worst combination of each size, broad details only.</figcaption></figure>
       <div class="card">
-        <h3>The riskiest pair</h3>
-        <p><b>Age range + occupation group</b> identifies 36% of the firm's clients. Occupation is the most dangerous detail to combine with anything.</p>
-        <h3>What this caught</h3>
-        <p>Meeting briefs sent household details (marital status, dependents) that the privacy check did not count. Counting them moved firm-level risk from 6.4% to 50.4%. <span class="pill ok">Fixed</span></p>
+        <h3>How we tested it</h3>
+        <p>We took seven broad details (age range, region, occupation group, wealth bracket, sector mix, marital status, dependents) and computed the crowd size for <b>every one of the 127 combinations</b>, in all three crowds.</p>
+        <p>Within the firm's 1,000 clients, any one detail identifies at most <b>0.5%</b>. The worst pair identifies <b>35%</b>, the worst three <b>82%</b>, and four identify nearly everyone.</p>
       </div>
     </div>
-    <p class="src">Source: COMBINATIONS.md, broad levels (age range, region, occupation group, wealth bracket, sector mix, marital status, dependents); 150K-person Census sample.</p>
+    <p class="src">Source: COMBINATIONS.md (eval/run_combinations.py), full Census directory.</p>
   </div>
 </section>
 
-<!-- 11 -->
+<section class="slide" data-title="Combinations: dangerous pairs">
+  <div class="inner">
+    <span class="part">Result 3 · does it protect?</span>
+    <h2>Occupation is the hub: paired with almost anything, it singles clients out</h2>
+    <div class="grid2">
+      <figure class="fig"><img src="../eval/figures_real/combinations_network.png" alt="Network of details; thick edges from occupation to age, location, marital status, holdings and dependents show risky pairs within the firm's book."><figcaption>Within the firm's book: each line is a pair of details, thicker means more clients identified when both are sent.</figcaption></figure>
+      <div class="card">
+        <h3>Riskiest pairs</h3>
+        <ul>
+          <li>Age range + occupation group: <b>35%</b></li>
+          <li>Region + occupation group: <b>24%</b></li>
+          <li>Occupation + marital status: <b>22%</b></li>
+        </ul>
+        <h3>What this caught</h3>
+        <p>Meeting briefs sent household details (marital status, dependents) that the privacy check did not count. Counting them moved firm-level risk from 5.9% to <b>59.1%</b>. <span class="pill ok">Fixed</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" data-title="PII detection">
+  <div class="inner">
+    <span class="part">Result 4 · does it protect? · the first line of defense</span>
+    <h2>Finding identifiers in free text works for known clients, not for unfamiliar documents</h2>
+    <figure class="fig"><img src="../eval/figures_real/gretel_detection.png" alt="Grouped bar chart of recall by identifier type for regex, Presidio and both combined on 2,891 Gretel documents."><figcaption>Share of each kind of identifier caught in 2,891 third-party financial documents (Gretel).</figcaption></figure>
+    <div class="grid3">
+      <div class="card warn"><div class="stat warn">46%</div><p>of identifiers caught by pattern rules plus Presidio in unfamiliar documents; street addresses only 9%.</p></div>
+      <div class="card ok"><div class="stat ok">100%</div><p>caught in our own notes when they are written in expected formats, using the client's known details.</p></div>
+      <div class="card bad"><div class="stat bad">6%</div><p>caught in deliberately messy notes (typos, nicknames, spelled-out emails) by the rules alone; 56% with Presidio.</p></div>
+    </div>
+    <p class="src">Source: EVALUATION.md §4. A model-based detector (GLiNER) is the next step and has not been evaluated yet.</p>
+  </div>
+</section>
+
 <section class="slide" data-title="Result: usefulness">
   <div class="inner">
-    <span class="part">Result 4 · does it stay useful?</span>
+    <span class="part">Result 5 · does it stay useful?</span>
     <h2>With less context, answers keep their direction but lose specifics</h2>
     <div class="bars">
       <span class="bars-h">Answer quality vs. the full-context answer (5 = same advice), average of three tasks</span>
@@ -332,14 +403,14 @@ Goal: income + legacy</div></div>
       <div class="card"><b>Minimizing costs about 1.7 points.</b><p class="muted">Most answers score 3: "same direction, missing specifics".</p></div>
       <div class="card"><b>But the context does real work.</b><p class="muted">Minimized beats no data in 84 of 90 cases, never worse.</p></div>
     </div>
-    <p class="src">Source: EVALUATION.md §9. Gemini Flash answers, a separate Gemini Pro model judges; 30 clients × 3 tasks (meeting brief 2.83, concentration 2.67, income plan 3.73 under the task policy).</p>
+    <div class="how"><b>How</b><span>Same request answered 5 ways</span><i>→</i><span>a separate AI model compares each answer with the full-context one</span><i>→</i><span>score 1–5</span></div>
+    <p class="src">Source: EVALUATION.md §9. Gemini Flash answers, a separate Gemini Pro model judges; 30 clients × 3 tasks (meeting brief 2.83, concentration 2.67, income plan 3.73 under the task policy). Run before the portfolio-mix fix (PR #9).</p>
   </div>
 </section>
 
-<!-- 12 -->
 <section class="slide" data-title="Result: what the AI uses">
   <div class="inner">
-    <span class="part">Result 5 · does it stay useful?</span>
+    <span class="part">Result 6 · does it stay useful?</span>
     <h2>The AI leans on exact numbers we deliberately hide</h2>
     <div class="grid2">
       <div class="card">
@@ -354,14 +425,32 @@ Goal: income + legacy</div></div>
         <p class="muted">76% of clients would fall below k = 10. Meeting briefs are where usefulness and privacy conflict most.</p>
       </div>
     </div>
-    <p class="src">Source: COUNTERFACTUAL.md, Gemini run, 30 clients, separate judge. Removing a field can look harmless because the model fills in a default; swaps show it still matters.</p>
+    <p class="src">Source: COUNTERFACTUAL.md, Gemini run, 30 clients, separate judge; crowd sizes computed before the household and portfolio-mix fixes. Removing a field can look harmless because the model fills in a default; swaps show it still matters.</p>
   </div>
 </section>
 
-<!-- 13 -->
+<section class="slide" data-title="Counterfactual map">
+  <div class="inner">
+    <span class="part">Result 6 · how we got there</span>
+    <h2>The full map: how often the answer changed when one detail changed</h2>
+    <div class="grid2">
+      <figure class="fig tall"><img src="../eval/results_counterfactual/gemini/change_rates.png" alt="Heatmap of the share of answers that changed for each detail and change type, across meeting brief, concentration check and income plan."><figcaption>Rows: one detail made coarser, dropped, or swapped with another client's value. Columns: the three tasks. Darker = the answer changed more often.</figcaption></figure>
+      <div class="card">
+        <h3>How to read it</h3>
+        <ul>
+          <li><b>Assets and cash needs</b> (aum, liquidity) are dark in every column: answers change whenever they are coarsened or removed.</li>
+          <li><b>Concentration checks</b> ignore age, location, occupation and household (light rows), which matches our policy.</li>
+          <li><b>"Drop" can mislead:</b> removing risk or horizon changed 0% of meeting briefs, yet swapping them changed 100%. The model quietly assumes a default when a detail is missing.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="src">Source: COUNTERFACTUAL.md, Gemini Flash answers, Gemini Pro judges, 30 clients. Run before the portfolio-mix fix (PR #9).</p>
+  </div>
+</section>
+
 <section class="slide" data-title="Result: linking sessions">
   <div class="inner">
-    <span class="part">Result 6 · attacks over time</span>
+    <span class="part">Result 7 · attacks over time</span>
     <h2>A client's sessions can be linked, even though the codes change every time</h2>
     <div class="grid2">
       <div style="display:grid;gap:10px">
@@ -375,14 +464,14 @@ Goal: income + legacy</div></div>
         <p>Not keeping logs (zero data retention with the provider), and sending the stable profile only when a task truly needs it.</p>
       </div>
     </div>
+    <div class="how"><b>How</b><span>Each client's profile from two quarters, new codes, values drifted slightly</span><i>→</i><span>match each new session to the most similar old one</span><i>→</i><span>count correct matches</span></div>
     <p class="src">Source: SESSION_LINKING.md. A Gemini model given a lineup of 10 also picked the right client 100% of the time.</p>
   </div>
 </section>
 
-<!-- 14 -->
 <section class="slide" data-title="Result: memory">
   <div class="inner">
-    <span class="part">Result 7 · attacks over time</span>
+    <span class="part">Result 8 · attacks over time</span>
     <h2>An assistant with memory learns its clients, and mixes them up</h2>
     <div class="grid3">
       <div class="card warn"><div class="stat warn">37%</div><p>of returning clients were recognized from the agent's own notes (chance: 3%).</p></div>
@@ -390,19 +479,19 @@ Goal: income + legacy</div></div>
       <div class="card bad"><div class="stat bad">23%</div><p>of clients were identifiable from everything disclosed across 4 quarters, vs. 3% from one session.</p></div>
     </div>
     <p class="lead">A rule of "never store client facts" brought recognition down to chance, but 21 of 120 stored "general lessons" still described a specific client.</p>
-    <p class="src">Source: MEMORY_AGENT.md. Gemini agent, 30 clients, 4 quarters, a different task each quarter.</p>
+    <div class="how"><b>How</b><span>30 clients × 4 quarters, a different task each time</span><i>→</i><span>the agent keeps 80-word notes and must say which note is this client</span><i>→</i><span>we score its picks and what its notes reveal</span></div>
+    <p class="src">Source: MEMORY_AGENT.md. Gemini agent, 30 clients, 4 quarters, a different task each quarter. Run before the portfolio-mix fix (PR #9), when 47% of these clients held only cash and looked alike.</p>
   </div>
 </section>
 
-<!-- 15 -->
 <section class="slide" data-title="Result: live chat attacker">
   <div class="inner">
-    <span class="part">Result 8 · attacks in conversation</span>
+    <span class="part">Result 9 · attacks in conversation</span>
     <h2>A curious AI can't see names, but it can get the advisor to type them</h2>
     <div class="grid2">
       <div class="bars">
         <span class="bars-h">Chat sessions where the attacker learned the client's town</span>
-        <div class="bar"><span>Normal assistant</span><div class="t"><div class="f warn" style="width:18%"></div></div><span class="v">18%</span></div>
+        <div class="bar"><span>Normal assistant</span><div class="t"><div class="f warn" style="width:16%"></div></div><span class="v">16%</span></div>
         <div class="bar"><span>Assistant asks leading questions</span><div class="t"><div class="f bad" style="width:76%"></div></div><span class="v">76%</span></div>
         <span class="bars-h" style="margin-top:12px">Sessions where a hidden instruction smuggled the name into a link</span>
         <div class="bar"><span>Before our fix</span><div class="t"><div class="f bad" style="width:100%"></div></div><span class="v">100%</span></div>
@@ -417,14 +506,14 @@ Goal: income + legacy</div></div>
         </ul>
       </div>
     </div>
+    <div class="how"><b>How</b><span>An advisor bot who knows the client chats for 6 turns</span><i>→</i><span>every message goes through the full pipeline</span><i>→</i><span>the attacker on the AI side asks questions or plants instructions, then guesses who the client is</span></div>
     <p class="src">Source: REDTEAM.md. 50 clients × 6-turn chats with scripted advisor and attacker; real models will differ.</p>
   </div>
 </section>
 
-<!-- 16 -->
 <section class="slide" data-title="Result: holdings reveal employer">
   <div class="inner">
-    <span class="part">Result 9 · attacks on patterns</span>
+    <span class="part">Result 10 · attacks on patterns</span>
     <h2>A large stake in one company points to where the client works</h2>
     <div class="bars">
       <span class="bars-h">Insiders whose employer the AI named correctly, from holdings alone</span>
@@ -432,11 +521,11 @@ Goal: income + legacy</div></div>
       <div class="bar"><span>"One stock, healthcare, 22%" (our default)</span><div class="t"><div class="f ok" style="width:0.6%"></div></div><span class="v">0%</span></div>
     </div>
     <p class="lead">No name, job or location was sent. Executives' holdings are public in SEC filings, so a ticker is a strong clue. Our task policies never send exact tickers by default; masking-only systems do.</p>
+    <div class="how"><b>How</b><span>Plant 40 "insiders" with a large stake in a mid-cap company</span><i>→</i><span>send holdings only, at different detail levels</span><i>→</i><span>ask the AI which company the client works for</span></div>
     <p class="src">Source: EVALUATION.md §10. 40 planted insiders; Gemini Flash asked which company each client works for.</p>
   </div>
 </section>
 
-<!-- 17 -->
 <section class="slide" data-title="Scorecard">
   <div class="inner">
     <span class="part">Summary</span>
@@ -467,7 +556,6 @@ Goal: income + legacy</div></div>
   </div>
 </section>
 
-<!-- 18 -->
 <section class="slide" data-title="Recommendations">
   <div class="inner">
     <span class="part">Recommendations for LPL</span>
@@ -484,7 +572,6 @@ Goal: income + legacy</div></div>
   </div>
 </section>
 
-<!-- 19 -->
 <section class="slide" data-title="Limitations and next steps">
   <div class="inner">
     <span class="part">Limitations and next steps</span>
@@ -494,7 +581,7 @@ Goal: income + legacy</div></div>
         <ul>
           <li>No LPL data. Our clients' median portfolio is about $197K, far below LPL's; wealthier clients are rarer and easier to identify.</li>
           <li>Notes and chats are generated; real ones are messier.</li>
-          <li>One model family (Gemini) and 30 clients for the model tests.</li>
+          <li>One model family (Gemini) and 30 clients for the model tests, run before the portfolio-mix fix (PR #9).</li>
           <li>Answer quality judged by an AI, not yet by advisors.</li>
         </ul></div>
       <div class="card"><h3>What would help from LPL</h3>
@@ -508,7 +595,6 @@ Goal: income + legacy</div></div>
   </div>
 </section>
 
-<!-- 20 -->
 <section class="slide" data-title="Thank you">
   <div class="inner">
     <span class="part">Thank you</span>
