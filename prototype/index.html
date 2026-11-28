@@ -3,955 +3,568 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>body{margin:0}[hidden]{display:none!important}</style>
-<title>Client Context Shield</title>
+<title>Secure Client Context</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap">
 <style>
-/* Layout: control bar, numbered pipeline rail, step explainer, then a protected-vs-AI split screen */
+/* A slide deck: one section per slide, arrow keys or buttons to move, prints as a document. */
 :root{
   --bg:#F3F6F7; --surface:#FFFFFF; --sunk:#EAEFF1; --ink:#13222C; --muted:#5A6A74; --line:#D5DDE1;
-  --accent:#1E5B86; --accent-ink:#FFFFFF; --safe:#22704C; --warn:#A6620F; --bad:#B23A30;
-  --c-person:#B5541B; --c-id:#B23A30; --c-contact:#7A4BA0; --c-place:#1E7A86; --c-org:#5B6F1E; --c-date:#9A6B00;
+  --accent:#1E5B86; --accent-ink:#FFFFFF; --safe:#22704C; --warn:#A6620F; --bad:#B23A30; --base:#9AA8B0;
   --f-display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif;
   --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0E151A; --surface:#152028; --sunk:#101A20; --ink:#E2EBEF; --muted:#93A4AE; --line:#263540;
-  --accent:#6CB0DE; --accent-ink:#0B1A24; --safe:#5FC08E; --warn:#E3A24A; --bad:#EF7A6E;
-  --c-person:#F09155; --c-id:#EF7A6E; --c-contact:#B98BE0; --c-place:#5CC3CF; --c-org:#A9C25A; --c-date:#E0B640;
-  color-scheme:dark}}
+  --accent:#6CB0DE; --accent-ink:#0B1A24; --safe:#5FC08E; --warn:#E3A24A; --bad:#EF7A6E; --base:#5D6E78; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0E151A; --surface:#152028; --sunk:#101A20; --ink:#E2EBEF; --muted:#93A4AE; --line:#263540;
-  --accent:#6CB0DE; --accent-ink:#0B1A24; --safe:#5FC08E; --warn:#E3A24A; --bad:#EF7A6E;
-  --c-person:#F09155; --c-id:#EF7A6E; --c-contact:#B98BE0; --c-place:#5CC3CF; --c-org:#A9C25A; --c-date:#E0B640;
-  color-scheme:dark}
+  --accent:#6CB0DE; --accent-ink:#0B1A24; --safe:#5FC08E; --warn:#E3A24A; --bad:#EF7A6E; --base:#5D6E78; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5}
-.wrap{max-width:1320px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:18px}
-h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;font-weight:600}
-h1{font-size:28px;letter-spacing:.2px}
-h2{font-size:21px}
-h3{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
-p{margin:0}
-.mono{font-family:var(--f-mono);font-size:12.5px}
+html,body{margin:0;height:100%;overflow-x:hidden}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--f-display);margin:0;font-weight:600;text-wrap:balance}
+h1{font-size:clamp(34px,5vw,58px);line-height:1.05;letter-spacing:-.2px}
+h2{font-size:clamp(26px,3.4vw,40px);line-height:1.12;max-width:36ch}
+h3{font-size:14px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+p{margin:0;max-width:68ch}
+ul,ol{margin:0;padding-left:22px;display:grid;gap:8px}
+li{max-width:68ch}
+.mono{font-family:var(--f-mono);font-size:.85em}
 .muted{color:var(--muted)}
-header.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;align-items:end}
-header.top p{max-width:70ch;color:var(--muted)}
-.badge{display:inline-flex;gap:6px;align-items:center;font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--surface)}
-.controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
-.ctl{display:grid;gap:4px;min-width:0}
-.ctl label,.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
-select,button{font:inherit;color:inherit}
-select{background:var(--bg);border:1px solid var(--line);border-radius:7px;padding:7px 10px;min-width:0;max-width:100%}
-.btn{background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:7px 12px;cursor:pointer}
-.btn:hover{border-color:var(--accent)}
-.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:500}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.session{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.spacer{flex:1}
+b{font-weight:600}
 
-/* pipeline rail */
-.rail-scroll{overflow-x:auto}
-ol.rail{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(8,minmax(118px,1fr));gap:0;position:relative;min-width:960px}
-ol.rail li{position:relative}
-ol.rail li:not(:last-child)::after{content:"";position:absolute;top:19px;left:calc(50% + 18px);right:calc(-50% + 18px);height:2px;background:var(--line)}
-ol.rail li.done:not(:last-child)::after{background:var(--accent)}
-.node{display:grid;justify-items:center;gap:6px;width:100%;background:none;border:0;padding:4px 6px;cursor:pointer;text-align:center}
-.dot{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-size:13px;border:2px solid var(--line);background:var(--surface);color:var(--muted);transition:all .15s}
-.node .nm{font-size:12.5px;font-weight:500;color:var(--muted);line-height:1.25}
-li.done .dot{border-color:var(--accent);color:var(--accent)}
-li.cur .dot{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-li.cur .nm{color:var(--ink);font-weight:600}
-.node:hover .dot{border-color:var(--accent)}
-
-/* explainer */
-.explain{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:12px}
-.explain-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
-.explain-head .step-n{font-family:var(--f-mono);color:var(--accent);font-size:13px}
-.ex-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
-.ex-grid > div{display:grid;gap:4px;align-content:start;min-width:0}
-.ex-grid p{max-width:62ch}
-details.code summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:13px}
-pre{margin:8px 0 0;background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;font-family:var(--f-mono);font-size:12px;line-height:1.55}
-
-/* split panes */
-.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
-.pane{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-width:0;display:flex;flex-direction:column}
-.pane-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.pane-head .t{font-family:var(--f-display);font-weight:600;font-size:15px;display:flex;gap:8px;align-items:center}
-.zone{font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:600;padding:2px 8px;border-radius:4px}
-.zone.prot{color:var(--c-person);background:color-mix(in srgb,var(--c-person) 14%,transparent)}
-.zone.ai{color:var(--safe);background:color-mix(in srgb,var(--safe) 14%,transparent)}
-.pane-body{padding:14px 16px;display:grid;gap:14px;align-content:start;min-width:0}
-.block{display:grid;gap:6px;min-width:0}
-.textbox{background:var(--sunk);border:1px solid var(--line);border-radius:8px;padding:12px 14px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
-.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
-table{border-collapse:collapse;width:100%;font-size:13px}
-th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600;background:var(--sunk)}
-tr:last-child td{border-bottom:0}
-td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-.kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px 14px}
-.kv dt{color:var(--muted)}
-.kv dd{margin:0;min-width:0;word-break:break-word}
-
-/* highlights */
-.hl{border-radius:3px;padding:0 3px;font-weight:500}
-.hl[data-c="person"]{color:var(--c-person);background:color-mix(in srgb,var(--c-person) 15%,transparent)}
-.hl[data-c="id"]{color:var(--c-id);background:color-mix(in srgb,var(--c-id) 15%,transparent)}
-.hl[data-c="contact"]{color:var(--c-contact);background:color-mix(in srgb,var(--c-contact) 15%,transparent)}
-.hl[data-c="place"]{color:var(--c-place);background:color-mix(in srgb,var(--c-place) 15%,transparent)}
-.hl[data-c="org"]{color:var(--c-org);background:color-mix(in srgb,var(--c-org) 18%,transparent)}
-.hl[data-c="date"]{color:var(--c-date);background:color-mix(in srgb,var(--c-date) 18%,transparent)}
-.tok{font-family:var(--f-mono);font-size:12px;color:var(--safe);background:color-mix(in srgb,var(--safe) 12%,transparent);border-radius:3px;padding:0 4px;white-space:nowrap}
-.tok.bad{color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,transparent)}
-.restored{border-bottom:2px solid var(--accent);font-weight:500}
-.resid{text-decoration:underline wavy var(--warn);text-underline-offset:3px}
-.legend{display:flex;flex-wrap:wrap;gap:6px}
-.pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);white-space:nowrap}
+/* deck */
+.deck{height:100%;overflow:hidden}
+.slide{display:none;height:100%;overflow-y:auto;padding:clamp(22px,4.5vw,64px) clamp(16px,6vw,96px) 92px}
+.slide.on{display:block}
+.inner{max-width:1180px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:clamp(16px,2.4vw,28px)}
+.part{font-family:var(--f-mono);font-size:13px;color:var(--accent);letter-spacing:.04em;text-transform:uppercase}
+.lead{font-size:clamp(17px,1.6vw,21px);color:var(--muted);max-width:62ch}
+.src{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:10px;margin-top:4px;max-width:none}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:clamp(16px,2.4vw,32px);align-items:start}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px;align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:grid;gap:10px;min-width:0}
+.card.ok{border-top:4px solid var(--safe)} .card.warn{border-top:4px solid var(--warn)} .card.bad{border-top:4px solid var(--bad)}
+.big{font-family:var(--f-display);font-size:clamp(56px,9vw,120px);line-height:.95;font-weight:600;color:var(--bad);font-variant-numeric:tabular-nums}
+.big.ok{color:var(--safe)}
+.stat{font-family:var(--f-display);font-size:clamp(30px,3.4vw,44px);font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.stat.bad{color:var(--bad)} .stat.ok{color:var(--safe)} .stat.warn{color:var(--warn)}
+.box{background:var(--sunk);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-family:var(--f-mono);font-size:14px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.tok{color:var(--safe);font-weight:500}
+.redact{color:var(--bad);text-decoration:line-through}
+.pill{display:inline-block;font-size:12px;padding:2px 9px;border-radius:999px;border:1px solid var(--line);font-family:var(--f-body);white-space:nowrap;vertical-align:middle}
 .pill.ok{color:var(--safe);border-color:color-mix(in srgb,var(--safe) 45%,transparent)}
 .pill.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
 .pill.bad{color:var(--bad);border-color:color-mix(in srgb,var(--bad) 45%,transparent)}
-.note{border-left:3px solid var(--accent);padding:6px 12px;background:color-mix(in srgb,var(--accent) 7%,transparent);border-radius:0 6px 6px 0}
-.note.warn{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn) 9%,transparent)}
 
-/* segmented control */
-.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden;flex-wrap:wrap}
-.seg button{border:0;background:var(--surface);padding:4px 9px;font-size:12px;cursor:pointer;border-right:1px solid var(--line)}
-.seg button:last-child{border-right:0}
-.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
-.need{font-size:11px;color:var(--warn)}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr));gap:12px;counter-reset:s}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:6px;align-content:start;counter-increment:s;position:relative}
+.step::before{content:counter(s);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);font-family:var(--f-mono);font-size:14px}
+.step b{font-size:17px}
+.step span{font-size:15px;color:var(--muted)}
 
-/* meters */
-.meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.meter{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:2px}
-.meter .v{font-family:var(--f-display);font-size:24px;font-weight:600;font-variant-numeric:tabular-nums}
-.meter .s{font-size:12px;color:var(--muted)}
-.v.ok{color:var(--safe)} .v.warn{color:var(--warn)} .v.bad{color:var(--bad)}
+/* bar charts: one bar per row, value in ink beside it */
 .bars{display:grid;gap:10px}
-.bar-row{display:grid;grid-template-columns:110px minmax(0,1fr) 70px;gap:10px;align-items:center;font-size:13px}
-.bar-track{height:12px;background:var(--sunk);border-radius:6px;overflow:hidden;border:1px solid var(--line)}
-.bar-fill{height:100%;border-radius:6px}
-.attack{border:1px solid var(--line);border-radius:8px;padding:10px 12px;display:grid;gap:4px}
-.attack .ah{display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap;font-weight:600}
-.attack p{color:var(--muted);font-size:13px}
-.footer-nav{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-.check{display:flex;gap:8px;align-items:center;font-size:13px}
+.bar{display:grid;grid-template-columns:minmax(120px,240px) minmax(0,1fr) 64px;gap:12px;align-items:center;font-size:15px}
+.bar .t{height:22px;background:var(--sunk);border-radius:4px;overflow:hidden}
+.bar .f{height:100%;border-radius:0 4px 4px 0;background:var(--accent)}
+.bar .f.bad{background:var(--bad)} .bar .f.ok{background:var(--safe)} .bar .f.base{background:var(--base)} .bar .f.warn{background:var(--warn)}
+.bar .v{font-variant-numeric:tabular-nums;font-weight:600;text-align:right}
+.bars-h{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600}
 
-/* top-level views */
-.views{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
-.views button{background:none;border:0;border-bottom:2px solid transparent;padding:8px 14px;cursor:pointer;color:var(--muted);font-weight:500;white-space:nowrap}
-.views button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;display:grid;gap:12px;min-width:0}
-.card p,.card li{max-width:90ch}
-.card ol,.card ul{margin:0;padding-left:20px;display:grid;gap:6px}
-.card a{color:var(--accent)}
-.stage{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 12px;align-items:start}
-.stage .dot{width:30px;height:30px;font-size:12px;border-color:var(--accent);color:var(--accent)}
-.card code{font-family:var(--f-mono);font-size:12px;color:var(--accent)}
-.card h3{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
-.card h3 .mono,.card h3 .pill{text-transform:none;letter-spacing:0;font-weight:500}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:16px;align-items:start}
-figure{margin:0;display:grid;gap:6px}
-figure img{width:100%;height:auto;border:1px solid var(--line);border-radius:8px;background:#fff}
-figcaption{font-size:12px;color:var(--muted)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+tr:last-child td{border-bottom:0}
 
-@media (max-width: 900px){
-  .split{grid-template-columns:minmax(0,1fr)}
-  .ex-grid{grid-template-columns:minmax(0,1fr)}
-  .meters{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+/* crowd illustration */
+.crowd{display:flex;flex-wrap:wrap;gap:5px;max-width:420px}
+.crowd i{width:14px;height:14px;border-radius:50%;background:var(--base);display:block}
+.crowd i.me{background:var(--bad)}
+.crowd.safe i.me{background:var(--safe)}
+
+/* chrome */
+.nav{position:fixed;left:0;right:0;bottom:0;display:flex;min-width:0;overflow:hidden;align-items:center;gap:12px;padding:10px clamp(12px,3vw,28px) calc(10px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(6px);border-top:1px solid var(--line);font-size:14px}
+.nav button{font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer}
+.nav button:hover{border-color:var(--accent)}
+.nav .count{font-family:var(--f-mono);color:var(--muted);min-width:64px}
+.nav .title{flex:1;color:var(--muted);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.progress{position:fixed;left:0;top:0;height:3px;background:var(--accent);transition:width .2s}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){.bar{grid-template-columns:minmax(0,1fr) 56px}.bar .t{grid-column:1/-1;grid-row:2}.nav .title,.nav a{display:none}.nav .count{flex:1}}
+@media print{
+  .deck{height:auto;overflow:visible}.slide{display:block!important;height:auto;page-break-after:always;padding:28px}
+  .nav,.progress{display:none}
 }
-@media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<main class="deck" id="deck">
 
-<div class="wrap">
-  <header class="top">
-    <div style="display:grid;gap:6px;min-width:0">
-      <h1>Client Context Shield</h1>
-      <p>Prototype for p040: dehydrate client data, split identity from context, send the AI only what the task needs, rehydrate the answer, then test what still leaks.</p>
-    </div>
-    <span class="badge">All clients and population records are synthetic</span>
-  </header>
-
-  <nav class="views" role="tablist" aria-label="Views">
-    <button role="tab" data-view="walk" aria-selected="true">Walkthrough</button>
-    <button role="tab" data-view="pipeline" aria-selected="false">Pipeline (in code)</button>
-    <button role="tab" data-view="data" aria-selected="false">Data</button>
-    <button role="tab" data-view="results" aria-selected="false">Results</button>
-    <button role="tab" data-view="status" aria-selected="false">Status &amp; next steps</button>
-  </nav>
-
-  <div class="view" id="view-walk" style="display:grid;gap:18px">
-
-  <section class="controls" aria-label="Scenario">
-    <div class="ctl"><label for="clientSel">Client</label>
-      <select id="clientSel"></select></div>
-    <div class="ctl"><label for="taskSel">Advisor task</label>
-      <select id="taskSel">
-        <option value="meeting">Prepare meeting brief</option>
-        <option value="concentration">Portfolio concentration check</option>
-      </select></div>
-    <div class="ctl"><span class="lbl">Session key</span>
-      <div class="session"><span class="mono" id="sessInfo">generating…</span>
-      <button class="btn" id="rotateBtn" type="button">New session</button></div></div>
-    <div class="spacer"></div>
-    <div class="ctl"><span class="lbl">Walk through</span>
-      <div class="session"><button class="btn" id="prevBtn" type="button">Back</button><button class="btn primary" id="nextBtn" type="button">Next step</button></div></div>
-  </section>
-
-  <nav class="rail-scroll" aria-label="Pipeline steps"><ol class="rail" id="rail"></ol></nav>
-
-  <section class="explain" id="explain" aria-live="polite"></section>
-
-  <section class="split">
-    <article class="pane"><div class="pane-head"><span class="t" id="lt"></span><span class="zone prot" id="lz">Protected environment</span></div><div class="pane-body" id="left"></div></article>
-    <article class="pane"><div class="pane-head"><span class="t" id="rt"></span><span class="zone ai" id="rz">Leaves the environment</span></div><div class="pane-body" id="right"></div></article>
-  </section>
-
-  <div class="footer-nav muted">
-    <span>Detection here runs in the browser with patterns and a name dictionary standing in for Presidio + GLiNER. Tokens use real HMAC-SHA256. The LLM step is simulated from a template so the page runs offline.</span>
+<!-- 1 -->
+<section class="slide" data-title="Title">
+  <div class="inner">
+    <span class="part">p040 · DSI industry project with LPL Financial</span>
+    <h1>Giving an AI assistant client context without exposing client data</h1>
+    <p class="lead">How little does an advisor's AI need to see to stay useful, and what can still be worked out about the client from what it does see?</p>
+    <p class="muted">Team: Chaitya · Dhruth · Nami · Rishika</p>
+    <p class="src">Every client, name and account in this presentation is synthetic. No LPL data was used. Use ← → to move between slides.</p>
   </div>
-  </div>
-  <!-- ===== Pipeline as implemented ===== -->
-  <div class="view" id="view-pipeline" style="display:none;gap:18px">
-    <section class="card">
-      <h2>The pipeline as the code runs it</h2>
-      <p class="muted">The walkthrough shows the idea on a made-up client. This is what <code class="mono">secure_context/</code> actually does. It runs in two phases: once when a client is loaded, then on every advisor request.</p>
-    </section>
+</section>
 
-    <section class="card">
-      <h3>Phase A · once, when a client record is loaded <span class="mono muted">vault.py: SplitStorage.ingest</span></h3>
-      <div class="stage"><span class="dot">1</span><div><b>Store identity in the vault.</b> Name, DOB, SSN, account, email, phone and address go into an SQLite identity vault under a random <code>vault_id</code>. SSN, account, routing number and DOB are encrypted with AES-256-GCM.</div></div>
-      <div class="stage"><span class="dot">2</span><div><b>Give the financial profile its own random key.</b> A new random <code>ctx_id</code> is created. The only link <code>ctx_id → vault_id</code> is stored inside the vault, so the context store holds no identity column.</div></div>
-      <div class="stage"><span class="dot">3</span><div><b>Detect PII in the advisor note.</b> The default detector is <b>regex + the CRM dictionary</b> (the client's own known names, emails and accounts), then coreference ("Mr. Okafor" → "Daniel Okafor"). Presidio and GLiNER/Groq can be added but are not on by default. <span class="mono muted">detect.py: default_detector, resolve_coreference</span></div></div>
-      <div class="stage"><span class="dot">4</span><div><b>Tokenize and store.</b> Detected values are replaced with storage tokens; the token map goes to the vault. The context store keeps the profile, holdings and the tokenized note. <span class="mono muted">tokens.py: dehydrate</span></div></div>
-    </section>
-
-    <section class="card">
-      <h3>Phase B · on every advisor request <span class="mono muted">pipeline.py: Pipeline.run(client, task, mode)</span></h3>
-      <div class="stage"><span class="dot">5</span><div><b>Start a session.</b> A fresh random 32-byte key. Storage tokens in the note are swapped for session tokens <code>&lt;TYPE_hmac6&gt;</code>, so tokens differ in every session. <span class="mono muted">vault.py: session_notes</span></div></div>
-      <div class="stage"><span class="dot">6</span><div><b>Choose how much detail to send</b>, per field (exact, generalized, or dropped), by mode:
-        <ul>
-          <li><b>full</b>: everything, including name and SSN (baseline only)</li>
-          <li><b>masked</b>: tokens for identifiers, every other field exact</li>
-          <li><b>default</b>: the task's fixed policy from <code>policy.py: TASKS</code></li>
-          <li><b>adaptive</b>: tries every level combination and keeps the most useful one whose <b>cumulative k ≥ 10</b>, counting everything already sent about this client (<code>privacy.py: choose_policy, KEngine, ExposureLedger</code>). If nothing qualifies, the request is <b>refused</b> and the model is never called.</li>
-        </ul></div></div>
-      <div class="stage"><span class="dot">7</span><div><b>Build the prompt</b> from the chosen fields and the session-tokenized note or summary. <span class="mono muted">tasks.py: build_prompt</span></div></div>
-      <div class="stage"><span class="dot">8</span><div><b>Call the model.</b> Default is a <b>simulated</b> model; Groq, NVIDIA, Anthropic, OpenAI and Hugging Face backends exist. <span class="mono muted">llm.py: get_backend</span></div></div>
-      <div class="stage"><span class="dot">9</span><div><b>Rehydrate.</b> Session tokens in the answer are replaced with real values from the session map. A malformed token is repaired only if exactly one known token matches; anything else is flagged unresolved. <span class="mono muted">tokens.py: rehydrate</span></div></div>
-      <div class="stage"><span class="dot">10</span><div><b>Record exposure.</b> The ledger stores the most detailed level sent per field. The request trace keeps k for this request, cumulative k, task utility, coverage and per-stage timings. <span class="mono muted">pipeline.py: Trace</span></div></div>
-    </section>
-
-    <section class="card">
-      <h3>Phase C · evaluation (offline, not part of a request)</h3>
-      <div class="tbl-wrap"><table><thead><tr><th>Script</th><th>What it measures</th><th>Needs</th></tr></thead><tbody>
-        <tr><td class="mono">eval/run_real.py</td><td>All main experiments on public data: identifiability per task and mode, exposure across 12 requests, attacks, PII detection, strategy extraction, transactions, latency</td><td>Nothing (sample data) or the full download</td></tr>
-        <tr><td class="mono">eval/run_combinations.py</td><td>Which field combinations identify clients; the household gap</td><td>Nothing</td></tr>
-        <tr><td class="mono">eval/run_counterfactual.py</td><td>Which fields each task's answer actually depends on</td><td>Simulator: nothing. Real model: Groq key</td></tr>
-        <tr><td class="mono">eval/run_redteam.py</td><td>Red-team stress test: an attacker on the model side tries to extract PII over a multi-turn conversation (elicitation, prompt injection)</td><td>Scripted: nothing. Real models: Groq key</td></tr>
-        <tr><td class="mono">eval/llm_eval.py</td><td>Answer quality judged by an AI model; an AI attacker guessing hidden details</td><td>API key</td></tr>
-        <tr><td class="mono">eval/run_all.py</td><td>The same experiments on a fully synthetic 50,000-person world</td><td>Nothing</td></tr>
-      </tbody></table></div>
-    </section>
-
-    <section class="card">
-      <h3>Things to check together</h3>
-      <div class="tbl-wrap"><table><thead><tr><th>Point</th><th>What the code does today</th><th>Why it matters</th></tr></thead><tbody>
-        <tr><td>Household now counted in k <span class="pill ok">Fixed</span></td><td>Household is a quasi-identifier with an exact, has-dependents or drop level</td><td>Firm-book identifiability for meeting briefs went from 6.4% to 50.4% once counted; the adaptive policy still holds 0% against Census</td></tr>
-        <tr><td>Default detector is rules only</td><td>Regex + CRM dictionary. Presidio and GLiNER are optional</td><td>Rules catch known clients well but only 6% of identifiers in messy notes</td></tr>
-        <tr><td>Model is simulated by default</td><td>No saved results from a real model yet</td><td>Usefulness numbers come from a rule-based score</td></tr>
-        <tr><td>Ledger assumes every request is linkable</td><td>All requests about a client are merged</td><td>Conservative: real exposure is likely lower</td></tr>
-        <tr><td>k is measured against Census</td><td>Adaptive search uses the Census directory</td><td>Inside the firm's own book the same context identifies far more clients</td></tr>
-        <tr><td>Dictionary match is exact and case-sensitive</td><td>The query sanitizer only catches names spelled exactly as in the CRM; towns are never caught</td><td>In the red-team test, lowercase names, nicknames and towns cross the boundary</td></tr>
-        <tr><td>Rehydration fills tokens inside links <span class="pill ok">Fixed</span></td><td>Links and email addresses that carry a token are now removed before rehydration, in every pipeline run</td><td>A prompt injection could make the model put the client token in a link; the advisor's view then carried the real name</td></tr>
-        <tr><td>No transcripts</td><td>Only short generated advisor notes are tokenized</td><td>Meeting transcripts were the Meeting 1 demo and the riskiest free text</td></tr>
-      </tbody></table></div>
-    </section>
-  </div>
-
-  <!-- ===== Data ===== -->
-  <div class="view" id="view-data" style="display:none;gap:18px">
-    <section class="card">
-      <h2>Data</h2>
-      <p class="muted">No LPL data. All five sources are public; names, SSNs, accounts and contact details are always generated. None of them are chats: they are tables (one row per person) plus short documents and request sentences.</p>
-      <div class="tbl-wrap"><table><thead><tr><th>Dataset</th><th>What it is</th><th class="num">Size</th><th>Used for</th></tr></thead><tbody>
-        <tr><td><a href="https://www.census.gov/programs-surveys/acs/microdata.html">Census ACS PUMS 2023</a></td><td>Real, anonymized people: age, state, local area, occupation, income, marital status (NY, NJ, CA, TX, FL, IL)</td><td class="num">978,284</td><td>The attacker's directory for crowd size k</td></tr>
-        <tr><td><a href="https://www.federalreserve.gov/econres/scf_2022.htm">Fed Survey of Consumer Finances 2022</a></td><td>Real households' wealth and investment mix</td><td class="num">22,975</td><td>Gives each Census person realistic assets and holdings (statistical match)</td></tr>
-        <tr><td><a href="https://hf.co/datasets/Finance-Agentic-AI/Financial-Advisory-Clients">Financial-Advisory-Clients</a></td><td>Synthetic advisory clients: age, income, marital status, dependents, portfolio, goal, horizon, risk, topics discussed</td><td class="num">5,000</td><td>The client book (1,000 sampled)</td></tr>
-        <tr><td><a href="https://hf.co/datasets/bitext/Bitext-wealth-management-llm-chatbot-training-dataset">Bitext Wealth Management</a></td><td>Single customer request sentences with 24 intent labels</td><td class="num">23,806</td><td>Which tasks need which context; the request mix for repeated-request tests</td></tr>
-        <tr><td><a href="https://hf.co/datasets/gretelai/synthetic_pii_finance_multilingual">Gretel synthetic PII finance</a></td><td>Fake financial documents with labelled PII spans</td><td class="num">2,891</td><td>The PII detection benchmark (the only third-party benchmark)</td></tr>
-      </tbody></table></div>
-    </section>
-
+<!-- 2 -->
+<section class="slide" data-title="The problem">
+  <div class="inner">
+    <span class="part">The problem</span>
+    <h2>An advisor's AI assistant is only useful if it knows the client</h2>
     <div class="grid2">
-      <section class="card">
-        <h3>How the client book is built</h3>
-        <ol>
-          <li>Take Census adults.</li>
-          <li>Give each one assets and a portfolio mix from an SCF household with similar age, income and occupation.</li>
-          <li>Sample 1,000 Financial-Advisory clients and place each on a Census person with the same age and marital status and similar income. The client takes that person's real location and occupation.</li>
-          <li>Generate a fake name, SSN, account, email and address, and an advisor note from the client's topics and products.</li>
-        </ol>
-        <p class="muted">This is an experimental combination of sources, not a join of the same real people.</p>
-      </section>
-      <section class="card">
-        <h3>Three crowds an attacker can compare against</h3>
-        <div class="tbl-wrap"><table><thead><tr><th>Crowd</th><th>Who has this view</th></tr></thead><tbody>
-          <tr><td>Census directory (978K)</td><td>An outsider who knows nothing about the person's financial firm</td></tr>
-          <tr><td>Firm client book (1,000)</td><td>Anyone who knows the person is an LPL client: a vendor, an employee, the AI provider</td></tr>
-          <tr><td>One advisor's book (150)</td><td>Anyone who knows which advisor the person uses, including the assistant serving that advisor. Here: a random 150 of the 1,000</td></tr>
-        </tbody></table></div>
-      </section>
+      <div class="card">
+        <h3>What the advisor asks</h3>
+        <p>"Prepare my meeting with Daniel next week."</p>
+        <p class="muted">To write a good brief, the AI needs his goals, risk tolerance, upcoming cash needs and how his portfolio is invested.</p>
+      </div>
+      <div class="card bad">
+        <h3>What the client file contains</h3>
+        <p>Name, date of birth, SSN, account and routing numbers, home address, phone, email, employer, exact holdings, every transaction, and free-text advisor notes.</p>
+        <p class="muted">Sending all of it to an outside AI provider exposes far more than the task needs.</p>
+      </div>
     </div>
-
-    <section class="card">
-      <h3>Known gaps in the data</h3>
-      <ul>
-        <li><b>Clients are not wealthy enough.</b> Median portfolio is about $197K; only 3.9% have $1M or more. Wealthier clients are rarer and easier to identify, so real LPL risk is probably higher.</li>
-        <li><b>No chats or meeting transcripts.</b> Free-text tests use short generated notes and Gretel documents.</li>
-        <li><b>Advisor books are random draws.</b> Real books cluster by region and profession.</li>
-        <li><b>Wealth is statistically matched</b> to Census people, not real for that person.</li>
-      </ul>
-    </section>
+    <p class="lead"><b>Our question:</b> can we send the AI only what each task needs, prove the client can't be identified from it, and still get useful answers?</p>
   </div>
+</section>
 
-  <!-- ===== Results ===== -->
-  <div class="view" id="view-results" style="display:none;gap:18px">
-    <section class="card">
-      <h2>Results so far</h2>
-      <p class="muted">Crowd size k = how many people match everything the AI saw. k &lt; 10 counts as identifiable. Sources: <span class="mono">eval/results_real/</span>, <span class="mono">eval/results_counterfactual/</span>, <span class="mono">docs/</span>.</p>
-      <div class="legend"><span class="pill ok">Measured on public data</span><span class="pill warn">Simulator only</span><span class="pill bad">Not run yet</span></div>
-    </section>
-
-    <section class="card">
-      <h3>1 · Masking vs. task policy vs. adaptive <span class="pill ok">Measured · 1,000 clients vs. 978K Census</span></h3>
-      <div class="tbl-wrap"><table><thead><tr><th></th><th class="num">Masking only</th><th class="num">Task policy</th><th class="num">Adaptive + ledger</th></tr></thead><tbody>
-        <tr><td>Clients unique after one request</td><td class="num">98.1%</td><td class="num">0% to 3.5%</td><td class="num">0%</td></tr>
-        <tr><td>Clients with k &lt; 10 after 12 requests</td><td class="num">n/a</td><td class="num">20.8%</td><td class="num">0%</td></tr>
-        <tr><td>Task utility after 12 requests (rule-based)</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">0.99</td></tr>
-      </tbody></table></div>
-      <ul>
-        <li>58% of real wealth-management requests need no client data at all.</li>
-        <li>Against one advisor's 150-client book, 83% of clients are identifiable from an income-plan request.</li>
-        <li>One exact transaction singles out 99% of clients; monthly aggregates are much safer.</li>
-        <li>Split storage plus HMAC tokens blocked every key-based attack; a plain SHA-256 of the SSN was cracked in about 14 CPU-minutes.</li>
-        <li>Strategy extraction: binding queries to the advisor's own clients plus coarse answers kept every planted rule at chance after 2,000 queries.</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h3>2 · PII detection <span class="pill ok">Measured · rules only</span> <span class="pill bad">Model-based not run</span></h3>
-      <div class="tbl-wrap"><table><thead><tr><th>Detector (2,891 Gretel documents)</th><th class="num">Identifiers caught</th><th class="num">Precision</th><th class="num">Docs with a leak</th></tr></thead><tbody>
-        <tr><td>Regex</td><td class="num">11%</td><td class="num">46%</td><td class="num">75%</td></tr>
-        <tr><td>Presidio</td><td class="num">43%</td><td class="num">38%</td><td class="num">68%</td></tr>
-        <tr><td>Regex + Presidio</td><td class="num">46%</td><td class="num">37%</td><td class="num">67%</td></tr>
-        <tr><td>GLiNER / Groq LLM detector</td><td class="num" colspan="3">pending: needs an API key</td></tr>
-      </tbody></table></div>
-      <p class="muted">Addresses are caught only 9% of the time. On our own notes the CRM dictionary catches 100% of identifiers in expected formats but 6% in messy notes (56% with Presidio).</p>
-    </section>
-
-    <section class="card">
-      <h3>3 · Fields that are safe alone but identify together <span class="pill ok">Measured · 150K Census sample</span></h3>
-      <div class="grid2">
-        <div class="tbl-wrap"><table><thead><tr><th>Coarse fields combined (worst case)</th><th class="num">Census</th><th class="num">Firm book</th><th class="num">Advisor book</th></tr></thead><tbody>
-          <tr><td>1</td><td class="num">0.4%</td><td class="num">0.8%</td><td class="num">45%</td></tr>
-          <tr><td>2</td><td class="num">0.7%</td><td class="num">36%</td><td class="num">100%</td></tr>
-          <tr><td>3</td><td class="num">1.1%</td><td class="num">79%</td><td class="num">100%</td></tr>
-          <tr><td>All</td><td class="num">20%</td><td class="num">100%</td><td class="num">100%</td></tr>
-        </tbody></table></div>
-        <div class="tbl-wrap"><table><thead><tr><th>Riskiest pairs in the firm book</th><th class="num">k &lt; 10</th></tr></thead><tbody>
-          <tr><td>Age band + occupation group</td><td class="num">36%</td></tr>
-          <tr><td>Region + occupation group</td><td class="num">23%</td></tr>
-          <tr><td>Occupation + marital status</td><td class="num">20%</td></tr>
-          <tr><td>Occupation + holdings mix</td><td class="num">20%</td></tr>
-        </tbody></table></div>
+<!-- 3 -->
+<section class="slide" data-title="Hiding names is not enough">
+  <div class="inner">
+    <span class="part">Why this is hard</span>
+    <h2>Removing names and account numbers is not enough</h2>
+    <div class="grid2">
+      <div style="display:grid;gap:10px">
+        <div class="big">98.1%</div>
+        <p>of clients are still <b>the only person matching</b> what the AI saw, among 978,284 real adults, after names, SSNs and accounts were replaced with codes.</p>
       </div>
-      <div class="grid2">
-        <figure><img src="../eval/figures_real/combinations_by_size.png" alt="Share of clients identifiable versus number of coarse fields combined, for Census, firm book and advisor book"><figcaption>Each field is safe alone; together they identify.</figcaption></figure>
-        <figure><img src="../eval/figures_real/combinations_network.png" alt="Network of field pairs, edges showing the share of clients identifiable within the firm's book"><figcaption>Occupation is the hub of the dangerous pairs.</figcaption></figure>
+      <div class="card">
+        <h3>Why: details act like a fingerprint</h3>
+        <div class="box">age 62 · Burlington, VT · retired heart surgeon · $14.2M · 31% in one biotech stock</div>
+        <p class="muted">No name, yet only one person fits. Age, place, job, wealth and holdings each describe thousands of people; together they describe one.</p>
       </div>
-    </section>
-
-    <section class="card">
-      <h3>4 · The household gap <span class="pill ok">Measured</span></h3>
-      <div class="grid2">
-        <div class="tbl-wrap"><table><thead><tr><th>Meeting brief: household sent as</th><th class="num">Census</th><th class="num">Firm book</th><th class="num">Advisor book</th></tr></thead><tbody>
-          <tr><td>Not counted (today's k engine)</td><td class="num">0.5%</td><td class="num">6.4%</td><td class="num">50%</td></tr>
-          <tr><td><b>As sent: marital + dependents</b></td><td class="num">n/a</td><td class="num"><b>48%</b></td><td class="num"><b>100%</b></td></tr>
-          <tr><td>Marital status only</td><td class="num">1.5%</td><td class="num">23%</td><td class="num">92%</td></tr>
-          <tr><td>"Has dependents" flag only</td><td class="num">n/a</td><td class="num">15%</td><td class="num">77%</td></tr>
-        </tbody></table></div>
-        <figure><img src="../eval/figures_real/combinations_household_gap.png" alt="Bar chart of the meeting brief's identifiable share under each household variant"><figcaption>Census has no dependents field, so those rows are book-only.</figcaption></figure>
-      </div>
-      <p class="note warn">The adaptive policy's "0%" relies on the same engine, so it has the same blind spot. Fixed: household is now a quasi-identifier with a coarser "has dependents" level, and the main evaluation was rerun (firm book 6.4% to 50.4%).</p>
-    </section>
-
-    <section class="card">
-      <h3>5 · What each task actually needs (counterfactual test) <span class="pill warn">Simulator only</span></h3>
-      <p>Ask for the same task twice, changing one field (coarser, swapped or dropped), and see whether the answer changes. If it doesn't, the field isn't needed.</p>
-      <ul>
-        <li>Measured needs match the hand-written policies on <b>32 of 33</b> task-field pairs.</li>
-        <li>The one disagreement: the concentration check never uses assets, yet the policy sends an asset bucket. Candidate to drop.</li>
-        <li>These are simulator results, which check the test itself. A real-model run needs a Groq key.</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h3>6 · Red-team stress test <span class="pill warn">Scripted agents · 50 clients</span></h3>
-      <p>An attacker on the model side tries to extract PII over a 6-turn conversation that runs through every real step. <b>honest</b>: normal assistant. <b>elicit</b>: the assistant secretly asks for identifying details. <b>inject</b>: a pasted email tells the AI to put the client reference in a link.</p>
-      <div class="tbl-wrap"><table><thead><tr><th></th><th class="num">honest</th><th class="num">elicit</th><th class="num">inject</th></tr></thead><tbody>
-        <tr><td>Sessions where a client value crossed the boundary</td><td class="num">78%</td><td class="num">94%</td><td class="num">90%</td></tr>
-        <tr><td>Sanitizer catch rate (typed values stopped)</td><td class="num">72%</td><td class="num">55%</td><td class="num">61%</td></tr>
-        <tr><td>Attacker learns the town</td><td class="num">18%</td><td class="num"><b>76%</b></td><td class="num">36%</td></tr>
-        <tr><td>Attacker learns the name</td><td class="num">12%</td><td class="num"><b>30%</b></td><td class="num">20%</td></tr>
-        <tr><td>Attacker learns net worth within 25%</td><td class="num">68%</td><td class="num">70%</td><td class="num">74%</td></tr>
-        <tr><td>Sessions with a link carrying real data</td><td class="num">0%</td><td class="num">0%</td><td class="num"><b>100%</b></td></tr>
-        <tr><td>Same, with the link guard</td><td class="num">0%</td><td class="num">0%</td><td class="num">0%</td></tr>
-      </tbody></table></div>
-      <ul>
-        <li><b>Elicitation works on the advisor, not the model:</b> the model never sees raw data, but good questions get the advisor to type it.</li>
-        <li><b>Injection + rehydration leaks:</b> the rehydrator fills the real name into a planted link. Removing token-bearing links before rehydration blocked every case.</li>
-        <li><b>The query sanitizer is the weak step:</b> lowercase names, nicknames, typos and towns get through. Exactly typed names, email, phone, employer and family are always caught.</li>
-        <li><b>Exact assets are sent by design</b> for income plans; k stays ≥ 10, but the attacker learns net worth in about 70% of sessions.</li>
-      </ul>
-      <p class="muted">Scripted agents test the pipeline, not real model behavior; the scripted injected model always obeys. Run <span class="mono">eval/run_redteam.py --backend groq</span> for real models. Full write-up: <span class="mono">docs/REDTEAM.md</span>.</p>
-    </section>
-
-    <section class="card">
-      <h3>7 · Not run yet <span class="pill bad">Needs an API key</span></h3>
-      <ul>
-        <li>Answer quality judged by an AI model: the "same usefulness" claim is rule-based today.</li>
-        <li>An AI attacker guessing hidden details.</li>
-        <li>Model-based PII detection (GLiNER, Groq).</li>
-        <li>The counterfactual test on a real model.</li>
-        <li>The red-team test with real models playing advisor, assistant and attacker.</li>
-      </ul>
-    </section>
+    </div>
+    <p class="src">Source: 1,000 clients placed in the Census directory, "masking only" mode, one request. EVALUATION.md §1.</p>
   </div>
+</section>
 
-  <!-- ===== Status ===== -->
-  <div class="view" id="view-status" style="display:none;gap:18px">
-    <section class="card">
-      <h2>Status</h2>
-      <div class="tbl-wrap"><table><thead><tr><th>Part</th><th>Status</th></tr></thead><tbody>
-        <tr><td>Split storage, HMAC tokens, rehydration</td><td><span class="pill ok">Built and tested</span></td></tr>
-        <tr><td>Task policies, adaptive search, exposure ledger</td><td><span class="pill ok">Built</span> <span class="pill ok">Household counted</span></td></tr>
-        <tr><td>PII detection</td><td><span class="pill ok">Rules built</span> <span class="pill bad">Model detectors not evaluated</span></td></tr>
-        <tr><td>Privacy evaluation on public data</td><td><span class="pill ok">Done</span></td></tr>
-        <tr><td>Combination risk and counterfactual needs</td><td><span class="pill ok">Done</span> <span class="pill warn">Counterfactual on simulator only</span></td></tr>
-        <tr><td>Red-team stress test (multi-turn, elicitation, injection)</td><td><span class="pill ok">Built</span> <span class="pill warn">Scripted agents only</span></td></tr>
-        <tr><td>Real-model answer quality</td><td><span class="pill bad">Not run</span></td></tr>
-        <tr><td>Meeting transcripts</td><td><span class="pill bad">No data yet</span></td></tr>
-      </tbody></table></div>
-    </section>
-    <section class="card">
-      <h3>Next steps, in priority order</h3>
-      <ol>
-        <li><b>Household gap fixed</b> in the k engine and the main evaluation rerun; agree on the new headline numbers (98.1% unique when masked, 20.8% with k &lt; 10 after 12 requests under fixed policies).</li>
-        <li><b>Close the red-team gaps:</b> case-insensitive and fuzzy dictionary matching plus towns, the link guard on by default, typed details counted toward k.</li>
-        <li><b>Run the model-based evaluations</b> with a Groq or NVIDIA key: answer quality, AI attacker, GLiNER/Groq detection, counterfactual and red-team on real models.</li>
-        <li><b>Build labelled meeting transcripts</b> for the meeting-prep demo; test detection on them and count what the text mentions toward k.</li>
-        <li><b>Run on the full Census download</b> (about 250 MB) for the combination results.</li>
-        <li><b>Fix the wealth skew</b>: weight toward high-net-worth clients, or ask LPL for aggregate statistics.</li>
-        <li><b>Turn findings into safeguards</b>: a deny list of dangerous field pairs, and a check that a large crowd doesn't all share a hidden value.</li>
-        <li><b>Ask LPL</b> for per-advisor aggregate counts, a few redacted transcripts, and how often advisors type client details into requests.</li>
-      </ol>
-    </section>
+<!-- 4 -->
+<section class="slide" data-title="How we measure privacy">
+  <div class="inner">
+    <span class="part">How we measure privacy</span>
+    <h2>We measure privacy as the size of the crowd the client hides in</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Crowd size k</h3>
+        <p>Take everything the AI was told about a client. Count how many people in a reference population match all of it. That count is <b>k</b>.</p>
+        <ul>
+          <li><b>k = 1:</b> the client is identified.</li>
+          <li><b>k ≥ 10:</b> our safety floor; the client hides among at least 10 people.</li>
+        </ul>
+      </div>
+      <div class="grid2" style="gap:18px">
+        <div style="display:grid;gap:8px"><span class="pill bad">k = 1 · identified</span><div class="crowd"><i class="me"></i></div></div>
+        <div style="display:grid;gap:8px"><span class="pill ok">k = 24 · hidden</span><div class="crowd safe"><i class="me"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      </div>
+    </div>
+    <p class="lead">Who is in the crowd matters: an outsider compares against the whole population, but an insider only has to search the firm's own clients.</p>
   </div>
+</section>
 
-</div>
+<!-- 5 -->
+<section class="slide" data-title="Our approach">
+  <div class="inner">
+    <span class="part">Our approach</span>
+    <h2>A privacy layer between the client file and the AI</h2>
+    <div class="steps">
+      <div class="step"><b>Separate</b><span>Identity goes into a locked vault; financial details go into a separate store. Only the vault knows which is whose.</span></div>
+      <div class="step"><b>Replace</b><span>Names, emails and accounts become codes like <span class="mono tok">&lt;PERSON_8a1f2c&gt;</span>, new every session.</span></div>
+      <div class="step"><b>Minimize</b><span>Send only what the task needs, as coarse as possible: an age range instead of an age, a wealth bracket instead of a balance.</span></div>
+      <div class="step"><b>Keep a tally</b><span>Track everything already sent about a client, so many small requests can't add up to an identification.</span></div>
+      <div class="step"><b>Restore</b><span>Put real names back into the answer, for the advisor only. Links that carry a code are removed first.</span></div>
+    </div>
+    <p class="lead">The AI provider never sees a name, and each request is checked to keep the client's crowd at 10 or more.</p>
+  </div>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-title="One request, end to end">
+  <div class="inner">
+    <span class="part">Our approach · example</span>
+    <h2>One meeting-prep request, end to end</h2>
+    <div class="grid3">
+      <div class="card bad"><h3>1 · Client file (stays inside)</h3>
+        <div class="box">Daniel Okafor, 62
+SSN 512-44-9087
+14 Lakeview Terrace, Burlington VT
+Retired cardiothoracic surgeon
+$14.2M · VRTX 31%
+Married, two adult children
+Goal: income + legacy</div></div>
+      <div class="card ok"><h3>2 · What the AI receives</h3>
+        <div class="box">Client: <span class="tok">&lt;PERSON_8a1f2c&gt;</span>
+Age: 60–69
+Assets: $10M–$25M
+Holdings: one single stock,
+  healthcare, 31%
+Has dependents
+Goal: income + legacy</div></div>
+      <div class="card"><h3>3 · What the advisor gets back</h3>
+        <div class="box">Meeting brief for Daniel Okafor
+1. Income plan for the next 15 years
+2. Trim the 31% single-stock position
+3. Review beneficiaries for both children</div></div>
+    </div>
+    <p class="muted">Try it step by step, including changing what gets sent and watching k move: <a href="walkthrough.html">interactive walkthrough</a>.</p>
+  </div>
+</section>
+
+<!-- 7 -->
+<section class="slide" data-title="How we tested">
+  <div class="inner">
+    <span class="part">How we tested</span>
+    <h2>We tested it on public data, against attackers we built</h2>
+    <div class="grid2">
+      <div class="card"><h3>Data (no LPL data)</h3>
+        <ul>
+          <li><b>1,000 synthetic advisory clients</b> (Financial-Advisory-Clients), with fake names and accounts.</li>
+          <li><b>978,284 real, anonymized adults</b> from the US Census, as the population an attacker searches.</li>
+          <li><b>Real household wealth</b> from the Federal Reserve's Survey of Consumer Finances.</li>
+          <li><b>23,806 real advisor-style requests</b> (Bitext) and <b>2,891 documents with labelled PII</b> (Gretel).</li>
+        </ul></div>
+      <div class="card"><h3>Attackers</h3>
+        <ul>
+          <li><b>Look-ups:</b> match what the AI saw against the Census, the firm's 1,000 clients, or one advisor's 150.</li>
+          <li><b>AI models</b> (Gemini) guessing hidden details, linking sessions, and inferring employers.</li>
+          <li><b>A chatbot attacker</b> that talks to the assistant and tries to extract details.</li>
+          <li><b>Key attacks</b> on the storage and the codes.</li>
+        </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 -->
+<section class="slide" data-title="Result: per request">
+  <div class="inner">
+    <span class="part">Result 1 · does it protect?</span>
+    <h2>For a single request, minimizing keeps every client hidden</h2>
+    <div class="bars">
+      <span class="bars-h">Clients identifiable (k &lt; 10) after one request, vs. 978K people</span>
+      <div class="bar"><span>Masking names only</span><div class="t"><div class="f bad" style="width:100%"></div></div><span class="v">100%</span></div>
+      <div class="bar"><span>Fixed task policy</span><div class="t"><div class="f warn" style="width:5.6%"></div></div><span class="v">0–5.6%</span></div>
+      <div class="bar"><span>Adaptive policy (ours)</span><div class="t"><div class="f ok" style="width:0.6%"></div></div><span class="v">0%</span></div>
+    </div>
+    <div class="grid2">
+      <div class="card ok"><div class="stat ok">58%</div><p>of real advisor requests (fees, services, account setup) need <b>no client data at all</b>. The cheapest protection is sending nothing.</p></div>
+      <div class="card ok"><div class="stat ok">All blocked</div><p>Key attacks: looking up codes, joining the stores, linking codes across sessions. A plain hash of an SSN, by contrast, is cracked in 14 minutes.</p></div>
+    </div>
+    <p class="src">Source: EVALUATION.md §1 and §6. 1,000 clients; the range covers six task types.</p>
+  </div>
+</section>
+
+<!-- 9 -->
+<section class="slide" data-title="Result: who is looking">
+  <div class="inner">
+    <span class="part">Result 2 · does it protect?</span>
+    <h2>But it depends on who is looking: inside the firm, the same brief identifies most clients</h2>
+    <div class="bars">
+      <span class="bars-h">Meeting brief: clients identifiable (k &lt; 10), by who the attacker compares against</span>
+      <div class="bar"><span>An outsider (978K people)</span><div class="t"><div class="f ok" style="width:0.7%"></div></div><span class="v">0.7%</span></div>
+      <div class="bar"><span>Someone at the firm (1,000 clients)</span><div class="t"><div class="f warn" style="width:50.4%"></div></div><span class="v">50.4%</span></div>
+      <div class="bar"><span>Someone serving one advisor (150 clients)</span><div class="t"><div class="f bad" style="width:100%"></div></div><span class="v">100%</span></div>
+    </div>
+    <p class="lead">An AI assistant serving one advisor, a vendor serving one branch, or an employee only needs to tell apart that advisor's clients. <b>Privacy checks must run inside the firm, against its own client base.</b></p>
+    <p class="src">Source: EVALUATION.md §3, task policy with household counted.</p>
+  </div>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-title="Result: combinations">
+  <div class="inner">
+    <span class="part">Result 3 · does it protect?</span>
+    <h2>Details that are harmless alone identify clients together</h2>
+    <div class="grid2">
+      <div class="bars">
+        <span class="bars-h">Within the firm's 1,000 clients: identifiable, worst combination of broad details</span>
+        <div class="bar"><span>Any one detail</span><div class="t"><div class="f ok" style="width:0.8%"></div></div><span class="v">0.8%</span></div>
+        <div class="bar"><span>Two details</span><div class="t"><div class="f warn" style="width:36%"></div></div><span class="v">36%</span></div>
+        <div class="bar"><span>Three details</span><div class="t"><div class="f bad" style="width:79%"></div></div><span class="v">79%</span></div>
+        <div class="bar"><span>Four details</span><div class="t"><div class="f bad" style="width:99%"></div></div><span class="v">99%</span></div>
+      </div>
+      <div class="card">
+        <h3>The riskiest pair</h3>
+        <p><b>Age range + occupation group</b> identifies 36% of the firm's clients. Occupation is the most dangerous detail to combine with anything.</p>
+        <h3>What this caught</h3>
+        <p>Meeting briefs sent household details (marital status, dependents) that the privacy check did not count. Counting them moved firm-level risk from 6.4% to 50.4%. <span class="pill ok">Fixed</span></p>
+      </div>
+    </div>
+    <p class="src">Source: COMBINATIONS.md, broad levels (age range, region, occupation group, wealth bracket, sector mix, marital status, dependents); 150K-person Census sample.</p>
+  </div>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-title="Result: usefulness">
+  <div class="inner">
+    <span class="part">Result 4 · does it stay useful?</span>
+    <h2>With less context, answers keep their direction but lose specifics</h2>
+    <div class="bars">
+      <span class="bars-h">Answer quality vs. the full-context answer (5 = same advice), average of three tasks</span>
+      <div class="bar"><span>Full client file (reference)</span><div class="t"><div class="f base" style="width:100%"></div></div><span class="v">5.00</span></div>
+      <div class="bar"><span>Names masked, rest exact</span><div class="t"><div class="f ok" style="width:95.4%"></div></div><span class="v">4.77</span></div>
+      <div class="bar"><span>Minimized (ours)</span><div class="t"><div class="f" style="width:61.6%"></div></div><span class="v">3.08</span></div>
+      <div class="bar"><span>No client data</span><div class="t"><div class="f bad" style="width:29.4%"></div></div><span class="v">1.47</span></div>
+    </div>
+    <div class="grid3">
+      <div class="card"><b>Masking names is nearly free.</b><p class="muted">73 of 90 answers were judged identical.</p></div>
+      <div class="card"><b>Minimizing costs about 1.7 points.</b><p class="muted">Most answers score 3: "same direction, missing specifics".</p></div>
+      <div class="card"><b>But the context does real work.</b><p class="muted">Minimized beats no data in 84 of 90 cases, never worse.</p></div>
+    </div>
+    <p class="src">Source: EVALUATION.md §9. Gemini Flash answers, a separate Gemini Pro model judges; 30 clients × 3 tasks (meeting brief 2.83, concentration 2.67, income plan 3.73 under the task policy).</p>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-title="Result: what the AI uses">
+  <div class="inner">
+    <span class="part">Result 5 · does it stay useful?</span>
+    <h2>The AI leans on exact numbers we deliberately hide</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>How we tested it (counterfactuals)</h3>
+        <p>Ask for the same answer twice, changing one detail: make it coarser, swap in another client's value, or remove it. If the advice changes, the AI was using that detail.</p>
+        <p><b>Only 13 of 33</b> task-detail pairs matched what our policies assumed. Exact assets and cash needs changed <b>73–100%</b> of answers when coarsened.</p>
+      </div>
+      <div class="card bad">
+        <h3>The trade-off, in one number</h3>
+        <p>Sending meeting briefs everything the AI measurably uses would shrink a typical client's crowd from</p>
+        <div class="stat bad">42,986 → 2</div>
+        <p class="muted">76% of clients would fall below k = 10. Meeting briefs are where usefulness and privacy conflict most.</p>
+      </div>
+    </div>
+    <p class="src">Source: COUNTERFACTUAL.md, Gemini run, 30 clients, separate judge. Removing a field can look harmless because the model fills in a default; swaps show it still matters.</p>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="slide" data-title="Result: linking sessions">
+  <div class="inner">
+    <span class="part">Result 6 · attacks over time</span>
+    <h2>A client's sessions can be linked, even though the codes change every time</h2>
+    <div class="grid2">
+      <div style="display:grid;gap:10px">
+        <div class="big">95%</div>
+        <p>of clients' meeting briefs from two different quarters were matched to each other, among 1,000 clients, by a few lines of code with no AI.</p>
+      </div>
+      <div class="card">
+        <h3>Why</h3>
+        <p>Goals, horizon, risk, age range and household rarely change, so together they act as a stable signature. Removing any single detail still leaves 85% or more linkable.</p>
+        <h3>What helps</h3>
+        <p>Not keeping logs (zero data retention with the provider), and sending the stable profile only when a task truly needs it.</p>
+      </div>
+    </div>
+    <p class="src">Source: SESSION_LINKING.md. A Gemini model given a lineup of 10 also picked the right client 100% of the time.</p>
+  </div>
+</section>
+
+<!-- 14 -->
+<section class="slide" data-title="Result: memory">
+  <div class="inner">
+    <span class="part">Result 7 · attacks over time</span>
+    <h2>An assistant with memory learns its clients, and mixes them up</h2>
+    <div class="grid3">
+      <div class="card warn"><div class="stat warn">37%</div><p>of returning clients were recognized from the agent's own notes (chance: 3%).</p></div>
+      <div class="card bad"><div class="stat bad">48%</div><p>of the time it attached a client to <b>someone else's</b> notes, so one client's facts could shape another client's advice.</p></div>
+      <div class="card bad"><div class="stat bad">23%</div><p>of clients were identifiable from everything disclosed across 4 quarters, vs. 3% from one session.</p></div>
+    </div>
+    <p class="lead">A rule of "never store client facts" brought recognition down to chance, but 21 of 120 stored "general lessons" still described a specific client.</p>
+    <p class="src">Source: MEMORY_AGENT.md. Gemini agent, 30 clients, 4 quarters, a different task each quarter.</p>
+  </div>
+</section>
+
+<!-- 15 -->
+<section class="slide" data-title="Result: live chat attacker">
+  <div class="inner">
+    <span class="part">Result 8 · attacks in conversation</span>
+    <h2>A curious AI can't see names, but it can get the advisor to type them</h2>
+    <div class="grid2">
+      <div class="bars">
+        <span class="bars-h">Chat sessions where the attacker learned the client's town</span>
+        <div class="bar"><span>Normal assistant</span><div class="t"><div class="f warn" style="width:18%"></div></div><span class="v">18%</span></div>
+        <div class="bar"><span>Assistant asks leading questions</span><div class="t"><div class="f bad" style="width:76%"></div></div><span class="v">76%</span></div>
+        <span class="bars-h" style="margin-top:12px">Sessions where a hidden instruction smuggled the name into a link</span>
+        <div class="bar"><span>Before our fix</span><div class="t"><div class="f bad" style="width:100%"></div></div><span class="v">100%</span></div>
+        <div class="bar"><span>Link guard on (now default)</span><div class="t"><div class="f ok" style="width:0.6%"></div></div><span class="v">0%</span></div>
+      </div>
+      <div class="card">
+        <h3>What leaks in chat</h3>
+        <ul>
+          <li>Names typed in lowercase, misspelled, or as nicknames.</li>
+          <li>Town names, which the filter doesn't know.</li>
+          <li>Exactly typed names, emails, phones, employers and family names were always caught.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="src">Source: REDTEAM.md. 50 clients × 6-turn chats with scripted advisor and attacker; real models will differ.</p>
+  </div>
+</section>
+
+<!-- 16 -->
+<section class="slide" data-title="Result: holdings reveal employer">
+  <div class="inner">
+    <span class="part">Result 9 · attacks on patterns</span>
+    <h2>A large stake in one company points to where the client works</h2>
+    <div class="bars">
+      <span class="bars-h">Insiders whose employer the AI named correctly, from holdings alone</span>
+      <div class="bar"><span>Exact ticker sent</span><div class="t"><div class="f bad" style="width:100%"></div></div><span class="v">100%</span></div>
+      <div class="bar"><span>"One stock, healthcare, 22%" (our default)</span><div class="t"><div class="f ok" style="width:0.6%"></div></div><span class="v">0%</span></div>
+    </div>
+    <p class="lead">No name, job or location was sent. Executives' holdings are public in SEC filings, so a ticker is a strong clue. Our task policies never send exact tickers by default; masking-only systems do.</p>
+    <p class="src">Source: EVALUATION.md §10. 40 planted insiders; Gemini Flash asked which company each client works for.</p>
+  </div>
+</section>
+
+<!-- 17 -->
+<section class="slide" data-title="Scorecard">
+  <div class="inner">
+    <span class="part">Summary</span>
+    <h2>Where the approach stands</h2>
+    <div class="grid3">
+      <div class="card ok"><h3>Works</h3>
+        <ul>
+          <li>Separate storage and session codes: every key attack blocked</li>
+          <li>Per-request minimization against the general population</li>
+          <li>Link guard against smuggled names</li>
+          <li>Hiding tickers stops employer guessing</li>
+        </ul></div>
+      <div class="card warn"><h3>Partly</h3>
+        <ul>
+          <li>Usefulness: 3.08 of 5, far better than no data, short of full context</li>
+          <li>PII detection: 100% in known formats, 46% in third-party documents</li>
+          <li>Memory rules lower exposure but still leak</li>
+        </ul></div>
+      <div class="card bad"><h3>Not yet</h3>
+        <ul>
+          <li>Protection against people inside the firm</li>
+          <li>Linking a client's sessions over time</li>
+          <li>Misspelled names and towns typed in chat</li>
+          <li>The meeting-brief trade-off</li>
+        </ul></div>
+    </div>
+    <p class="muted">Fixed during the project: household details now count toward k; the link guard is on by default; answer quality is graded by a separate model against a no-data baseline.</p>
+  </div>
+</section>
+
+<!-- 18 -->
+<section class="slide" data-title="Recommendations">
+  <div class="inner">
+    <span class="part">Recommendations for LPL</span>
+    <h2>What we would build into a production assistant</h2>
+    <ol>
+      <li><b>Run the privacy layer inside LPL</b> and measure k against LPL's own client base, not the general population.</li>
+      <li><b>Send nothing when the request doesn't need client data</b>, which is the majority of requests.</li>
+      <li><b>Agree zero data retention with the AI provider</b>, and send a client's stable profile only when the task needs it; logs are what make linking possible.</li>
+      <li><b>Never send exact tickers, balances or transaction lines by default</b>; use ranges, sector mixes and monthly totals.</li>
+      <li><b>Treat meeting briefs as a special case</b>: let the advisor approve extra detail, or summarize locally before anything leaves.</li>
+      <li><b>Don't give the assistant per-client memory</b> without strict rules and automated checks.</li>
+      <li><b>Strengthen detection for chat:</b> fuzzy name matching, town names, and a model-based detector, plus a warning when the AI asks for identifying details.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 19 -->
+<section class="slide" data-title="Limitations and next steps">
+  <div class="inner">
+    <span class="part">Limitations and next steps</span>
+    <h2>What these results can't tell us yet</h2>
+    <div class="grid2">
+      <div class="card"><h3>Limitations</h3>
+        <ul>
+          <li>No LPL data. Our clients' median portfolio is about $197K, far below LPL's; wealthier clients are rarer and easier to identify.</li>
+          <li>Notes and chats are generated; real ones are messier.</li>
+          <li>One model family (Gemini) and 30 clients for the model tests.</li>
+          <li>Answer quality judged by an AI, not yet by advisors.</li>
+        </ul></div>
+      <div class="card"><h3>What would help from LPL</h3>
+        <ul>
+          <li>Anonymized summary statistics of advisors' client books</li>
+          <li>A few redacted meeting notes or transcripts</li>
+          <li>Anonymized request logs: what advisors actually ask</li>
+          <li>Advisors to rate minimized vs. full answers</li>
+        </ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- 20 -->
+<section class="slide" data-title="Thank you">
+  <div class="inner">
+    <span class="part">Thank you</span>
+    <h2>Questions?</h2>
+    <div class="grid2">
+      <div class="card"><h3>Explore</h3>
+        <ul>
+          <li><a href="walkthrough.html">Interactive walkthrough</a>: follow one request step by step and change what gets sent.</li>
+          <li><a href="https://github.com/Chaitya0623/secure-context">Code and full write-ups</a> (docs/EVALUATION.md and the other docs).</li>
+        </ul></div>
+      <div class="card"><h3>Reproduce</h3>
+        <div class="box">pip install -r requirements.txt
+python3 eval/run_real.py
+python3 eval/run_combinations.py
+python3 eval/run_redteam.py
+pytest -q</div></div>
+    </div>
+    <p class="muted">Team: Chaitya · Dhruth · Nami · Rishika</p>
+  </div>
+</section>
+
+</main>
+
+<nav class="nav" aria-label="Slides">
+  <button id="prev" type="button" aria-label="Previous slide">← Back</button>
+  <button id="next" type="button" aria-label="Next slide">Next →</button>
+  <span class="count" id="count"></span>
+  <span class="title" id="stitle"></span>
+  <a href="walkthrough.html">Interactive walkthrough</a>
+</nav>
 
 <script>
-/* ---------- utilities ---------- */
-const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-const rnd=mulberry32(20261029);
-function pickW(items){let tot=0;for(const it of items)tot+=it[1];let r=rnd()*tot;for(const it of items){if((r-=it[1])<=0)return it[0]}return items[items.length-1][0]}
-function gauss(){let u=0,v=0;while(!u)u=rnd();while(!v)v=rnd();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
-const hex=buf=>[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');
-function fallbackHash(str){let h1=0x811c9dc5,h2=0x1234567;for(let i=0;i<str.length;i++){h1=Math.imul(h1^str.charCodeAt(i),16777619);h2=Math.imul(h2^str.charCodeAt(i),2246822519)}return((h1>>>0).toString(16).padStart(8,'0')+(h2>>>0).toString(16).padStart(8,'0')).repeat(4)}
-async function hmacHex(keyBytes,msg){
-  try{const k=await crypto.subtle.importKey('raw',keyBytes,{name:'HMAC',hash:'SHA-256'},false,['sign']);
-    return hex(await crypto.subtle.sign('HMAC',k,new TextEncoder().encode(msg)))}
-  catch(e){return fallbackHash(hex(keyBytes)+'|'+msg)}}
-async function sha256Hex(msg){try{return hex(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg)))}catch(e){return fallbackHash(msg)}}
-function randBytes(n){const b=new Uint8Array(n);try{crypto.getRandomValues(b)}catch(e){for(let i=0;i<n;i++)b[i]=Math.floor(Math.random()*256)}return b}
-function uuid(){const b=randBytes(16);b[6]=(b[6]&15)|64;b[8]=(b[8]&63)|128;const h=hex(b);return`${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`}
-
-/* ---------- reference data ---------- */
-const STATES=[['CA',12],['TX',9],['FL',6.7],['NY',5.9],['PA',3.9],['IL',3.8],['OH',3.5],['GA',3.2],['NC',3.2],['MI',3],['NJ',2.8],['VA',2.6],['WA',2.3],['AZ',2.2],['MA',2.1],['TN',2.1],['IN',2],['MD',1.8],['MO',1.8],['WI',1.8],['CO',1.8],['MN',1.7],['SC',1.6],['AL',1.5],['LA',1.4],['KY',1.3],['OR',1.3],['OK',1.2],['CT',1.1],['UT',1],['IA',1],['NV',1],['AR',.9],['MS',.9],['KS',.9],['NM',.6],['NE',.6],['ID',.6],['WV',.5],['HI',.4],['NH',.4],['ME',.4],['MT',.3],['RI',.3],['DE',.3],['SD',.3],['ND',.2],['AK',.2],['VT',.2],['WY',.2]];
-const REGION={};
-'CT ME MA NH RI VT NJ NY PA'.split(' ').forEach(s=>REGION[s]='Northeast');
-'IL IN MI OH WI IA KS MN MO NE ND SD'.split(' ').forEach(s=>REGION[s]='Midwest');
-'DE FL GA MD NC SC VA WV AL KY MS TN AR LA OK TX'.split(' ').forEach(s=>REGION[s]='South');
-STATES.forEach(([s])=>{if(!REGION[s])REGION[s]='West'});
-const OCC={Healthcare:['Physician','Retired cardiothoracic surgeon','Dentist','Nurse practitioner','Pharmacist'],
- Technology:['Software engineer','Director of platform engineering','Product manager','Data scientist','IT consultant'],
- Education:['Teacher','Retired school principal','Professor','School administrator'],
- Finance:['Accountant','Financial analyst','Banker','Insurance agent'],
- Legal:['Attorney','Paralegal','Retired judge'],
- 'Business owner':['Restaurant owner','Retail owner','Construction company owner','Consulting firm owner'],
- Engineering:['Civil engineer','Mechanical engineer','Electrical engineer'],
- Government:['Federal employee','Retired military officer','City planner'],
- Other:['Real estate agent','Pilot','Sales executive','Homemaker']};
-const RARE_OCC=new Set(['Retired cardiothoracic surgeon','Director of platform engineering','Retired school principal']);
-const OCC_W=[];const OCC_CAT={};
-const CAT_W={Healthcare:12,Technology:14,Education:9,Finance:11,Legal:6,'Business owner':16,Engineering:9,Government:8,Other:15};
-for(const[c,list]of Object.entries(OCC))for(const o of list){OCC_CAT[o]=c;OCC_W.push([o,CAT_W[c]/list.length*(RARE_OCC.has(o)?.25:1)])}
-const TICKERS=[['VRTX','Healthcare',1,1.2],['JNJ','Healthcare',1,2],['UNH','Healthcare',1,1.5],['LLY','Healthcare',1,1.5],['PFE','Healthcare',1,1],
- ['AAPL','Technology',1,4],['MSFT','Technology',1,4],['NVDA','Technology',1,3],['CRVN','Technology',1,.02],['QQQ','Technology',0,3],
- ['VTI','Broad equity',0,12],['VOO','Broad equity',0,12],['SCHD','Broad equity',0,5],['VEA','Broad equity',0,4],
- ['BND','Fixed income',0,8],['AGG','Fixed income',0,6],['MUB','Fixed income',0,4],
- ['JPM','Financials',1,2],['BRK.B','Financials',1,2.5],['XOM','Energy',1,1.5],['CVX','Energy',1,1.2],['AMZN','Consumer',1,3],['PG','Consumer',1,1.2]];
-const TICK_W=TICKERS.map(t=>[t,t[3]]);
-const GROUPS=[['Broad equity',35],['Fixed income',22],['Technology',15],['Healthcare',9],['Financials',8],['Consumer',6],['Energy',5]];
-const ageBand=a=>`${Math.floor(a/10)*10}-${Math.floor(a/10)*10+9}`;
-const aumBucket=m=>m<1?'Under $1M':m<5?'$1M-$5M':m<10?'$5M-$10M':m<25?'$10M-$25M':'$25M+';
-const concB=w=>w<20?0:w<35?1:w<50?2:3;
-const CONC_LBL=['under 20%','20-35%','35-50%','over 50%'];
-const fmtM=m=>`$${m.toFixed(1)}M`;
-
-/* ---------- synthetic clients ---------- */
-const CLIENTS={
- okafor:{label:'Daniel Okafor (Burlington, VT)',
-  id:{name:'Daniel Okafor',dob:'03/14/1964',ssn:'512-44-9087',account:'ACCT 7731-0042-18',routing:'021000089',email:'d.okafor@examplemail.com',phone:'(802) 555-0143',address:'14 Lakeview Terrace, Burlington, VT 05401'},
-  p:{age:62,city:'Burlington',state:'VT',occ:'Retired cardiothoracic surgeon',aum:14.2,household:'Married, two adult children',objective:'Income with legacy planning',risk:'Moderate',horizon:'15+ years',liquidity:'About $400K within 18 months (vacation home)'},
-  holdings:[{t:'VRTX',n:'Vertex Pharmaceuticals',g:'Healthcare',single:1,w:31},{t:'VTI',n:'Vanguard Total Stock Market ETF',g:'Broad equity',single:0,w:24},{t:'VEA',n:'Vanguard FTSE Developed Markets ETF',g:'Broad equity',single:0,w:16},{t:'BND',n:'Vanguard Total Bond Market ETF',g:'Fixed income',single:0,w:22},{t:'CASH',n:'Cash',g:'Cash',single:0,w:7}],
-  entities:[{type:'PERSON',value:'Daniel Okafor',aliases:['Mr. Okafor','Daniel']},{type:'PERSON',value:'Adaeze Okafor',aliases:['Adaeze']},{type:'ORG',value:'Champlain Valley Heart Institute'},{type:'ADDRESS',value:'14 Lakeview Terrace, Burlington, VT 05401'}],
-  notes:'Met with Daniel Okafor (DOB 03/14/1964, SSN 512-44-9087) at his home, 14 Lakeview Terrace, Burlington, VT 05401. Mr. Okafor retired last spring from Champlain Valley Heart Institute after 28 years as a cardiothoracic surgeon. His wife Adaeze joined for the second half. They want to buy a vacation home on Lake Champlain, roughly $400K needed within 18 months, without selling down the Vertex position at a large tax hit. Daniel also asked about a donor-advised fund in the family name. Wire instructions on file: routing 021000089, ACCT 7731-0042-18. Best reach is (802) 555-0143 or d.okafor@examplemail.com.',
-  summary:'Recently retired. Wants about $400K available within 18 months for a property purchase while limiting the tax cost of trimming a concentrated stock position. Interested in a charitable giving vehicle for the family.',
-  residual:['Lake Champlain','cardiothoracic surgeon','Vertex position'],
-  notesLeak:{occupation:'exact',holdings:'exact',location:'general'},
-  gsec:'Broad equity',gw:40},
- raman:{label:'Priya Raman (Austin, TX)',
-  id:{name:'Priya Raman',dob:'07/22/1988',ssn:'618-20-3341',account:'ACCT 5502-8817-03',routing:'111000025',email:'priya.raman@examplemail.com',phone:'(512) 555-0187',address:'2209 Barton Hills Dr, Austin, TX 78704'},
-  p:{age:38,city:'Austin',state:'TX',occ:'Director of platform engineering',aum:2.1,household:'Married, two children under 10',objective:'Diversify employer stock; fund college savings',risk:'Aggressive',horizon:'20+ years',liquidity:'$60K within 6 months (home remodel)'},
-  holdings:[{t:'CRVN',n:'Corvane Systems (employer stock)',g:'Technology',single:1,w:44},{t:'VTI',n:'Vanguard Total Stock Market ETF',g:'Broad equity',single:0,w:22},{t:'QQQ',n:'Invesco QQQ Trust',g:'Technology',single:0,w:12},{t:'BND',n:'Vanguard Total Bond Market ETF',g:'Fixed income',single:0,w:10},{t:'CASH',n:'Cash',g:'Cash',single:0,w:12}],
-  entities:[{type:'PERSON',value:'Priya Raman',aliases:['Priya']},{type:'PERSON',value:'Arjun Raman',aliases:['Arjun']},{type:'ORG',value:'Corvane Systems',aliases:['Corvane']},{type:'ADDRESS',value:'2209 Barton Hills Dr, Austin, TX 78704'}],
-  notes:'Priya Raman called after her March RSU vest at Corvane Systems, where she is director of platform engineering. Corvane stock is now 44% of household assets. She and Arjun want a scheduled selling plan before the next earnings window, plus 529 plans for both kids. Need $60K liquid by spring for the kitchen remodel at 2209 Barton Hills Dr, Austin, TX 78704. Beneficiary form updated; SSN 618-20-3341 verified. Transfers go to routing 111000025, ACCT 5502-8817-03. Cell (512) 555-0187, priya.raman@examplemail.com.',
-  summary:'Recent equity vest increased employer-stock concentration. Wants a scheduled diversification plan, college savings for two children, and $60K liquid for a home project.',
-  residual:['director of platform engineering','RSU vest','44% of household assets'],
-  notesLeak:{occupation:'exact',holdings:'anon'},
-  gsec:'Technology',gw:56},
- ellison:{label:'Margaret Ellison-Hart (Naples, FL)',
-  id:{name:'Margaret Ellison-Hart',dob:'11/02/1951',ssn:'431-77-2096',account:'ACCT 3318-6620-41',routing:null,email:'m.ellisonhart@examplemail.com',phone:'(239) 555-0119',address:'88 Gulf Shore Blvd N, Naples, FL 34102'},
-  p:{age:74,city:'Naples',state:'FL',occ:'Retired school principal',aum:3.6,household:'Widowed, one adult son',objective:'Preserve capital; plan RMDs; pass IRA to son',risk:'Conservative',horizon:'About 10 years',liquidity:'RMD of about $140K this year'},
-  holdings:[{t:'BND',n:'Vanguard Total Bond Market ETF',g:'Fixed income',single:0,w:35},{t:'VTI',n:'Vanguard Total Stock Market ETF',g:'Broad equity',single:0,w:25},{t:'MUB',n:'iShares National Muni Bond ETF',g:'Fixed income',single:0,w:15},{t:'SCHD',n:'Schwab US Dividend Equity ETF',g:'Broad equity',single:0,w:15},{t:'CASH',n:'Cash',g:'Cash',single:0,w:10}],
-  entities:[{type:'PERSON',value:'Margaret Ellison-Hart',aliases:['Mrs. Ellison-Hart','Margaret']},{type:'PERSON',value:'Thomas Ellison-Hart',aliases:['Thomas']},{type:'PERSON',value:'Richard Ellison-Hart',aliases:['Richard']},{type:'ADDRESS',value:'88 Gulf Shore Blvd N, Naples, FL 34102'}],
-  notes:'Margaret Ellison-Hart (DOB 11/02/1951) came in with her son Thomas Ellison-Hart, who now holds power of attorney. Since Richard passed in 2024 she has kept the rollover IRA at ACCT 3318-6620-41. She wants this year\'s RMD, about $140K, paid out in December with 20% withheld. Thomas asked to be listed as primary beneficiary. Mrs. Ellison-Hart prefers paper statements mailed to 88 Gulf Shore Blvd N, Naples, FL 34102 and calls from (239) 555-0119. Identity re-verified with SSN 431-77-2096; email on file m.ellisonhart@examplemail.com.',
-  summary:'Widowed and retired. Focus on this year\'s required minimum distribution, preserving capital, and naming her son as IRA beneficiary.',
-  residual:['passed in 2024','power of attorney'],
-  notesLeak:{},
-  gsec:'Fixed income',gw:50}
-};
-for(const c of Object.values(CLIENTS)){
-  c.p.cat=OCC_CAT[c.p.occ];
-  const top=[...c.holdings].sort((a,b)=>b.w-a.w)[0];c.top=top;
-  c.qi={age:c.p.age,state:c.p.state,city:0,occ:c.p.occ,cat:c.p.cat,aum:c.p.aum,ticker:top.t,tsec:top.g,single:top.single,wb:Math.floor(top.w/5),gsec:c.gsec,gcb:concB(c.gw)};
-  c.vaultId=uuid();c.ctxId=uuid();
+const slides=[...document.querySelectorAll('.slide')];
+let cur=0;
+function show(i){
+  cur=Math.max(0,Math.min(slides.length-1,i));
+  slides.forEach((s,j)=>s.classList.toggle('on',j===cur));
+  slides[cur].scrollTop=0;
+  document.getElementById('count').textContent=`${cur+1} / ${slides.length}`;
+  document.getElementById('stitle').textContent=slides[cur].dataset.title;
+  document.getElementById('progress').style.width=`${(cur+1)/slides.length*100}%`;
+  document.getElementById('prev').disabled=cur===0;
+  document.getElementById('next').disabled=cur===slides.length-1;
+  if(location.hash!=='#'+(cur+1))history.replaceState(null,'','#'+(cur+1));
 }
-
-/* ---------- synthetic population (the attacker's reference directory) ---------- */
-const POP_N=50000;const POP=[];
-for(let i=0;i<POP_N-3;i++){
-  const t=pickW(TICK_W);const w=t[2]?8+rnd()*50:15+rnd()*40;
-  const occ=pickW(OCC_W);const gsec=pickW(GROUPS);
-  POP.push({age:28+Math.floor(rnd()*61),state:pickW(STATES),city:Math.floor(rnd()*20),occ,cat:OCC_CAT[occ],
-    aum:Math.exp(Math.log(1.5)+1.1*gauss()),ticker:t[0],tsec:t[1],single:t[2],wb:Math.floor(w/5),gsec,gcb:concB(20+rnd()*50)});
-}
-for(const c of Object.values(CLIENTS))POP.push({...c.qi});
-
-/* ---------- context fields & task policies ---------- */
-const FIELDS=[
- {k:'age',label:'Age',levels:['exact','general','drop'],names:{exact:'Exact',general:'Band',drop:'Drop'},qi:1},
- {k:'location',label:'Location',levels:['exact','general','drop'],names:{exact:'City',general:'Region',drop:'Drop'},qi:1},
- {k:'occupation',label:'Occupation',levels:['exact','general','drop'],names:{exact:'Exact',general:'Category',drop:'Drop'},qi:1},
- {k:'aum',label:'Assets',levels:['exact','general','drop'],names:{exact:'Exact',general:'Bucket',drop:'Drop'},qi:1},
- {k:'holdings',label:'Holdings',levels:['exact','anon','general','drop'],names:{exact:'Tickers',anon:'Anonymized',general:'Sectors',drop:'Drop'},qi:1},
- {k:'household',label:'Household',levels:['exact','drop'],names:{exact:'Exact',drop:'Drop'}},
- {k:'objective',label:'Objective',levels:['exact','drop'],names:{exact:'Exact',drop:'Drop'}},
- {k:'risk',label:'Risk tolerance',levels:['exact','drop'],names:{exact:'Exact',drop:'Drop'}},
- {k:'horizon',label:'Time horizon',levels:['exact','drop'],names:{exact:'Exact',drop:'Drop'}},
- {k:'liquidity',label:'Liquidity need',levels:['exact','drop'],names:{exact:'Exact',drop:'Drop'}},
- {k:'notes',label:'Advisor notes',levels:['exact','general','drop'],names:{exact:'Tokenized',general:'Summary',drop:'Drop'}}];
-const FIELD=Object.fromEntries(FIELDS.map(f=>[f.k,f]));
-const lvIdx=(k,l)=>FIELD[k].levels.indexOf(l);
-const TASKS={
- meeting:{name:'Prepare meeting brief',
-  needs:{objective:'exact',risk:'exact',horizon:'exact',liquidity:'exact',age:'general',aum:'general',holdings:'general',notes:'general'},
-  defaults:{age:'general',location:'drop',occupation:'drop',aum:'general',holdings:'general',household:'exact',objective:'exact',risk:'exact',horizon:'exact',liquidity:'exact',notes:'general'}},
- concentration:{name:'Portfolio concentration check',
-  needs:{holdings:'anon',aum:'general',risk:'exact',liquidity:'exact'},
-  defaults:{age:'drop',location:'drop',occupation:'drop',aum:'general',holdings:'anon',household:'drop',objective:'drop',risk:'exact',horizon:'drop',liquidity:'exact',notes:'drop'}}};
-const ALL_EXACT=Object.fromEntries(FIELDS.map(f=>[f.k,f.levels[0]]));
-
-/* ---------- state ---------- */
-const S={client:'okafor',task:'meeting',step:0,levels:{...TASKS.meeting.defaults},key:randBytes(32),prevKey:randBytes(32),session:2,tok:null,prevName:null,mangle:false,ssnHash:''};
-
-/* ---------- detection ---------- */
-const CAT={PERSON:'person',SSN:'id',ACCOUNT:'id',ROUTING:'id',EMAIL:'contact',PHONE:'contact',DOB:'date',ADDRESS:'place',ORG:'org'};
-function detect(c){
-  const text=c.notes,spans=[];
-  const rx=[['SSN',/\b\d{3}-\d{2}-\d{4}\b/g,'Pattern'],['ACCOUNT',/\bACCT \d{4}-\d{4}-\d{2}\b/g,'Pattern'],
-   ['ROUTING',/(?<=routing )\d{9}\b/g,'Pattern + context word'],['EMAIL',/[\w.+-]+@[\w-]+(?:\.[a-z]{2,})+/gi,'Pattern'],
-   ['PHONE',/\(\d{3}\) \d{3}-\d{4}/g,'Pattern'],['DOB',/\b\d{2}\/\d{2}\/\d{4}\b/g,'Pattern']];
-  for(const[type,re,det]of rx)for(const m of text.matchAll(re))spans.push({s:m.index,e:m.index+m[0].length,type,text:m[0],canon:m[0],det});
-  const dict=[];for(const ent of c.entities)for(const a of[ent.value,...(ent.aliases||[])])dict.push({a,ent});
-  dict.sort((x,y)=>y.a.length-x.a.length);
-  for(const{a,ent}of dict){let i=0;while((i=text.indexOf(a,i))!==-1){const e=i+a.length;
-    if(!spans.some(sp=>i<sp.e&&e>sp.s))spans.push({s:i,e,type:ent.type,text:a,canon:ent.value,det:a===ent.value?'NER':'NER + coreference'});i=e}}
-  return spans.sort((x,y)=>x.s-y.s);
-}
-function markup(text,spans,fn){let out='',p=0;for(const sp of spans){out+=esc(text.slice(p,sp.s))+fn(sp);p=sp.e}return out+esc(text.slice(p))}
-function markResidual(html,c){let h=html;for(const r of c.residual){h=h.split(esc(r)).join(`<span class="resid" title="Quasi-identifier not caught by PII detection">${esc(r)}</span>`)}return h}
-
-/* ---------- tokens ---------- */
-async function tokenFor(key,type,canon){return`<${type}_${(await hmacHex(key,type+'|'+canon)).slice(0,6)}>`}
-async function buildTokens(){
-  const c=CLIENTS[S.client];const spans=detect(c);const byKey=new Map(),byTok=new Map();
-  const items=spans.map(s=>[s.type,s.canon]);items.push(['PERSON',c.id.name],['EMAIL',c.id.email]);
-  for(const[type,canon]of items){const k=type+'|'+canon;if(byKey.has(k))continue;const t=await tokenFor(S.key,type,canon);byKey.set(k,t);byTok.set(t,{type,value:canon})}
-  S.tok={byKey,byTok,spans};
-  S.prevName=await tokenFor(S.prevKey,'PERSON',c.id.name);
-  S.ssnHash=await sha256Hex(c.id.ssn);
-  S.fp=(await sha256Hex(hex(S.key))).slice(0,8);
-}
-const tk=(type,canon)=>S.tok.byKey.get(type+'|'+canon);
-function tokenizedNotes(c){return markup(c.notes,S.tok.spans,sp=>tk(sp.type,sp.canon))}
-const tokHTML=t=>`<span class="tok">${esc(t)}</span>`;
-function withTokHTML(s){return esc(s).replace(/&lt;([A-Z]+_[0-9a-f]{3,6}[^&]*?)&gt;/g,(m,inner)=>{const raw='<'+inner+'>';return`<span class="tok${S.tok.byTok.has(raw)?'':' bad'}">${esc(raw)}</span>`})}
-
-/* ---------- field values ---------- */
-function holdingsText(c,lvl){
-  if(lvl==='exact')return c.holdings.map(h=>h.t==='CASH'?`Cash ${h.w}%`:`${h.t} (${h.n}) ${h.w}%`).join('; ');
-  if(lvl==='anon'){let i=0;return c.holdings.map(h=>h.t==='CASH'?`Cash ${h.w}%`:`Position ${String.fromCharCode(65+i++)}: ${h.single?'single stock':'fund'}, ${h.g}, ${h.w}%`).join('; ')}
-  if(lvl==='general'){const g={};c.holdings.forEach(h=>g[h.g]=(g[h.g]||0)+h.w);return Object.entries(g).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k} ${v}%`).join('; ')}
-  return null}
-function val(c,k,lvl){
-  if(lvl==='drop')return null;const p=c.p;
-  switch(k){
-   case'age':return lvl==='exact'?`${p.age}`:ageBand(p.age);
-   case'location':return lvl==='exact'?`${p.city}, ${p.state}`:`${REGION[p.state]} US`;
-   case'occupation':return lvl==='exact'?p.occ:p.cat;
-   case'aum':return lvl==='exact'?fmtM(p.aum):aumBucket(p.aum);
-   case'holdings':return holdingsText(c,lvl);
-   case'notes':return lvl==='exact'?tokenizedNotes(c):c.summary;
-   default:return p[k]}}
-
-/* ---------- privacy metrics ---------- */
-function effective(levels,c){
-  const L={...levels};
-  if(L.notes==='exact')for(const[f,l]of Object.entries(c.notesLeak))if(lvIdx(f,l)<lvIdx(f,L[f]))L[f]=l;
-  return L}
-function kCount(levels,c){
-  const L=effective(levels,c),t=c.qi;let n=0;
-  for(const p of POP){
-    if(L.age==='exact'&&p.age!==t.age)continue;
-    if(L.age==='general'&&ageBand(p.age)!==ageBand(t.age))continue;
-    if(L.location==='exact'&&(p.state!==t.state||p.city!==0))continue;
-    if(L.location==='general'&&REGION[p.state]!==REGION[t.state])continue;
-    if(L.occupation==='exact'&&p.occ!==t.occ)continue;
-    if(L.occupation==='general'&&p.cat!==t.cat)continue;
-    if(L.aum==='exact'&&Math.round(p.aum*10)!==Math.round(t.aum*10))continue;
-    if(L.aum==='general'&&aumBucket(p.aum)!==aumBucket(t.aum))continue;
-    if(L.holdings==='exact'&&(p.ticker!==t.ticker||p.wb!==t.wb))continue;
-    if(L.holdings==='anon'&&(p.tsec!==t.tsec||p.single!==t.single||p.wb!==t.wb))continue;
-    if(L.holdings==='general'&&(p.gsec!==t.gsec||p.gcb!==t.gcb))continue;
-    n++}
-  return n}
-function coverage(levels,task){const needs=TASKS[task].needs;const keys=Object.keys(needs);
-  const miss=keys.filter(k=>lvIdx(k,levels[k])>lvIdx(k,needs[k]));return{have:keys.length-miss.length,total:keys.length,miss}}
-const qiSent=(levels,c)=>{const L=effective(levels,c);return FIELDS.filter(f=>f.qi&&L[f.k]!=='drop').length};
-const kClass=k=>k<=1?'bad':k<10?'warn':'ok';
-const kWord=k=>k<=1?'Unique: re-identified':k<10?'Small group: high risk':'Hidden in a crowd';
-
-/* ---------- prompt & simulated LLM ---------- */
-function promptText(c,levels){
-  const lines=[`Task: ${TASKS[S.task].name}.`,`Client ref: ${tk('PERSON',c.id.name)}`,`Contact ref: ${tk('EMAIL',c.id.email)}`];
-  for(const f of FIELDS){if(f.k==='notes')continue;const v=val(c,f.k,levels[f.k]);if(v)lines.push(`${f.label}: ${v}`)}
-  if(levels.notes!=='drop')lines.push(`Notes: ${val(c,'notes',levels.notes)}`);
-  lines.push('','Use the reference tokens exactly as written. Do not guess missing values.');
-  return lines.join('\n')}
-function hPhrase(c,lvl){const t=c.top;
-  if(lvl==='exact')return`${t.t} position (${t.w}%)`;
-  if(lvl==='anon')return`largest ${t.single?'single-stock':'fund'} position (${t.g}, ${t.w}%)`;
-  if(lvl==='general')return`${c.gsec.toLowerCase()} allocation (${c.gw}%)`;return''}
-const AGENDA={
- okafor:[{needs:['liquidity','holdings'],f:(c,L)=>`Fund the ~$400K property purchase within 18 months. Compare a securities-backed credit line against staged trims of the ${hPhrase(c,L.holdings)} to spread capital gains.`},
-  {needs:['objective'],f:()=>`Confirm the income target and legacy goals; introduce a donor-advised fund for family giving.`},
-  {needs:['risk','horizon'],f:c=>`Re-check the ${c.p.risk.toLowerCase()} risk profile against a ${c.p.horizon} horizon now that salary income has stopped.`},
-  {needs:['age'],f:(c,L)=>`${L.age==='exact'?`At ${c.p.age}`:`In the ${ageBand(c.p.age)} band`}, review Social Security claiming and Medicare enrollment timing.`}],
- raman:[{needs:['holdings','liquidity'],f:(c,L)=>`The ${hPhrase(c,L.holdings)} dominates the portfolio. Outline a scheduled diversification plan and keep $60K liquid for the remodel within 6 months.`},
-  {needs:['objective'],f:()=>`Set annual 529 contribution targets for both children.`},
-  {needs:['risk','horizon'],f:c=>`An ${c.p.risk.toLowerCase()} profile with a ${c.p.horizon} horizon supports staying equity-heavy after diversifying.`},
-  {needs:['aum'],f:(c,L)=>`With household assets ${L.aum==='exact'?'of '+fmtM(c.p.aum):'in the '+aumBucket(c.p.aum)+' range'}, review umbrella liability coverage.`}],
- ellison:[{needs:['liquidity'],f:()=>`Schedule this year's RMD (about $140K) and confirm federal withholding.`},
-  {needs:['objective'],f:()=>`Update the IRA beneficiary to her son and walk through the 10-year payout rule for inherited IRAs.`},
-  {needs:['risk','holdings'],f:(c,L)=>`Conservative profile: confirm the ${hPhrase(c,L.holdings)} covers 3 to 5 years of withdrawals.`},
-  {needs:['age'],f:(c,L)=>`${L.age==='exact'?`At ${c.p.age}`:`In the ${ageBand(c.p.age)} band`}, review long-term care coverage.`}]};
-function llmOutput(c,levels){
-  const name=tk('PERSON',c.id.name),email=tk('EMAIL',c.id.email);const out=[];
-  if(S.task==='meeting'){
-    out.push(`Meeting brief for ${name}`,'');
-    const snap=[];if(levels.age!=='drop')snap.push(`age ${val(c,'age',levels.age)}`);if(levels.aum!=='drop')snap.push(`assets ${val(c,'aum',levels.aum)}`);if(levels.risk!=='drop')snap.push(`${c.p.risk.toLowerCase()} risk`);
-    out.push(`Snapshot: ${snap.length?snap.join(', '):'not enough context provided'}.`);
-    if(levels.objective!=='drop')out.push(`Stated objective: ${c.p.objective}.`);
-    out.push('','Agenda:');let n=1;
-    for(const a of AGENDA[S.client]){const miss=a.needs.filter(k=>levels[k]==='drop');
-      out.push(miss.length?`${n++}. [Skipped: context did not include ${miss.map(k=>FIELD[k].label.toLowerCase()).join(' or ')}]`:`${n++}. ${a.f(c,levels)}`)}
-    out.push('',`Follow-up: send the agenda to ${email} two days before the meeting.`);
-  }else{
-    out.push(`Concentration review for ${name}`,'');
-    const L=levels.holdings;
-    if(L==='exact'||L==='anon'){
-      const hs=c.holdings.filter(h=>h.t!=='CASH').sort((a,b)=>b.w-a.w);
-      const top3=hs.slice(0,3).reduce((s,h)=>s+h.w,0);const hhi=c.holdings.reduce((s,h)=>s+(h.w/100)**2,0);
-      const lab=L==='exact'?hs[0].t:`Position A (${hs[0].single?'single stock':'fund'}, ${hs[0].g})`;
-      out.push(`Largest position: ${lab} at ${hs[0].w}% of the portfolio${hs[0].single&&hs[0].w>20?', above a 20% single-stock guideline':''}.`);
-      out.push(`Top 3 positions: ${top3}%. Herfindahl index: ${hhi.toFixed(3)} (${hhi>.25?'highly concentrated':hhi>.15?'moderately concentrated':'diversified'}).`);
-      out.push(levels.risk!=='drop'?`Risk profile: ${c.p.risk}. ${hs[0].single&&hs[0].w>20?'Single-stock exposure is above what this profile usually supports.':'Exposure is consistent with this profile.'}`:'Risk profile: not provided, so suitability is not assessed.');
-      out.push(levels.liquidity!=='drop'?`Liquidity: ${c.p.liquidity}. Source it first from trims of the largest position, staged across two tax years.`:'Liquidity need: not provided.');
-      if(levels.aum!=='drop')out.push(`Assets: ${val(c,'aum',levels.aum)}; dollar impact of a 10% move in the largest position is roughly ${(hs[0].w/10).toFixed(1)}% of assets.`);
-    }else if(L==='general'){out.push(`Only sector weights were provided (${holdingsText(c,'general')}).`,'Position-level concentration cannot be computed from this context. Ask for anonymized positions.')}
-    else out.push('No holdings were provided, so the concentration check cannot be done.');
-    out.push('',`Next step: share the trim schedule with ${email}.`);
-  }
-  let text=out.join('\n');
-  if(S.mangle)text=text.replace(name,name.slice(0,-3)+'>');
-  return text}
-function rehydrate(text){
-  const re=/<([A-Z]+)_([0-9a-f]{3,6})>/g;let resolved=0,unknown=[];
-  const html=esc(text).replace(/&lt;([A-Z]+_[0-9a-f]{3,6})&gt;/g,(m,inner)=>{const raw='<'+inner+'>';const hit=S.tok.byTok.get(raw);
-    if(hit){resolved++;return`<span class="restored" title="${esc(raw)}">${esc(hit.value)}</span>`}unknown.push(raw);return`<span class="tok bad">[UNRESOLVED ${esc(raw)}]</span>`});
-  return{html,resolved,unknown}}
-
-/* ---------- step definitions ---------- */
-const STEPS=[
- {name:'Raw record',lt:'Client record',rt:'Full-context prompt',lz:'Protected environment',rz:'If sent as-is',
-  what:'Loads one synthetic client: identity fields, profile, holdings, and a free-text advisor note, the way they sit in a CRM today.',
-  why:'This is the "full client context" baseline from the brief. Everything on the right would reach the AI provider if nothing else ran.',
-  prod:'A CRM or portfolio-system export. For the project, the simulated client repository LPL approves.',code:null},
- {name:'Detect PII',lt:'Advisor note, highlighted',rt:'Detections',lz:'Protected environment',rz:'Stays inside',
-  what:'Finds identifiers in free text. Structured IDs (SSN, account, routing, phone, email, dates) use patterns. Names, addresses and employers use NER, and coreference links "Mr. Okafor" back to "Daniel Okafor".',
-  why:'Structured fields are easy because the schema says what they are. Notes are where identifiers hide, and one missed span is a leak.',
-  prod:'Presidio recognizers for IDs, plus a GLiNER model (nvidia/gliner-PII or GLiNER2-PII) for names, addresses and organizations. Merge overlaps and prefer rules for IDs.',
-  code:`from presidio_analyzer import AnalyzerEngine
-from gliner import GLiNER
-
-rules = AnalyzerEngine()                       # regex + checksum recognizers
-ner = GLiNER.from_pretrained("nvidia/gliner-pii")
-
-rule_hits = rules.analyze(text, language="en",
-    entities=["US_SSN", "US_BANK_NUMBER", "EMAIL_ADDRESS", "PHONE_NUMBER", "DATE_TIME"])
-ner_hits = ner.predict_entities(text,
-    ["person", "street_address", "organization"], threshold=0.4)
-spans = merge_overlaps(rule_hits, ner_hits)    # longest wins, rules win on IDs`},
- {name:'Split storage',lt:'Identity vault',rt:'Context store',lz:'Rehydrator role only',rz:'AI service can read',
-  what:'Stores identity and financial context in two separate databases. Each uses a random UUID key, and only the vault holds the link between them.',
-  why:'This is the primary-key question. If the key were the SSN, the account number, or even a plain hash of the SSN, anyone holding the context store could join it back to a person.',
-  prod:'Two databases with separate credentials. The vault encrypts sensitive columns, logs every read, and grants nothing to the LLM service account.',
-  code:`-- Identity vault: separate database, separate credentials
-CREATE TABLE identity (
-  vault_id  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  full_name TEXT, ssn_enc BYTEA, dob DATE, email TEXT, phone TEXT, address TEXT);
-CREATE TABLE ctx_link (ctx_id UUID PRIMARY KEY, vault_id UUID REFERENCES identity);
-
--- Context store: random key, no identifiers
-CREATE TABLE client_context (
-  ctx_id UUID PRIMARY KEY, age INT, state TEXT, aum NUMERIC, risk TEXT,
-  objective TEXT, holdings JSONB, notes_tokenized TEXT);
-GRANT SELECT ON client_context TO llm_service;   -- no grant on identity`},
- {name:'Dehydrate',lt:'Token map (vault only)',rt:'Tokenized note',lz:'Protected environment',rz:'Safe to send',
-  what:'Replaces every detected value with a typed token: HMAC-SHA256(session key, type + value). The same value gets the same token within a session, so the AI can still tell people apart.',
-  why:'Tokens carry no information without the key. Press "New session" and every token changes, so AI logs from different sessions cannot be linked to the same client.',
-  prod:'The session key lives in a KMS or HSM. The token map is written to the vault with a TTL and deleted when the session ends.',
-  code:`import hmac, hashlib
-
-def token(session_key: bytes, etype: str, value: str) -> str:
-    mac = hmac.new(session_key, f"{etype}|{value}".encode(), hashlib.sha256)
-    return f"<{etype}_{mac.hexdigest()[:6]}>"
-
-vault[token(k, "PERSON", "Daniel Okafor")] = "Daniel Okafor"   # never leaves`},
- {name:'Minimize for task',lt:'Field policy',rt:'Context the AI receives',lz:'Adjust per field',rz:'Sent to the model',
-  what:'Chooses, field by field, how much detail the task needs: exact, generalized (age band, region, AUM bucket, sector weights), anonymized positions, or nothing. Each task starts from a default policy.',
-  why:'Masking names is not enough. "62, Burlington VT, retired surgeon, $14.2M, 31% in one biotech stock" points to one person. Try the controls and watch the crowd size k change.',
-  prod:'A policy table per task, reviewed with compliance. A local model can write the note summary inside the protected environment (the MINIM idea).',
-  code:`POLICY = {
-  "meeting_prep":  {"age": "band", "aum": "bucket", "holdings": "sectors",
-                    "objective": "exact", "risk": "exact", "location": None},
-  "concentration": {"holdings": "anonymized", "aum": "bucket",
-                    "risk": "exact", "age": None, "location": None},
-}
-ctx = {f: generalize(f, record[f], lvl)
-       for f, lvl in POLICY[task].items() if lvl}`},
- {name:'LLM call',lt:'Prompt sent',rt:'Model response',lz:'Leaves the environment',rz:'Returned by the model',
-  what:'Sends the minimized, tokenized context to the model and gets an answer that still uses tokens.',
-  why:'This is the only point where data crosses the boundary. Missing fields show up as skipped items, which is how you see the cost of minimizing too much.',
-  prod:'Any hosted or self-hosted LLM. The system prompt tells it to copy tokens exactly. Simulated here from a template so the page runs offline.',
-  code:`resp = llm.messages.create(model=MODEL, max_tokens=800,
-    system="Use the reference tokens exactly as written. Never invent values.",
-    messages=[{"role": "user", "content": prompt}])`},
- {name:'Rehydrate',lt:'Response with tokens',rt:'Advisor view',lz:'Back inside',rz:'Shown to the advisor',
-  what:'Swaps tokens back to real values using the vault map, then checks for tokens it cannot resolve.',
-  why:'The advisor gets a normal, named brief. The model never saw the name. If the model mangles a token, the validator catches it instead of showing a wrong value.',
-  prod:'Runs in the advisor app backend with vault read access. Unresolved tokens block the response or send it for review.',
-  code:`TOKEN = re.compile(r"<[A-Z]+_[0-9a-f]{6}>")
-
-def rehydrate(text, vault):
-    unknown = [t for t in TOKEN.findall(text) if t not in vault]
-    return TOKEN.sub(lambda m: vault.get(m.group(0), "[UNRESOLVED]"), text), unknown`},
- {name:'Leakage test',lt:'Attacks',rt:'Full vs masked vs minimized',lz:'Red team',rz:'Comparison',
-  what:'Runs attacks against what left the environment: key lookups, cross-session linkage, hash brute force, and a linkage attack against a 50,000-person synthetic directory.',
-  why:'The split database and tokens stop key-based attacks completely. Content-based linkage is what is left, and the crowd size k is how you measure it.',
-  prod:'Repeat with LLM-driven attackers that ask many questions across sessions, and track the cumulative k per client over time.',
-  code:`qi = ["age_band", "region", "aum_bucket", "top_sector", "conc_bucket"]
-groups = population.groupby(qi).size()
-k = groups.loc[tuple(client[q] for q in qi)]    # people who look identical
-risk = 1 / k`}];
-
-/* ---------- renderers ---------- */
-function kv(rows){return`<dl class="kv">${rows.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${v}</dd>`).join('')}</dl>`}
-function holdingsTable(c){return`<div class="tbl-wrap"><table><thead><tr><th>Ticker</th><th>Name</th><th>Group</th><th class="num">Weight</th></tr></thead><tbody>${c.holdings.map(h=>`<tr><td class="mono">${esc(h.t)}</td><td>${esc(h.n)}</td><td>${esc(h.g)}</td><td class="num">${h.w}%</td></tr>`).join('')}</tbody></table></div>`}
-const LEG=[['person','Person'],['id','Account / SSN'],['contact','Contact'],['place','Address'],['org','Organization'],['date','Date of birth']];
-const legend=()=>`<div class="legend">${LEG.map(([c,n])=>`<span class="hl" data-c="${c}">${n}</span>`).join('')}<span class="resid">Missed quasi-identifier</span></div>`;
-
-function render0(c){
-  const L=`<div class="block"><h3>Identity</h3>${kv([['Name',esc(c.id.name)],['Date of birth',esc(c.id.dob)],['SSN',esc(c.id.ssn)],['Account',esc(c.id.account)],['Email',esc(c.id.email)],['Phone',esc(c.id.phone)],['Address',esc(c.id.address)]])}</div>
-  <div class="block"><h3>Profile</h3>${kv(FIELDS.filter(f=>!['holdings','notes'].includes(f.k)).map(f=>[f.label,esc(val(c,f.k,'exact'))]))}</div>
-  <div class="block"><h3>Holdings</h3>${holdingsTable(c)}</div>
-  <div class="block"><h3>Advisor note</h3><div class="textbox">${esc(c.notes)}</div></div>`;
-  const n=new Set(S.tok.spans.map(s=>s.type+s.canon)).size+1;
-  const full=[`Task: ${TASKS[S.task].name}.`,`Client: ${c.id.name}, DOB ${c.id.dob}, SSN ${c.id.ssn}`,`Account: ${c.id.account}`,`Contact: ${c.id.email}, ${c.id.phone}`,`Address: ${c.id.address}`,
-    ...FIELDS.filter(f=>f.k!=='notes').map(f=>`${f.label}: ${val(c,f.k,'exact')}`),`Notes: ${c.notes}`].join('\n');
-  const R=`<div class="legend"><span class="pill bad">${n} direct identifiers</span><span class="pill bad">${qiSent(ALL_EXACT,c)} of 5 quasi-identifiers exact</span><span class="pill bad">k = ${kCount(ALL_EXACT,c)} in ${POP_N.toLocaleString()}</span></div>
-  <div class="textbox mono">${esc(full)}</div><p class="note warn">This is what a naive assistant integration sends. Every later step removes something from this box.</p>`;
-  return[L,R]}
-function render1(c){
-  const sp=S.tok.spans;
-  const L=`${legend()}<div class="textbox">${markResidual(markup(c.notes,sp,s=>`<span class="hl" data-c="${CAT[s.type]}" title="${s.type} (${esc(s.det)})">${esc(s.text)}</span>`),c)}</div>
-  <p class="note warn">Wavy underlines are things no PII detector flags, like "${esc(c.residual[0])}". They are not identifiers alone, but they narrow down who this is. Step 5 handles them.</p>`;
-  const counts={};sp.forEach(s=>counts[s.det]=(counts[s.det]||0)+1);
-  const R=`<div class="legend">${Object.entries(counts).map(([d,n])=>`<span class="pill">${esc(d)}: ${n}</span>`).join('')}</div>
-  <div class="tbl-wrap"><table><thead><tr><th>Found text</th><th>Type</th><th>Detector</th><th>Resolves to</th></tr></thead><tbody>${sp.map(s=>`<tr><td><span class="hl" data-c="${CAT[s.type]}">${esc(s.text)}</span></td><td class="mono">${s.type}</td><td>${esc(s.det)}</td><td>${s.text!==s.canon?esc(s.canon):'<span class="muted">same</span>'}</td></tr>`).join('')}</tbody></table></div>
-  <p class="muted">Structured identity fields (name, SSN, account, contact, address) are tagged by schema, so they need no detection.</p>`;
-  return[L,R]}
-function render2(c){
-  const L=`<div class="block"><h3>identity</h3><div class="tbl-wrap"><table><tbody>
-    <tr><td class="mono">vault_id</td><td class="mono">${c.vaultId}</td></tr>
-    ${[['full_name',c.id.name],['ssn_enc','AES-GCM ciphertext ('+c.id.ssn.slice(-4)+' last 4 shown)'],['dob',c.id.dob],['email',c.id.email],['phone',c.id.phone],['address',c.id.address]].map(([k,v])=>`<tr><td class="mono">${k}</td><td>${esc(v)}</td></tr>`).join('')}</tbody></table></div></div>
-  <div class="block"><h3>ctx_link</h3><div class="tbl-wrap"><table><thead><tr><th>ctx_id</th><th>vault_id</th></tr></thead><tbody><tr><td class="mono">${c.ctxId.slice(0,13)}…</td><td class="mono">${c.vaultId.slice(0,13)}…</td></tr></tbody></table></div></div>
-  <div class="legend"><span class="pill warn">Readable by: rehydration service</span><span class="pill ok">Every read audited</span></div>`;
-  const R=`<div class="block"><h3>client_context</h3><div class="tbl-wrap"><table><tbody>
-    <tr><td class="mono">ctx_id</td><td class="mono">${c.ctxId}</td></tr>
-    ${FIELDS.filter(f=>f.k!=='notes').map(f=>`<tr><td class="mono">${f.k}</td><td>${esc(val(c,f.k,f.k==='holdings'?'exact':'exact'))}</td></tr>`).join('')}
-    <tr><td class="mono">notes_tokenized</td><td>${withTokHTML(tokenizedNotes(c))}</td></tr></tbody></table></div></div>
-  <div class="block"><h3>Choosing the key</h3><div class="tbl-wrap"><table><thead><tr><th>Key option</th><th>Can someone holding this table find the person?</th></tr></thead><tbody>
-    <tr><td>SSN or account number</td><td><span class="pill bad">Yes, it is the identifier</span></td></tr>
-    <tr><td>SHA-256 of SSN</td><td><span class="pill bad">Yes, hash all 10<sup>9</sup> SSNs and match</span></td></tr>
-    <tr><td>Auto-increment ID</td><td><span class="pill warn">Leaks signup order, easy to enumerate</span></td></tr>
-    <tr><td>Random UUID + link in vault</td><td><span class="pill ok">No, the key means nothing outside the vault</span></td></tr></tbody></table></div></div>`;
-  return[L,R]}
-function render3(c){
-  const rows=[...S.tok.byTok.entries()];
-  const L=`<p class="mono muted">token = "&lt;TYPE_" + HMAC-SHA256(session_key, TYPE|value)[:6] + "&gt;"</p>
-  <div class="tbl-wrap"><table><thead><tr><th>Type</th><th>Real value</th><th>Token</th></tr></thead><tbody>${rows.map(([t,v])=>`<tr><td class="mono">${v.type}</td><td><span class="hl" data-c="${CAT[v.type]}">${esc(v.value)}</span></td><td>${tokHTML(t)}</td></tr>`).join('')}</tbody></table></div>
-  <p class="note">Session ${S.session}, key fingerprint <span class="mono">${S.fp}</span>. Press "New session" above: the same values get new tokens.</p>`;
-  const R=`<div class="textbox">${markResidual(withTokHTML(tokenizedNotes(c)),c)}</div>
-  <div class="legend"><span class="pill ok">${rows.length} values tokenized</span><span class="pill ok">"Mr. Okafor"-style aliases share one token</span></div>
-  <p class="note warn">Identifiers are gone, but the wavy-underlined details remain. This is the "masked client context" tier from the brief.</p>`;
-  return[L,R]}
-function render4(c){
-  const needs=TASKS[S.task].needs;
-  const L=`<p class="muted">Defaults come from the task policy. Change any field to see the effect on privacy (k) and on what the task can do.</p>
-  <div class="tbl-wrap"><table><thead><tr><th>Field</th><th>Detail sent</th></tr></thead><tbody>${FIELDS.map(f=>{
-    const cur=S.levels[f.k];const short=needs[f.k]&&lvIdx(f.k,cur)>lvIdx(f.k,needs[f.k]);
-    return`<tr><td>${f.label}${f.qi?' <span class="muted mono">QI</span>':''}${needs[f.k]?`<div class="need">${short?'Below what the task needs':'Task needs: '+FIELD[f.k].names[needs[f.k]]+' or more'}</div>`:''}</td>
-    <td><div class="seg" role="group" aria-label="${f.label} detail">${f.levels.map(l=>`<button type="button" data-f="${f.k}" data-l="${l}" aria-pressed="${cur===l}">${f.names[l]}</button>`).join('')}</div></td></tr>`}).join('')}</tbody></table></div>
-  <div class="session"><button class="btn" type="button" id="resetPolicy">Reset to task default</button><button class="btn" type="button" id="maskOnly">Masking only (all exact)</button></div>`;
-  const k=kCount(S.levels,c),cov=coverage(S.levels,S.task);
-  const shown=FIELDS.map(f=>{const v=val(c,f.k,S.levels[f.k]);return v?[f.label,f.k==='notes'&&S.levels.notes==='exact'?markResidual(withTokHTML(v),c):esc(v)]:null}).filter(Boolean);
-  const R=`<div class="meters">
-    <div class="meter"><span class="lbl">Crowd size k</span><span class="v ${kClass(k)}">${k.toLocaleString()}</span><span class="s">${kWord(k)}</span></div>
-    <div class="meter"><span class="lbl">Task coverage</span><span class="v ${cov.have===cov.total?'ok':'warn'}">${cov.have}/${cov.total}</span><span class="s">${cov.miss.length?'Missing: '+cov.miss.map(m=>FIELD[m].label.toLowerCase()).join(', '):'All needed fields present'}</span></div>
-    <div class="meter"><span class="lbl">Fields sent</span><span class="v">${shown.length}/${FIELDS.length}</span><span class="s">${qiSent(S.levels,c)} quasi-identifiers</span></div></div>
-  <div class="block"><h3>Client ${tokHTML(tk('PERSON',c.id.name))}</h3>${shown.length?kv(shown):'<p class="muted">Nothing selected.</p>'}</div>
-  ${S.levels.notes==='exact'&&Object.keys(c.notesLeak).length?'<p class="note warn">Tokenized notes still reveal details (underlined), so k counts them as exact even if the field above is generalized.</p>':''}
-  ${S.levels.household==='exact'?'<p class="note warn">Household (marital status and dependents) is sent but not counted in k, here or in the Python engine. Inside the firm\'s own client book, counting it raises the identifiable share a lot. See Results.</p>':''}
-  <p class="muted">k = how many of ${POP_N.toLocaleString()} synthetic people match everything sent. k = 1 means the person is unique.</p>`;
-  return[L,R]}
-function render5(c){
-  const p=promptText(c,S.levels);const o=llmOutput(c,S.levels);
-  const L=`<div class="textbox mono">${withTokHTML(p)}</div><div class="legend"><span class="pill ok">0 direct identifiers</span><span class="pill">${p.length.toLocaleString()} characters</span></div>`;
-  const R=`<div class="textbox">${withTokHTML(o)}</div><p class="muted">Simulated response. In the real build this is the LLM call shown in the code panel.</p>`;
-  return[L,R]}
-function render6(c){
-  const o=llmOutput(c,S.levels);const r=rehydrate(o);const total=(o.match(/<[A-Z]+_[0-9a-f]{3,6}>/g)||[]).length;
-  const L=`<div class="textbox">${withTokHTML(o)}</div>
-  <label class="check"><input type="checkbox" id="mangle" ${S.mangle?'checked':''}> Simulate the model truncating a token</label>`;
-  const R=`<div class="legend"><span class="pill ok">${r.resolved}/${total} tokens restored</span>${r.unknown.length?`<span class="pill bad">${r.unknown.length} unresolved: blocked for review</span>`:'<span class="pill ok">No unknown tokens</span>'}</div>
-  <div class="textbox">${r.html}</div><p class="muted">Underlined values were restored from the vault. The model never saw them.</p>`;
-  return[L,R]}
-function render7(c){
-  const kMin=kCount(S.levels,c),kMask=kCount(ALL_EXACT,c);
-  const att=[
-   ['Primary-key lookup',`Attacker has the AI log token ${esc(tk('PERSON',c.id.name))} and queries the context store with it.`,'ok','Blocked: no table is keyed by tokens'],
-   ['Join context to identity',`Attacker dumps client_context and tries to join on ctx_id ${c.ctxId.slice(0,8)}…`,'ok','Blocked: link lives only in the vault'],
-   ['Cross-session linkage',`Session ${S.session-1} token ${esc(S.prevName)} vs session ${S.session} token ${esc(tk('PERSON',c.id.name))}.`,'ok','Blocked: tokens differ per session'],
-   ['Hash brute force',`Plain SHA-256(SSN) = ${S.ssnHash.slice(0,16)}… is found by hashing all 10<sup>9</sup> SSNs. HMAC tokens need the 256-bit key.`,'ok','Blocked for HMAC, would succeed for plain hashes'],
-   ['Linkage on quasi-identifiers (masked)',`Match exact age, city, occupation, assets and top holding against the directory.`,kClass(kMask),`k = ${kMask}: ${kWord(kMask)}`],
-   ['Linkage on quasi-identifiers (minimized)',`Same attack on what the current task policy sends.`,kClass(kMin),`k = ${kMin.toLocaleString()}: ${kWord(kMin)}`]];
-  const L=att.map(([t,d,cls,res])=>`<div class="attack"><div class="ah"><span>${t}</span><span class="pill ${cls}">${res}</span></div><p>${d}</p></div>`).join('');
-  const nIds=new Set(S.tok.spans.map(s=>s.type+s.canon)).size+1;
-  const tiers=[['Full context',nIds,qiSent(ALL_EXACT,c),kMask,coverage(ALL_EXACT,S.task)],['Masked',0,qiSent(ALL_EXACT,c),kMask,coverage(ALL_EXACT,S.task)],['Minimized',0,qiSent(S.levels,c),kMin,coverage(S.levels,S.task)]];
-  const maxLog=Math.log10(POP_N);
-  const R=`<div class="tbl-wrap"><table><thead><tr><th>Approach</th><th class="num">Direct IDs sent</th><th class="num">QIs sent</th><th class="num">k</th><th class="num">Re-id risk</th><th class="num">Task coverage</th></tr></thead><tbody>${tiers.map(([n,ids,q,k,cov])=>`<tr><td>${n}</td><td class="num">${ids}</td><td class="num">${q}</td><td class="num">${k.toLocaleString()}</td><td class="num">${(100/k).toFixed(k>=100?2:0)}%</td><td class="num">${cov.have}/${cov.total}</td></tr>`).join('')}</tbody></table></div>
-  <div class="block"><h3>Crowd size k (log scale, higher is safer)</h3><div class="bars">${tiers.map(([n,,,k])=>`<div class="bar-row"><span>${n}</span><div class="bar-track"><div class="bar-fill" style="width:${Math.max(3,Math.log10(Math.max(k,1))/maxLog*100)}%;background:var(--${kClass(k)==='ok'?'safe':kClass(k)==='warn'?'warn':'bad'})"></div></div><span class="mono num">${k.toLocaleString()}</span></div>`).join('')}</div></div>
-  <p class="note">Key-based attacks fail in every tier once storage is split and tokens are keyed. What separates masked from minimized is content: masking keeps k at ${kMask}, minimizing for "${TASKS[S.task].name.toLowerCase()}" raises it to ${kMin.toLocaleString()}.</p>`;
-  return[L,R]}
-const RENDER=[render0,render1,render2,render3,render4,render5,render6,render7];
-
-function render(){
-  const c=CLIENTS[S.client],st=STEPS[S.step];
-  document.getElementById('rail').innerHTML=STEPS.map((s,i)=>`<li class="${i<S.step?'done':i===S.step?'cur':''}"><button class="node" type="button" data-step="${i}" aria-current="${i===S.step?'step':'false'}"><span class="dot">${i+1}</span><span class="nm">${s.name}</span></button></li>`).join('');
-  document.getElementById('explain').innerHTML=`<div class="explain-head"><span class="step-n">Step ${S.step+1} of ${STEPS.length}</span><h2>${st.name}</h2></div>
-   <div class="ex-grid"><div><h3>What it does</h3><p>${st.what}</p></div><div><h3>Why it matters</h3><p>${st.why}</p></div><div><h3>In production</h3><p>${st.prod}</p></div></div>
-   ${st.code?`<details class="code"><summary>Show reference code</summary><pre>${esc(st.code)}</pre></details>`:''}`;
-  document.getElementById('lt').textContent=st.lt;document.getElementById('rt').textContent=st.rt;
-  document.getElementById('lz').textContent=st.lz;document.getElementById('rz').textContent=st.rz;
-  const[L,R]=RENDER[S.step](c);
-  document.getElementById('left').innerHTML=L;document.getElementById('right').innerHTML=R;
-  document.getElementById('sessInfo').textContent=`#${S.session} · ${S.fp}`;
-  document.getElementById('prevBtn').disabled=S.step===0;
-  const nb=document.getElementById('nextBtn');nb.textContent=S.step===STEPS.length-1?'Start over':'Next step';
-}
-
-/* ---------- events ---------- */
-const cs=document.getElementById('clientSel');
-cs.innerHTML=Object.entries(CLIENTS).map(([k,c])=>`<option value="${k}">${esc(c.label)}</option>`).join('');
-cs.addEventListener('change',async e=>{S.client=e.target.value;S.mangle=false;await buildTokens();render()});
-document.getElementById('taskSel').addEventListener('change',e=>{S.task=e.target.value;S.levels={...TASKS[S.task].defaults};render()});
-document.getElementById('rotateBtn').addEventListener('click',async()=>{S.prevKey=S.key;S.key=randBytes(32);S.session++;await buildTokens();render()});
-document.getElementById('prevBtn').addEventListener('click',()=>{if(S.step>0){S.step--;render()}});
-document.getElementById('nextBtn').addEventListener('click',()=>{S.step=S.step===STEPS.length-1?0:S.step+1;render()});
-document.addEventListener('click',e=>{
-  const n=e.target.closest('[data-step]');if(n){S.step=+n.dataset.step;render();return}
-  const b=e.target.closest('.seg button');if(b){S.levels[b.dataset.f]=b.dataset.l;render();return}
-  if(e.target.id==='resetPolicy'){S.levels={...TASKS[S.task].defaults};render()}
-  if(e.target.id==='maskOnly'){S.levels={...ALL_EXACT};render()}});
-document.addEventListener('change',e=>{if(e.target.id==='mangle'){S.mangle=e.target.checked;render()}});
-function showView(v){
-  if(!document.getElementById('view-'+v))v='walk';
-  document.querySelectorAll('.view').forEach(el=>{el.style.display=el.id==='view-'+v?'grid':'none'});
-  document.querySelectorAll('.views button').forEach(b=>b.setAttribute('aria-selected',b.dataset.view===v));
-}
-document.querySelectorAll('.views button').forEach(b=>b.addEventListener('click',()=>{history.replaceState(null,'','#'+b.dataset.view);showView(b.dataset.view)}));
-window.addEventListener('hashchange',()=>showView(location.hash.slice(1)||'walk'));
-showView(location.hash.slice(1)||'walk');
-buildTokens().then(render);
+document.getElementById('prev').addEventListener('click',()=>show(cur-1));
+document.getElementById('next').addEventListener('click',()=>show(cur+1));
+document.addEventListener('keydown',e=>{
+  if(e.target.closest('input,textarea,select'))return;
+  if(['ArrowRight','PageDown',' '].includes(e.key)){e.preventDefault();show(cur+1)}
+  if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();show(cur-1)}
+  if(e.key==='Home')show(0);
+  if(e.key==='End')show(slides.length-1);
+});
+window.addEventListener('hashchange',()=>{const n=parseInt(location.hash.slice(1),10);if(n)show(n-1)});
+show((parseInt(location.hash.slice(1),10)||1)-1);
 </script>
-
+</body>
 </html>

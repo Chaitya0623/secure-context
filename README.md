@@ -80,7 +80,7 @@ python eval/run_all.py --no-presidio         # full evaluation (add Presidio: pi
 pytest -q
 ```
 
-The demo is a static walkthrough that needs no Python: open [`prototype/index.html`](prototype/index.html) in a browser. To host it, see [docs/DEPLOY.md](docs/DEPLOY.md).
+The final presentation is [`prototype/index.html`](prototype/index.html): the whole story and results as slides, no Python needed. The interactive step-by-step demo is [`prototype/walkthrough.html`](prototype/walkthrough.html). To host them, see [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ## Layout
 
@@ -110,7 +110,7 @@ eval/run_all.py  every experiment on the synthetic environment; writes eval/resu
 eval/run_counterfactual.py counterfactual necessity test (simulator offline, or a real model with --backend groq)
 eval/run_redteam.py  red-team stress test (scripted offline, or real models with --backend groq)
 eval/llm_eval.py optional: LLM-judged answer quality and an LLM attacker (needs an API key)
-prototype/       static HTML walkthrough
+prototype/       final presentation (index.html) and interactive walkthrough (walkthrough.html)
 tests/           pytest suite
 ```
 
